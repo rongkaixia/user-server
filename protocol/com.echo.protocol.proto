@@ -1,0 +1,70 @@
+syntax = "proto3";
+
+enum MsgType{
+  SIGNUP_REQUEST = 0x00000000;
+  LOGIN_REQUEST = 0x00000001;
+  AUTHENTICATION_REQUEST = 0x00000002;
+
+  SIGNUP_RESPONSE = 0x00010000;
+  LOGIN_RESPONSE = 0x00010001;
+  AUTHENTICATION_RESPONSE = 0x00010002;
+}
+
+message Request{
+  oneof content {
+    SignupRequest signup_request = 101;
+    LoginRequest login_request = 102;
+    AuthenticationRequest authentication_request = 103;
+  }
+
+  message SignupRequest{
+    string user_name = 1;
+    string user_password = 2;
+  }
+
+  message LoginRequest{
+    string user_name = 1;
+    string user_password = 2;
+  }
+
+  message AuthenticationRequest{
+    string token = 1;
+  }
+}
+
+message Response{
+  ResultCode result = 2;
+  string error_description = 3;
+
+  oneof content {
+    SignupResponse signup_response = 101;
+    LoginResponse login_response = 102;
+    AuthenticationResponse authentication_response = 103;
+  }
+
+  enum ResultCode{
+    SUCCESS = 0;
+    FAIL = 1;
+  }
+  
+  message SignupResponse{
+    string token = 1;
+  }
+
+  message LoginResponse{
+    string token = 1;
+  }
+
+  message AuthenticationResponse{
+    string token = 1;
+  }
+}
+
+message Message{
+  MsgType msg_type = 1; // useless
+
+  oneof body{
+    Request request = 101;
+    Response response = 102;
+  }
+}
