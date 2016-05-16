@@ -19,6 +19,7 @@ import spray.routing._
 import spray.http._
 import Directives._
 
+import com.echo.common._
 import com.echo.protocol._
 import com.trueaccord.scalapb.json.JsonFormat
 
@@ -32,9 +33,13 @@ class RouterActor() extends HttpServiceActor with akka.actor.ActorLogging {
       case _: Exception => {log.info("Exception"); Escalate}
     }
 
-  def packResponse(res: Response, msgType: Option[MsgType] = None): Message = {
-    if (msgType.isDefined)
-      new Message().withMsgType(msgType.get).withResponse(res)
+  def packResponse(res: Response): Message = {
+    if (res.content.isLoginResponse)
+      new Message().withMsgType(MsgType.LOGIN_RESPONSE).withResponse(res)
+    else if(res.content.isSignupResponse)
+      new Message().withMsgType(MsgType.SIGNUP_RESPONSE).withResponse(res)
+    else if(res.content.isAuthenticationResponse)
+      new Message().withMsgType(MsgType.AUTHENTICATION_RESPONSE).withResponse(res)
     else
       new Message().withResponse(res)
   }
@@ -63,25 +68,24 @@ class RouterActor() extends HttpServiceActor with akka.actor.ActorLogging {
       complete(Serializer.serialize(packResponse(response)))
   }
 
-  // ===========begin main function===============
   def deserialize: Directive1[Message] = 
     extract((ctx: RequestContext) => ctx.request.entity.asString).flatMap{ 
       content => {
-        log.debug("deserialize: " + content)
+        log.info("deserialize: " + content)
         try{
           provide(Serializer.deserialize(content))
         }catch{
           case e: Exception => 
-            log.debug("deserialize error, invalid message")
+            log.info("deserialize error, invalid message")
             reject(new InvalidMessageRejection("invalid message, cannot deserialize message"))
         }
       }
     }
 
   def extractRequest[T](msg: Message)(implicit m: Manifest[T]): Directive1[T] = {
-    log.debug("extractRequest: " + msg)
+    log.info("extractRequest: " + msg)
     if (!msg.body.isRequest){
-      log.debug("invalid message, message MUST BE a request")
+      log.info("invalid message, message MUST BE a request")
       reject(new InvalidMessageRejection("invalid message, message MUST BE a request"))
     }else{
       val request = msg.getRequest
@@ -111,22 +115,24 @@ class RouterActor() extends HttpServiceActor with akka.actor.ActorLogging {
   }
 
   def handleRequest[T](req: T) = {
-    log.debug("handleRequest: " + req)
+    log.info("handleRequest: " + req)
     val f: Future[Response] = async{
       implicit val timeout = Timeout(actorTimeout milliseconds)
       await(captainService ? req).asInstanceOf[Response]
     }
     onComplete(f) {
       case Success(response: Response) => 
-        complete(Serializer.serialize(packResponse(response, Some(MsgType.LOGIN_RESPONSE))))
+        log.info("send response: " + response.toString)
+        complete(Serializer.serialize(packResponse(response)))
       case Failure(ex) => 
+        log.error("handleRequest CaptainService error: " + ex.toString)
         val response = new Response()
           .withResult(Response.ResultCode.FAIL)
-          .withErrorDescription(ex.toString)
-        complete(Serializer.serialize(packResponse(response, Some(MsgType.LOGIN_RESPONSE))))
+          .withErrorDescription(ErrorMessage.InteralServerError)
+        log.info("send response: " + response.toString)
+        complete(Serializer.serialize(packResponse(response)))
     }
   }
-  // ===========end main function===============
 
   val router: Route = {
     path("login") {

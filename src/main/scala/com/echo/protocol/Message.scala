@@ -9,13 +9,13 @@ package com.echo.protocol
 
 @SerialVersionUID(0L)
 final case class Message(
-    msgType: com.echo.protocol.MsgType = com.echo.protocol.MsgType.SIGNUP_REQUEST,
+    msgType: com.echo.protocol.MsgType = com.echo.protocol.MsgType.EMPTY,
     body: com.echo.protocol.Message.Body = com.echo.protocol.Message.Body.Empty
     ) extends com.trueaccord.scalapb.GeneratedMessage with com.trueaccord.scalapb.Message[Message] with com.trueaccord.lenses.Updatable[Message] {
     @transient
     lazy val serializedSize: Int = {
       var __size = 0
-      if (msgType != com.echo.protocol.MsgType.SIGNUP_REQUEST) { __size += com.google.protobuf.CodedOutputStream.computeEnumSize(1, msgType.value) }
+      if (msgType != com.echo.protocol.MsgType.EMPTY) { __size += com.google.protobuf.CodedOutputStream.computeEnumSize(1, msgType.value) }
       if (body.request.isDefined) { __size += 2 + com.google.protobuf.CodedOutputStream.computeRawVarint32Size(body.request.get.serializedSize) + body.request.get.serializedSize }
       if (body.response.isDefined) { __size += 2 + com.google.protobuf.CodedOutputStream.computeRawVarint32Size(body.response.get.serializedSize) + body.response.get.serializedSize }
       __size
@@ -23,17 +23,17 @@ final case class Message(
     def writeTo(output: com.google.protobuf.CodedOutputStream): Unit = {
       {
         val __v = msgType
-        if (__v != com.echo.protocol.MsgType.SIGNUP_REQUEST) {
+        if (__v != com.echo.protocol.MsgType.EMPTY) {
           output.writeEnum(1, __v.value)
         }
       };
       body.request.foreach { __v => 
-        output.writeTag(101, 2)
+        output.writeTag(1001, 2)
         output.writeRawVarint32(__v.serializedSize)
         __v.writeTo(output)
       };
       body.response.foreach { __v => 
-        output.writeTag(102, 2)
+        output.writeTag(1002, 2)
         output.writeRawVarint32(__v.serializedSize)
         __v.writeTo(output)
       };
@@ -48,9 +48,9 @@ final case class Message(
           case 0 => _done__ = true
           case 8 =>
             __msgType = com.echo.protocol.MsgType.fromValue(__input.readEnum())
-          case 810 =>
+          case 8010 =>
             __body = com.echo.protocol.Message.Body.Request(com.trueaccord.scalapb.LiteParser.readMessage(__input, body.request.getOrElse(com.echo.protocol.Request.defaultInstance)))
-          case 818 =>
+          case 8018 =>
             __body = com.echo.protocol.Message.Body.Response(com.trueaccord.scalapb.LiteParser.readMessage(__input, body.response.getOrElse(com.echo.protocol.Response.defaultInstance)))
           case tag => __input.skipField(tag)
         }
@@ -73,8 +73,8 @@ final case class Message(
           val __t = msgType.valueDescriptor
           if (__t.getNumber() != 0) __t else null
         }
-        case 101 => body.request.getOrElse(null)
-        case 102 => body.response.getOrElse(null)
+        case 1001 => body.request.getOrElse(null)
+        case 1002 => body.response.getOrElse(null)
       }
     }
     override def toString: String = com.trueaccord.scalapb.TextFormat.printToUnicodeString(this)
@@ -87,7 +87,7 @@ object Message extends com.trueaccord.scalapb.GeneratedMessageCompanion[Message]
     require(__fieldsMap.keys.forall(_.getContainingType() == descriptor), "FieldDescriptor does not match message type.")
     val __fields = descriptor.getFields
     com.echo.protocol.Message(
-      com.echo.protocol.MsgType.fromValue(__fieldsMap.getOrElse(__fields.get(0), com.echo.protocol.MsgType.SIGNUP_REQUEST.valueDescriptor).asInstanceOf[com.google.protobuf.Descriptors.EnumValueDescriptor].getNumber),
+      com.echo.protocol.MsgType.fromValue(__fieldsMap.getOrElse(__fields.get(0), com.echo.protocol.MsgType.EMPTY.valueDescriptor).asInstanceOf[com.google.protobuf.Descriptors.EnumValueDescriptor].getNumber),
       body = __fieldsMap.get(__fields.get(1)).asInstanceOf[scala.Option[com.echo.protocol.Request]].map(com.echo.protocol.Message.Body.Request(_)) orElse
 __fieldsMap.get(__fields.get(2)).asInstanceOf[scala.Option[com.echo.protocol.Response]].map(com.echo.protocol.Message.Body.Response(_)) getOrElse com.echo.protocol.Message.Body.Empty
     )
@@ -97,8 +97,8 @@ __fieldsMap.get(__fields.get(2)).asInstanceOf[scala.Option[com.echo.protocol.Res
     require(__field.getContainingType() == descriptor, "FieldDescriptor does not match message type.")
     var __out: com.trueaccord.scalapb.GeneratedMessageCompanion[_] = null
     __field.getNumber match {
-      case 101 => __out = com.echo.protocol.Request
-      case 102 => __out = com.echo.protocol.Response
+      case 1001 => __out = com.echo.protocol.Request
+      case 1002 => __out = com.echo.protocol.Response
     }
   __out
   }
@@ -131,13 +131,13 @@ __fieldsMap.get(__fields.get(2)).asInstanceOf[scala.Option[com.echo.protocol.Res
     case class Request(value: com.echo.protocol.Request) extends Body {
       override def isRequest: Boolean = true
       override def request: scala.Option[com.echo.protocol.Request] = Some(value)
-      override def number: Int = 101
+      override def number: Int = 1001
     }
     @SerialVersionUID(0L)
     case class Response(value: com.echo.protocol.Response) extends Body {
       override def isResponse: Boolean = true
       override def response: scala.Option[com.echo.protocol.Response] = Some(value)
-      override def number: Int = 102
+      override def number: Int = 1002
     }
   }
   implicit class MessageLens[UpperPB](_l: com.trueaccord.lenses.Lens[UpperPB, Message]) extends com.trueaccord.lenses.ObjectLens[UpperPB, Message](_l) {
@@ -147,6 +147,6 @@ __fieldsMap.get(__fields.get(2)).asInstanceOf[scala.Option[com.echo.protocol.Res
     def body: com.trueaccord.lenses.Lens[UpperPB, com.echo.protocol.Message.Body] = field(_.body)((c_, f_) => c_.copy(body = f_))
   }
   final val MSG_TYPE_FIELD_NUMBER = 1
-  final val REQUEST_FIELD_NUMBER = 101
-  final val RESPONSE_FIELD_NUMBER = 102
+  final val REQUEST_FIELD_NUMBER = 1001
+  final val RESPONSE_FIELD_NUMBER = 1002
 }

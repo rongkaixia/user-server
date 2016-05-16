@@ -1,9 +1,11 @@
 syntax = "proto3";
 
 enum MsgType{
-  SIGNUP_REQUEST = 0x00000000;
-  LOGIN_REQUEST = 0x00000001;
-  AUTHENTICATION_REQUEST = 0x00000002;
+  EMPTY = 0x00000000; // due to the bug of scalapbc, do not use EMPTY in your code
+
+  SIGNUP_REQUEST = 0x00000001;
+  LOGIN_REQUEST = 0x00000002;
+  AUTHENTICATION_REQUEST = 0x00000003;
 
   SIGNUP_RESPONSE = 0x00010000;
   LOGIN_RESPONSE = 0x00010001;
@@ -12,19 +14,23 @@ enum MsgType{
 
 message Request{
   oneof content {
-    SignupRequest signup_request = 101;
-    LoginRequest login_request = 102;
-    AuthenticationRequest authentication_request = 103;
+    SignupRequest signup_request = 1001;
+    LoginRequest login_request = 1002;
+    AuthenticationRequest authentication_request = 1003;
   }
 
   message SignupRequest{
-    string user_name = 1;
-    string user_password = 2;
+    string phonenum = 1;
+    string password = 2;
   }
 
   message LoginRequest{
-    string user_name = 1;
-    string user_password = 2;
+    oneof user{
+      string phonenum = 1;
+      string username = 2;
+      string email = 3;
+    }
+    string password = 10;
   }
 
   message AuthenticationRequest{
@@ -33,22 +39,22 @@ message Request{
 }
 
 message Response{
-  ResultCode result = 2;
-  string error_description = 3;
+  ResultCode result = 1;
+  string error_description = 2;
 
   oneof content {
-    SignupResponse signup_response = 101;
-    LoginResponse login_response = 102;
-    AuthenticationResponse authentication_response = 103;
+    SignupResponse signup_response = 1001;
+    LoginResponse login_response = 1002;
+    AuthenticationResponse authentication_response = 1003;
   }
 
   enum ResultCode{
-    SUCCESS = 0;
-    FAIL = 1;
+    EMPTY = 0; // due to the bug of scalapbc, do not use EMPTY in your code
+    SUCCESS = 1;
+    FAIL = 2;
   }
   
   message SignupResponse{
-    string token = 1;
   }
 
   message LoginResponse{
@@ -64,7 +70,7 @@ message Message{
   MsgType msg_type = 1; // useless
 
   oneof body{
-    Request request = 101;
-    Response response = 102;
+    Request request = 1001;
+    Response response = 1002;
   }
 }

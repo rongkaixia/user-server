@@ -9,6 +9,7 @@ package com.echo.protocol
 
 sealed trait MsgType extends com.trueaccord.scalapb.GeneratedEnum {
   type EnumType = MsgType
+  def isEmpty: Boolean = false
   def isSignupRequest: Boolean = false
   def isLoginRequest: Boolean = false
   def isAuthenticationRequest: Boolean = false
@@ -22,25 +23,33 @@ sealed trait MsgType extends com.trueaccord.scalapb.GeneratedEnum {
 object MsgType extends com.trueaccord.scalapb.GeneratedEnumCompanion[MsgType] {
   implicit def enumCompanion: com.trueaccord.scalapb.GeneratedEnumCompanion[MsgType] = this
   @SerialVersionUID(0L)
-  case object SIGNUP_REQUEST extends MsgType {
+  case object EMPTY extends MsgType {
     val value = 0
     val index = 0
+    val name = "EMPTY"
+    override def isEmpty: Boolean = true
+  }
+  
+  @SerialVersionUID(0L)
+  case object SIGNUP_REQUEST extends MsgType {
+    val value = 1
+    val index = 1
     val name = "SIGNUP_REQUEST"
     override def isSignupRequest: Boolean = true
   }
   
   @SerialVersionUID(0L)
   case object LOGIN_REQUEST extends MsgType {
-    val value = 1
-    val index = 1
+    val value = 2
+    val index = 2
     val name = "LOGIN_REQUEST"
     override def isLoginRequest: Boolean = true
   }
   
   @SerialVersionUID(0L)
   case object AUTHENTICATION_REQUEST extends MsgType {
-    val value = 2
-    val index = 2
+    val value = 3
+    val index = 3
     val name = "AUTHENTICATION_REQUEST"
     override def isAuthenticationRequest: Boolean = true
   }
@@ -48,7 +57,7 @@ object MsgType extends com.trueaccord.scalapb.GeneratedEnumCompanion[MsgType] {
   @SerialVersionUID(0L)
   case object SIGNUP_RESPONSE extends MsgType {
     val value = 65536
-    val index = 3
+    val index = 4
     val name = "SIGNUP_RESPONSE"
     override def isSignupResponse: Boolean = true
   }
@@ -56,7 +65,7 @@ object MsgType extends com.trueaccord.scalapb.GeneratedEnumCompanion[MsgType] {
   @SerialVersionUID(0L)
   case object LOGIN_RESPONSE extends MsgType {
     val value = 65537
-    val index = 4
+    val index = 5
     val name = "LOGIN_RESPONSE"
     override def isLoginResponse: Boolean = true
   }
@@ -64,7 +73,7 @@ object MsgType extends com.trueaccord.scalapb.GeneratedEnumCompanion[MsgType] {
   @SerialVersionUID(0L)
   case object AUTHENTICATION_RESPONSE extends MsgType {
     val value = 65538
-    val index = 5
+    val index = 6
     val name = "AUTHENTICATION_RESPONSE"
     override def isAuthenticationResponse: Boolean = true
   }
@@ -76,11 +85,12 @@ object MsgType extends com.trueaccord.scalapb.GeneratedEnumCompanion[MsgType] {
     override def isUnrecognized: Boolean = true
   }
   
-  lazy val values = Seq(SIGNUP_REQUEST, LOGIN_REQUEST, AUTHENTICATION_REQUEST, SIGNUP_RESPONSE, LOGIN_RESPONSE, AUTHENTICATION_RESPONSE)
+  lazy val values = Seq(EMPTY, SIGNUP_REQUEST, LOGIN_REQUEST, AUTHENTICATION_REQUEST, SIGNUP_RESPONSE, LOGIN_RESPONSE, AUTHENTICATION_RESPONSE)
   def fromValue(value: Int): MsgType = value match {
-    case 0 => SIGNUP_REQUEST
-    case 1 => LOGIN_REQUEST
-    case 2 => AUTHENTICATION_REQUEST
+    case 0 => EMPTY
+    case 1 => SIGNUP_REQUEST
+    case 2 => LOGIN_REQUEST
+    case 3 => AUTHENTICATION_REQUEST
     case 65536 => SIGNUP_RESPONSE
     case 65537 => LOGIN_RESPONSE
     case 65538 => AUTHENTICATION_RESPONSE
