@@ -228,25 +228,25 @@ __fieldsMap.get(__fields.get(2)).asInstanceOf[scala.Option[com.echo.protocol.Req
   @SerialVersionUID(0L)
   final case class LoginRequest(
       password: String = "",
-      user: com.echo.protocol.Request.LoginRequest.User = com.echo.protocol.Request.LoginRequest.User.Empty
+      name: com.echo.protocol.Request.LoginRequest.Name = com.echo.protocol.Request.LoginRequest.Name.Empty
       ) extends com.trueaccord.scalapb.GeneratedMessage with com.trueaccord.scalapb.Message[LoginRequest] with com.trueaccord.lenses.Updatable[LoginRequest] {
       @transient
       lazy val serializedSize: Int = {
         var __size = 0
-        if (user.phonenum.isDefined) { __size += com.google.protobuf.CodedOutputStream.computeStringSize(1, user.phonenum.get) }
-        if (user.username.isDefined) { __size += com.google.protobuf.CodedOutputStream.computeStringSize(2, user.username.get) }
-        if (user.email.isDefined) { __size += com.google.protobuf.CodedOutputStream.computeStringSize(3, user.email.get) }
+        if (name.phonenum.isDefined) { __size += com.google.protobuf.CodedOutputStream.computeStringSize(1, name.phonenum.get) }
+        if (name.username.isDefined) { __size += com.google.protobuf.CodedOutputStream.computeStringSize(2, name.username.get) }
+        if (name.email.isDefined) { __size += com.google.protobuf.CodedOutputStream.computeStringSize(3, name.email.get) }
         if (password != "") { __size += com.google.protobuf.CodedOutputStream.computeStringSize(10, password) }
         __size
       }
       def writeTo(output: com.google.protobuf.CodedOutputStream): Unit = {
-        user.phonenum.foreach { __v => 
+        name.phonenum.foreach { __v => 
           output.writeString(1, __v)
         };
-        user.username.foreach { __v => 
+        name.username.foreach { __v => 
           output.writeString(2, __v)
         };
-        user.email.foreach { __v => 
+        name.email.foreach { __v => 
           output.writeString(3, __v)
         };
         {
@@ -258,18 +258,18 @@ __fieldsMap.get(__fields.get(2)).asInstanceOf[scala.Option[com.echo.protocol.Req
       }
       def mergeFrom(__input: com.google.protobuf.CodedInputStream): com.echo.protocol.Request.LoginRequest = {
         var __password = this.password
-        var __user = this.user
+        var __name = this.name
         var _done__ = false
         while (!_done__) {
           val _tag__ = __input.readTag()
           _tag__ match {
             case 0 => _done__ = true
             case 10 =>
-              __user = com.echo.protocol.Request.LoginRequest.User.Phonenum(__input.readString())
+              __name = com.echo.protocol.Request.LoginRequest.Name.Phonenum(__input.readString())
             case 18 =>
-              __user = com.echo.protocol.Request.LoginRequest.User.Username(__input.readString())
+              __name = com.echo.protocol.Request.LoginRequest.Name.Username(__input.readString())
             case 26 =>
-              __user = com.echo.protocol.Request.LoginRequest.User.Email(__input.readString())
+              __name = com.echo.protocol.Request.LoginRequest.Name.Email(__input.readString())
             case 82 =>
               __password = __input.readString()
             case tag => __input.skipField(tag)
@@ -277,23 +277,23 @@ __fieldsMap.get(__fields.get(2)).asInstanceOf[scala.Option[com.echo.protocol.Req
         }
         com.echo.protocol.Request.LoginRequest(
             password = __password,
-            user = __user
+            name = __name
         )
       }
-      def getPhonenum: String = user.phonenum.getOrElse("")
-      def withPhonenum(__v: String): LoginRequest = copy(user = com.echo.protocol.Request.LoginRequest.User.Phonenum(__v))
-      def getUsername: String = user.username.getOrElse("")
-      def withUsername(__v: String): LoginRequest = copy(user = com.echo.protocol.Request.LoginRequest.User.Username(__v))
-      def getEmail: String = user.email.getOrElse("")
-      def withEmail(__v: String): LoginRequest = copy(user = com.echo.protocol.Request.LoginRequest.User.Email(__v))
+      def getPhonenum: String = name.phonenum.getOrElse("")
+      def withPhonenum(__v: String): LoginRequest = copy(name = com.echo.protocol.Request.LoginRequest.Name.Phonenum(__v))
+      def getUsername: String = name.username.getOrElse("")
+      def withUsername(__v: String): LoginRequest = copy(name = com.echo.protocol.Request.LoginRequest.Name.Username(__v))
+      def getEmail: String = name.email.getOrElse("")
+      def withEmail(__v: String): LoginRequest = copy(name = com.echo.protocol.Request.LoginRequest.Name.Email(__v))
       def withPassword(__v: String): LoginRequest = copy(password = __v)
-      def clearUser: LoginRequest = copy(user = com.echo.protocol.Request.LoginRequest.User.Empty)
-      def withUser(__v: com.echo.protocol.Request.LoginRequest.User): LoginRequest = copy(user = __v)
+      def clearName: LoginRequest = copy(name = com.echo.protocol.Request.LoginRequest.Name.Empty)
+      def withName(__v: com.echo.protocol.Request.LoginRequest.Name): LoginRequest = copy(name = __v)
       def getField(__field: com.google.protobuf.Descriptors.FieldDescriptor): scala.Any = {
         __field.getNumber match {
-          case 1 => user.phonenum.getOrElse(null)
-          case 2 => user.username.getOrElse(null)
-          case 3 => user.email.getOrElse(null)
+          case 1 => name.phonenum.getOrElse(null)
+          case 2 => name.username.getOrElse(null)
+          case 3 => name.email.getOrElse(null)
           case 10 => {
             val __t = password
             if (__t != "") __t else null
@@ -311,9 +311,9 @@ __fieldsMap.get(__fields.get(2)).asInstanceOf[scala.Option[com.echo.protocol.Req
       val __fields = descriptor.getFields
       com.echo.protocol.Request.LoginRequest(
         __fieldsMap.getOrElse(__fields.get(3), "").asInstanceOf[String],
-        user = __fieldsMap.get(__fields.get(0)).asInstanceOf[scala.Option[String]].map(com.echo.protocol.Request.LoginRequest.User.Phonenum(_)) orElse
-__fieldsMap.get(__fields.get(1)).asInstanceOf[scala.Option[String]].map(com.echo.protocol.Request.LoginRequest.User.Username(_)) orElse
-__fieldsMap.get(__fields.get(2)).asInstanceOf[scala.Option[String]].map(com.echo.protocol.Request.LoginRequest.User.Email(_)) getOrElse com.echo.protocol.Request.LoginRequest.User.Empty
+        name = __fieldsMap.get(__fields.get(0)).asInstanceOf[scala.Option[String]].map(com.echo.protocol.Request.LoginRequest.Name.Phonenum(_)) orElse
+__fieldsMap.get(__fields.get(1)).asInstanceOf[scala.Option[String]].map(com.echo.protocol.Request.LoginRequest.Name.Username(_)) orElse
+__fieldsMap.get(__fields.get(2)).asInstanceOf[scala.Option[String]].map(com.echo.protocol.Request.LoginRequest.Name.Email(_)) getOrElse com.echo.protocol.Request.LoginRequest.Name.Empty
       )
     }
     def descriptor: com.google.protobuf.Descriptors.Descriptor = com.echo.protocol.Request.descriptor.getNestedTypes.get(1)
@@ -321,7 +321,7 @@ __fieldsMap.get(__fields.get(2)).asInstanceOf[scala.Option[String]].map(com.echo
     def enumCompanionForField(__field: com.google.protobuf.Descriptors.FieldDescriptor): com.trueaccord.scalapb.GeneratedEnumCompanion[_] = throw new MatchError(__field)
     lazy val defaultInstance = com.echo.protocol.Request.LoginRequest(
     )
-    sealed trait User extends com.trueaccord.scalapb.GeneratedOneof {
+    sealed trait Name extends com.trueaccord.scalapb.GeneratedOneof {
       def isEmpty: Boolean = false
       def isDefined: Boolean = true
       def number: Int
@@ -332,39 +332,39 @@ __fieldsMap.get(__fields.get(2)).asInstanceOf[scala.Option[String]].map(com.echo
       def username: scala.Option[String] = None
       def email: scala.Option[String] = None
     }
-    object User extends {
+    object Name extends {
       @SerialVersionUID(0L)
-      case object Empty extends User {
+      case object Empty extends Name {
         override def isEmpty: Boolean = true
         override def isDefined: Boolean = false
         override def number: Int = 0
       }
     
       @SerialVersionUID(0L)
-      case class Phonenum(value: String) extends User {
+      case class Phonenum(value: String) extends Name {
         override def isPhonenum: Boolean = true
         override def phonenum: scala.Option[String] = Some(value)
         override def number: Int = 1
       }
       @SerialVersionUID(0L)
-      case class Username(value: String) extends User {
+      case class Username(value: String) extends Name {
         override def isUsername: Boolean = true
         override def username: scala.Option[String] = Some(value)
         override def number: Int = 2
       }
       @SerialVersionUID(0L)
-      case class Email(value: String) extends User {
+      case class Email(value: String) extends Name {
         override def isEmail: Boolean = true
         override def email: scala.Option[String] = Some(value)
         override def number: Int = 3
       }
     }
     implicit class LoginRequestLens[UpperPB](_l: com.trueaccord.lenses.Lens[UpperPB, LoginRequest]) extends com.trueaccord.lenses.ObjectLens[UpperPB, LoginRequest](_l) {
-      def phonenum: com.trueaccord.lenses.Lens[UpperPB, String] = field(_.getPhonenum)((c_, f_) => c_.copy(user = com.echo.protocol.Request.LoginRequest.User.Phonenum(f_)))
-      def username: com.trueaccord.lenses.Lens[UpperPB, String] = field(_.getUsername)((c_, f_) => c_.copy(user = com.echo.protocol.Request.LoginRequest.User.Username(f_)))
-      def email: com.trueaccord.lenses.Lens[UpperPB, String] = field(_.getEmail)((c_, f_) => c_.copy(user = com.echo.protocol.Request.LoginRequest.User.Email(f_)))
+      def phonenum: com.trueaccord.lenses.Lens[UpperPB, String] = field(_.getPhonenum)((c_, f_) => c_.copy(name = com.echo.protocol.Request.LoginRequest.Name.Phonenum(f_)))
+      def username: com.trueaccord.lenses.Lens[UpperPB, String] = field(_.getUsername)((c_, f_) => c_.copy(name = com.echo.protocol.Request.LoginRequest.Name.Username(f_)))
+      def email: com.trueaccord.lenses.Lens[UpperPB, String] = field(_.getEmail)((c_, f_) => c_.copy(name = com.echo.protocol.Request.LoginRequest.Name.Email(f_)))
       def password: com.trueaccord.lenses.Lens[UpperPB, String] = field(_.password)((c_, f_) => c_.copy(password = f_))
-      def user: com.trueaccord.lenses.Lens[UpperPB, com.echo.protocol.Request.LoginRequest.User] = field(_.user)((c_, f_) => c_.copy(user = f_))
+      def name: com.trueaccord.lenses.Lens[UpperPB, com.echo.protocol.Request.LoginRequest.Name] = field(_.name)((c_, f_) => c_.copy(name = f_))
     }
     final val PHONENUM_FIELD_NUMBER = 1
     final val USERNAME_FIELD_NUMBER = 2

@@ -1,7 +1,7 @@
 syntax = "proto3";
 
 enum MsgType{
-  EMPTY = 0x00000000; // due to the bug of scalapbc, do not use EMPTY in your code
+  MSG_TYPE_EMPTY = 0x00000000; // due to the bug of scalapbc, do not use EMPTY in your code
 
   SIGNUP_REQUEST = 0x00000001;
   LOGIN_REQUEST = 0x00000002;
@@ -10,6 +10,14 @@ enum MsgType{
   SIGNUP_RESPONSE = 0x00010000;
   LOGIN_RESPONSE = 0x00010001;
   AUTHENTICATION_RESPONSE = 0x00010002;
+}
+
+enum LoginType{
+  LOGIN_TYPE_EMPTY = 0x00000000; // due to the bug of scalapbc, do not use EMPTY in your code
+
+  LOGIN_BY_USERNAME = 0x00000001;
+  LOGIN_BY_PHONENUM = 0x00000002;
+  LOGIN_BY_EMAIL = 0x00000003;
 }
 
 message Request{
@@ -25,7 +33,7 @@ message Request{
   }
 
   message LoginRequest{
-    oneof user{
+    oneof name{
       string phonenum = 1;
       string username = 2;
       string email = 3;

@@ -9,13 +9,13 @@ package com.echo.protocol
 
 @SerialVersionUID(0L)
 final case class Message(
-    msgType: com.echo.protocol.MsgType = com.echo.protocol.MsgType.EMPTY,
+    msgType: com.echo.protocol.MsgType = com.echo.protocol.MsgType.MSG_TYPE_EMPTY,
     body: com.echo.protocol.Message.Body = com.echo.protocol.Message.Body.Empty
     ) extends com.trueaccord.scalapb.GeneratedMessage with com.trueaccord.scalapb.Message[Message] with com.trueaccord.lenses.Updatable[Message] {
     @transient
     lazy val serializedSize: Int = {
       var __size = 0
-      if (msgType != com.echo.protocol.MsgType.EMPTY) { __size += com.google.protobuf.CodedOutputStream.computeEnumSize(1, msgType.value) }
+      if (msgType != com.echo.protocol.MsgType.MSG_TYPE_EMPTY) { __size += com.google.protobuf.CodedOutputStream.computeEnumSize(1, msgType.value) }
       if (body.request.isDefined) { __size += 2 + com.google.protobuf.CodedOutputStream.computeRawVarint32Size(body.request.get.serializedSize) + body.request.get.serializedSize }
       if (body.response.isDefined) { __size += 2 + com.google.protobuf.CodedOutputStream.computeRawVarint32Size(body.response.get.serializedSize) + body.response.get.serializedSize }
       __size
@@ -23,7 +23,7 @@ final case class Message(
     def writeTo(output: com.google.protobuf.CodedOutputStream): Unit = {
       {
         val __v = msgType
-        if (__v != com.echo.protocol.MsgType.EMPTY) {
+        if (__v != com.echo.protocol.MsgType.MSG_TYPE_EMPTY) {
           output.writeEnum(1, __v.value)
         }
       };
@@ -87,7 +87,7 @@ object Message extends com.trueaccord.scalapb.GeneratedMessageCompanion[Message]
     require(__fieldsMap.keys.forall(_.getContainingType() == descriptor), "FieldDescriptor does not match message type.")
     val __fields = descriptor.getFields
     com.echo.protocol.Message(
-      com.echo.protocol.MsgType.fromValue(__fieldsMap.getOrElse(__fields.get(0), com.echo.protocol.MsgType.EMPTY.valueDescriptor).asInstanceOf[com.google.protobuf.Descriptors.EnumValueDescriptor].getNumber),
+      com.echo.protocol.MsgType.fromValue(__fieldsMap.getOrElse(__fields.get(0), com.echo.protocol.MsgType.MSG_TYPE_EMPTY.valueDescriptor).asInstanceOf[com.google.protobuf.Descriptors.EnumValueDescriptor].getNumber),
       body = __fieldsMap.get(__fields.get(1)).asInstanceOf[scala.Option[com.echo.protocol.Request]].map(com.echo.protocol.Message.Body.Request(_)) orElse
 __fieldsMap.get(__fields.get(2)).asInstanceOf[scala.Option[com.echo.protocol.Response]].map(com.echo.protocol.Message.Body.Response(_)) getOrElse com.echo.protocol.Message.Body.Empty
     )

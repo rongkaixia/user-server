@@ -9,7 +9,7 @@ package com.echo.protocol
 
 sealed trait MsgType extends com.trueaccord.scalapb.GeneratedEnum {
   type EnumType = MsgType
-  def isEmpty: Boolean = false
+  def isMsgTypeEmpty: Boolean = false
   def isSignupRequest: Boolean = false
   def isLoginRequest: Boolean = false
   def isAuthenticationRequest: Boolean = false
@@ -23,11 +23,11 @@ sealed trait MsgType extends com.trueaccord.scalapb.GeneratedEnum {
 object MsgType extends com.trueaccord.scalapb.GeneratedEnumCompanion[MsgType] {
   implicit def enumCompanion: com.trueaccord.scalapb.GeneratedEnumCompanion[MsgType] = this
   @SerialVersionUID(0L)
-  case object EMPTY extends MsgType {
+  case object MSG_TYPE_EMPTY extends MsgType {
     val value = 0
     val index = 0
-    val name = "EMPTY"
-    override def isEmpty: Boolean = true
+    val name = "MSG_TYPE_EMPTY"
+    override def isMsgTypeEmpty: Boolean = true
   }
   
   @SerialVersionUID(0L)
@@ -85,9 +85,9 @@ object MsgType extends com.trueaccord.scalapb.GeneratedEnumCompanion[MsgType] {
     override def isUnrecognized: Boolean = true
   }
   
-  lazy val values = Seq(EMPTY, SIGNUP_REQUEST, LOGIN_REQUEST, AUTHENTICATION_REQUEST, SIGNUP_RESPONSE, LOGIN_RESPONSE, AUTHENTICATION_RESPONSE)
+  lazy val values = Seq(MSG_TYPE_EMPTY, SIGNUP_REQUEST, LOGIN_REQUEST, AUTHENTICATION_REQUEST, SIGNUP_RESPONSE, LOGIN_RESPONSE, AUTHENTICATION_RESPONSE)
   def fromValue(value: Int): MsgType = value match {
-    case 0 => EMPTY
+    case 0 => MSG_TYPE_EMPTY
     case 1 => SIGNUP_REQUEST
     case 2 => LOGIN_REQUEST
     case 3 => AUTHENTICATION_REQUEST
