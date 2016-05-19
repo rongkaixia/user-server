@@ -13,6 +13,8 @@ sealed trait LoginType extends com.trueaccord.scalapb.GeneratedEnum {
   def isLoginByUsername: Boolean = false
   def isLoginByPhonenum: Boolean = false
   def isLoginByEmail: Boolean = false
+  def isLoginByWechat: Boolean = false
+  def isLoginByWeibo: Boolean = false
   def isUnrecognized: Boolean = false
   def companion: com.trueaccord.scalapb.GeneratedEnumCompanion[LoginType] = LoginType
 }
@@ -52,18 +54,36 @@ object LoginType extends com.trueaccord.scalapb.GeneratedEnumCompanion[LoginType
   }
   
   @SerialVersionUID(0L)
+  case object LOGIN_BY_WECHAT extends LoginType {
+    val value = 4
+    val index = 4
+    val name = "LOGIN_BY_WECHAT"
+    override def isLoginByWechat: Boolean = true
+  }
+  
+  @SerialVersionUID(0L)
+  case object LOGIN_BY_WEIBO extends LoginType {
+    val value = 5
+    val index = 5
+    val name = "LOGIN_BY_WEIBO"
+    override def isLoginByWeibo: Boolean = true
+  }
+  
+  @SerialVersionUID(0L)
   case class Unrecognized(value: Int) extends LoginType {
     val name = "UNRECOGNIZED"
     val index = -1
     override def isUnrecognized: Boolean = true
   }
   
-  lazy val values = Seq(LOGIN_TYPE_EMPTY, LOGIN_BY_USERNAME, LOGIN_BY_PHONENUM, LOGIN_BY_EMAIL)
+  lazy val values = Seq(LOGIN_TYPE_EMPTY, LOGIN_BY_USERNAME, LOGIN_BY_PHONENUM, LOGIN_BY_EMAIL, LOGIN_BY_WECHAT, LOGIN_BY_WEIBO)
   def fromValue(value: Int): LoginType = value match {
     case 0 => LOGIN_TYPE_EMPTY
     case 1 => LOGIN_BY_USERNAME
     case 2 => LOGIN_BY_PHONENUM
     case 3 => LOGIN_BY_EMAIL
+    case 4 => LOGIN_BY_WECHAT
+    case 5 => LOGIN_BY_WEIBO
     case __other => Unrecognized(__other)
   }
   def descriptor: com.google.protobuf.Descriptors.EnumDescriptor = ProtocolComEchoProtocolProto.descriptor.getEnumTypes.get(1)

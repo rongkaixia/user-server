@@ -106,6 +106,14 @@ class RouterActor() extends HttpServiceActor with akka.actor.ActorLogging {
             provide(request.getSignupRequest.asInstanceOf[T])
           }
         }
+        case c if c == manifest[Request.AuthenticationRequest] => {
+          log.debug("request.content.isAuthenticationRequest: " + request.content.isAuthenticationRequest)
+          if (!request.content.isAuthenticationRequest){
+            reject(new InvalidMessageRejection("invalid message, message MUST BE a authentication request"))
+          }else{
+            provide(request.getAuthenticationRequest.asInstanceOf[T])
+          }
+        }
         case _ => {
           log.error("unknow extractRequest type")
           reject()
@@ -152,7 +160,16 @@ class RouterActor() extends HttpServiceActor with akka.actor.ActorLogging {
           }
         }
       }//post
-    }//path
+    }~
+    path("auth") {
+      post {
+        deserialize { msg =>
+          extractRequest[Request.AuthenticationRequest](msg).apply { req =>
+            handleRequest(req)
+          }
+        }
+      }//post
+    }
   }//route
 
   def receive = runRoute(router)

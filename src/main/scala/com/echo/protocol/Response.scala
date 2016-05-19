@@ -276,12 +276,16 @@ __fieldsMap.get(__fields.get(4)).asInstanceOf[scala.Option[com.echo.protocol.Res
   
   @SerialVersionUID(0L)
   final case class LoginResponse(
-      token: String = ""
+      token: String = "",
+      expiresIn: Int = 0,
+      userId: String = ""
       ) extends com.trueaccord.scalapb.GeneratedMessage with com.trueaccord.scalapb.Message[LoginResponse] with com.trueaccord.lenses.Updatable[LoginResponse] {
       @transient
       lazy val serializedSize: Int = {
         var __size = 0
         if (token != "") { __size += com.google.protobuf.CodedOutputStream.computeStringSize(1, token) }
+        if (expiresIn != 0) { __size += com.google.protobuf.CodedOutputStream.computeInt32Size(2, expiresIn) }
+        if (userId != "") { __size += com.google.protobuf.CodedOutputStream.computeStringSize(3, userId) }
         __size
       }
       def writeTo(output: com.google.protobuf.CodedOutputStream): Unit = {
@@ -291,9 +295,23 @@ __fieldsMap.get(__fields.get(4)).asInstanceOf[scala.Option[com.echo.protocol.Res
             output.writeString(1, __v)
           }
         };
+        {
+          val __v = expiresIn
+          if (__v != 0) {
+            output.writeInt32(2, __v)
+          }
+        };
+        {
+          val __v = userId
+          if (__v != "") {
+            output.writeString(3, __v)
+          }
+        };
       }
       def mergeFrom(__input: com.google.protobuf.CodedInputStream): com.echo.protocol.Response.LoginResponse = {
         var __token = this.token
+        var __expiresIn = this.expiresIn
+        var __userId = this.userId
         var _done__ = false
         while (!_done__) {
           val _tag__ = __input.readTag()
@@ -301,18 +319,34 @@ __fieldsMap.get(__fields.get(4)).asInstanceOf[scala.Option[com.echo.protocol.Res
             case 0 => _done__ = true
             case 10 =>
               __token = __input.readString()
+            case 16 =>
+              __expiresIn = __input.readInt32()
+            case 26 =>
+              __userId = __input.readString()
             case tag => __input.skipField(tag)
           }
         }
         com.echo.protocol.Response.LoginResponse(
-            token = __token
+            token = __token,
+            expiresIn = __expiresIn,
+            userId = __userId
         )
       }
       def withToken(__v: String): LoginResponse = copy(token = __v)
+      def withExpiresIn(__v: Int): LoginResponse = copy(expiresIn = __v)
+      def withUserId(__v: String): LoginResponse = copy(userId = __v)
       def getField(__field: com.google.protobuf.Descriptors.FieldDescriptor): scala.Any = {
         __field.getNumber match {
           case 1 => {
             val __t = token
+            if (__t != "") __t else null
+          }
+          case 2 => {
+            val __t = expiresIn
+            if (__t != 0) __t else null
+          }
+          case 3 => {
+            val __t = userId
             if (__t != "") __t else null
           }
         }
@@ -327,7 +361,9 @@ __fieldsMap.get(__fields.get(4)).asInstanceOf[scala.Option[com.echo.protocol.Res
       require(__fieldsMap.keys.forall(_.getContainingType() == descriptor), "FieldDescriptor does not match message type.")
       val __fields = descriptor.getFields
       com.echo.protocol.Response.LoginResponse(
-        __fieldsMap.getOrElse(__fields.get(0), "").asInstanceOf[String]
+        __fieldsMap.getOrElse(__fields.get(0), "").asInstanceOf[String],
+        __fieldsMap.getOrElse(__fields.get(1), 0).asInstanceOf[Int],
+        __fieldsMap.getOrElse(__fields.get(2), "").asInstanceOf[String]
       )
     }
     def descriptor: com.google.protobuf.Descriptors.Descriptor = com.echo.protocol.Response.descriptor.getNestedTypes.get(1)
@@ -337,49 +373,104 @@ __fieldsMap.get(__fields.get(4)).asInstanceOf[scala.Option[com.echo.protocol.Res
     )
     implicit class LoginResponseLens[UpperPB](_l: com.trueaccord.lenses.Lens[UpperPB, LoginResponse]) extends com.trueaccord.lenses.ObjectLens[UpperPB, LoginResponse](_l) {
       def token: com.trueaccord.lenses.Lens[UpperPB, String] = field(_.token)((c_, f_) => c_.copy(token = f_))
+      def expiresIn: com.trueaccord.lenses.Lens[UpperPB, Int] = field(_.expiresIn)((c_, f_) => c_.copy(expiresIn = f_))
+      def userId: com.trueaccord.lenses.Lens[UpperPB, String] = field(_.userId)((c_, f_) => c_.copy(userId = f_))
     }
     final val TOKEN_FIELD_NUMBER = 1
+    final val EXPIRES_IN_FIELD_NUMBER = 2
+    final val USER_ID_FIELD_NUMBER = 3
   }
   
   @SerialVersionUID(0L)
   final case class AuthenticationResponse(
-      token: String = ""
+      isExpired: Boolean = false,
+      expiresIn: Int = 0,
+      token: String = "",
+      userId: String = ""
       ) extends com.trueaccord.scalapb.GeneratedMessage with com.trueaccord.scalapb.Message[AuthenticationResponse] with com.trueaccord.lenses.Updatable[AuthenticationResponse] {
       @transient
       lazy val serializedSize: Int = {
         var __size = 0
-        if (token != "") { __size += com.google.protobuf.CodedOutputStream.computeStringSize(1, token) }
+        if (isExpired != false) { __size += com.google.protobuf.CodedOutputStream.computeBoolSize(1, isExpired) }
+        if (expiresIn != 0) { __size += com.google.protobuf.CodedOutputStream.computeInt32Size(2, expiresIn) }
+        if (token != "") { __size += com.google.protobuf.CodedOutputStream.computeStringSize(3, token) }
+        if (userId != "") { __size += com.google.protobuf.CodedOutputStream.computeStringSize(4, userId) }
         __size
       }
       def writeTo(output: com.google.protobuf.CodedOutputStream): Unit = {
         {
+          val __v = isExpired
+          if (__v != false) {
+            output.writeBool(1, __v)
+          }
+        };
+        {
+          val __v = expiresIn
+          if (__v != 0) {
+            output.writeInt32(2, __v)
+          }
+        };
+        {
           val __v = token
           if (__v != "") {
-            output.writeString(1, __v)
+            output.writeString(3, __v)
+          }
+        };
+        {
+          val __v = userId
+          if (__v != "") {
+            output.writeString(4, __v)
           }
         };
       }
       def mergeFrom(__input: com.google.protobuf.CodedInputStream): com.echo.protocol.Response.AuthenticationResponse = {
+        var __isExpired = this.isExpired
+        var __expiresIn = this.expiresIn
         var __token = this.token
+        var __userId = this.userId
         var _done__ = false
         while (!_done__) {
           val _tag__ = __input.readTag()
           _tag__ match {
             case 0 => _done__ = true
-            case 10 =>
+            case 8 =>
+              __isExpired = __input.readBool()
+            case 16 =>
+              __expiresIn = __input.readInt32()
+            case 26 =>
               __token = __input.readString()
+            case 34 =>
+              __userId = __input.readString()
             case tag => __input.skipField(tag)
           }
         }
         com.echo.protocol.Response.AuthenticationResponse(
-            token = __token
+            isExpired = __isExpired,
+            expiresIn = __expiresIn,
+            token = __token,
+            userId = __userId
         )
       }
+      def withIsExpired(__v: Boolean): AuthenticationResponse = copy(isExpired = __v)
+      def withExpiresIn(__v: Int): AuthenticationResponse = copy(expiresIn = __v)
       def withToken(__v: String): AuthenticationResponse = copy(token = __v)
+      def withUserId(__v: String): AuthenticationResponse = copy(userId = __v)
       def getField(__field: com.google.protobuf.Descriptors.FieldDescriptor): scala.Any = {
         __field.getNumber match {
           case 1 => {
+            val __t = isExpired
+            if (__t != false) __t else null
+          }
+          case 2 => {
+            val __t = expiresIn
+            if (__t != 0) __t else null
+          }
+          case 3 => {
             val __t = token
+            if (__t != "") __t else null
+          }
+          case 4 => {
+            val __t = userId
             if (__t != "") __t else null
           }
         }
@@ -394,7 +485,10 @@ __fieldsMap.get(__fields.get(4)).asInstanceOf[scala.Option[com.echo.protocol.Res
       require(__fieldsMap.keys.forall(_.getContainingType() == descriptor), "FieldDescriptor does not match message type.")
       val __fields = descriptor.getFields
       com.echo.protocol.Response.AuthenticationResponse(
-        __fieldsMap.getOrElse(__fields.get(0), "").asInstanceOf[String]
+        __fieldsMap.getOrElse(__fields.get(0), false).asInstanceOf[Boolean],
+        __fieldsMap.getOrElse(__fields.get(1), 0).asInstanceOf[Int],
+        __fieldsMap.getOrElse(__fields.get(2), "").asInstanceOf[String],
+        __fieldsMap.getOrElse(__fields.get(3), "").asInstanceOf[String]
       )
     }
     def descriptor: com.google.protobuf.Descriptors.Descriptor = com.echo.protocol.Response.descriptor.getNestedTypes.get(2)
@@ -403,9 +497,15 @@ __fieldsMap.get(__fields.get(4)).asInstanceOf[scala.Option[com.echo.protocol.Res
     lazy val defaultInstance = com.echo.protocol.Response.AuthenticationResponse(
     )
     implicit class AuthenticationResponseLens[UpperPB](_l: com.trueaccord.lenses.Lens[UpperPB, AuthenticationResponse]) extends com.trueaccord.lenses.ObjectLens[UpperPB, AuthenticationResponse](_l) {
+      def isExpired: com.trueaccord.lenses.Lens[UpperPB, Boolean] = field(_.isExpired)((c_, f_) => c_.copy(isExpired = f_))
+      def expiresIn: com.trueaccord.lenses.Lens[UpperPB, Int] = field(_.expiresIn)((c_, f_) => c_.copy(expiresIn = f_))
       def token: com.trueaccord.lenses.Lens[UpperPB, String] = field(_.token)((c_, f_) => c_.copy(token = f_))
+      def userId: com.trueaccord.lenses.Lens[UpperPB, String] = field(_.userId)((c_, f_) => c_.copy(userId = f_))
     }
-    final val TOKEN_FIELD_NUMBER = 1
+    final val IS_EXPIRED_FIELD_NUMBER = 1
+    final val EXPIRES_IN_FIELD_NUMBER = 2
+    final val TOKEN_FIELD_NUMBER = 3
+    final val USER_ID_FIELD_NUMBER = 4
   }
   
   implicit class ResponseLens[UpperPB](_l: com.trueaccord.lenses.Lens[UpperPB, Response]) extends com.trueaccord.lenses.ObjectLens[UpperPB, Response](_l) {

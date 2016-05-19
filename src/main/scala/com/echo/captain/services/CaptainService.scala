@@ -8,6 +8,7 @@ import scala.util.{Success, Failure}
 import scala.collection.JavaConversions._
 import scala.collection.JavaConverters._
 import java.util.UUID
+import java.time.Instant
 
 import akka.actor._
 import akka.pattern.pipe
@@ -22,12 +23,11 @@ import com.google.common.util.concurrent.{FutureCallback, Futures}
 import io.jsonwebtoken.Jwts
 import io.jsonwebtoken.SignatureAlgorithm
 import io.jsonwebtoken.impl.crypto.MacProvider
-import java.security.Key
 
 import org.json4s.native.Json
 import org.json4s.DefaultFormats
 
-import com.echo.protocol.{Request, Response, LoginType}
+import com.echo.protocol.{Request, Response, LoginType, AuthType}
 import com.echo.common._
 import utils._
 
@@ -35,6 +35,8 @@ class CaptainService() extends Actor with akka.actor.ActorLogging{
   import context.dispatcher // ExecutionContext for the futures and scheduler
 
   val cfg = context.system.settings.config
+  val jwtSecretKey = cfg.getString("echo.captain.jwt_secret_key")
+  val tokenExpiresIn = cfg.getInt("echo.captain.token_expires_in")
 
   // cassandra connection
   var client: Option[CassandraClient] = None
@@ -66,6 +68,14 @@ class CaptainService() extends Actor with akka.actor.ActorLogging{
 
   def initilize(): Unit = {
   }
+
+  def addPrefixToToken(token: String, tp: LoginType): String = {
+    tp match{
+      case LoginType.LOGIN_BY_WECHAT => "wechat_" + token
+      case LoginType.LOGIN_BY_WEIBO => "weibo_" + token
+      case _ => "local_" + token
+    }
+  } 
 
   // ===========begin main function=============
   def isPhoneNumExisted(phonenum: String): Future[Boolean] = {
@@ -215,7 +225,7 @@ class CaptainService() extends Actor with akka.actor.ActorLogging{
       val session = client.get.getSession
       val userIDColumn = cfg.getString("echo.captain.cassandra.user_tables.columns.user_id")
       val passwordColumn = cfg.getString("echo.captain.cassandra.user_tables.columns.password")
-      val queryString = "SELECT * FROM " + tableName + " WHERE " + keyColumn + "=?"
+      val queryString = "SELECT count(*) FROM " + tableName + " WHERE " + keyColumn + "=?"
       val statement = session.prepare(queryString)
       log.debug("queryString: " + queryString)
       val boundStatement = new BoundStatement(statement).setString(0, key)
@@ -237,12 +247,15 @@ class CaptainService() extends Actor with akka.actor.ActorLogging{
     promise.future
   }
 
+  /**
+   * @return  (isCorrected: Boolean, userID: UUID)
+   */
   def isPasswordCorrected(
     tableName: String, 
     keyColumn: String, 
     key: String,
-    password: String): Future[(Boolean, String)] = {
-    val promise = Promise[(Boolean, String)]()
+    password: String): Future[(Boolean, UUID)] = {
+    val promise = Promise[(Boolean, UUID)]()
     try{
       log.info("check password by " + tableName)
       val session = client.get.getSession
@@ -260,14 +273,14 @@ class CaptainService() extends Actor with akka.actor.ActorLogging{
           val result = res.all.asScala.toList
           if (result.length >0){
             val row = result.head
-            val id = row.getUUID("id")
-            val expectedPassword = row.getString("password")
+            val id = row.getUUID(userIDColumn)
+            val expectedPassword = row.getString(passwordColumn)
             log.debug("user(id, password): " + "(" + id + "," + expectedPassword + ")")
             if (expectedPassword != password){
               log.info("password error: expected password is " + expectedPassword + " not " + password)
-              promise.success((false, ""))
+              promise.success((false, UUID.randomUUID))
             }else{
-              promise.success((true, id.toString))
+              promise.success((true, id))
             }
           }else{
             promise failure new NoSuchElementException("user " + key + " not existed")
@@ -278,6 +291,60 @@ class CaptainService() extends Actor with akka.actor.ActorLogging{
       }
     }catch{
       case error: Throwable => promise failure error
+    }
+    promise.future
+  }
+
+  /**
+   * [oauthToken description]
+   *
+   * @expiresIn   Int    expires in second
+   */
+  def setTokenExpires(
+    authToken: String, 
+    authName: AuthType, 
+    authID: String,
+    userID: UUID,
+    expiresIn: Int): Future[Unit] = {
+    val promise = Promise[Unit]()
+    try{
+      log.debug("set token expires")
+      val expires = Instant.now.plusSeconds(expiresIn)
+      log.info("token[" + authToken + "] expires at " + expires.toString)
+      val session = client.get.getSession
+      val tableName = cfg.getString("echo.captain.cassandra.auth_tables.auth_table")
+      val uniqueIDColumn = cfg.getString("echo.captain.cassandra.auth_tables.columns.id")
+      val tokenColumn = cfg.getString("echo.captain.cassandra.auth_tables.columns.auth_access_token")
+      val authNameColumn = cfg.getString("echo.captain.cassandra.auth_tables.columns.auth_name")
+      val authIDColumn = cfg.getString("echo.captain.cassandra.auth_tables.columns.auth_id")
+      val userIDColumn = cfg.getString("echo.captain.cassandra.auth_tables.columns.user_id")
+      val authExpiresColumn = cfg.getString("echo.captain.cassandra.auth_tables.columns.auth_expires")
+
+      val insertString = "INSERT INTO " + tableName + "(" +
+        Array(tokenColumn, authNameColumn, authIDColumn, userIDColumn, authExpiresColumn)
+        .reduce((a,b) => a + "," + b) + ") " +
+        "VALUES(?,?,?,?,?) USING TTL " + expiresIn
+      val statement = session.prepare(insertString)
+      log.debug("insertString: " + insertString)
+      val id = UUID.randomUUID
+      val boundStatement = new BoundStatement(statement).setString(0, authToken)
+                                                        .setString(1, authName.toString)
+                                                        .setString(2, authID)
+                                                        .setUUID(3, userID)
+                                                        .setTimestamp(4, java.util.Date.from(expires))
+      val f = session.executeAsync(boundStatement).toScalaFuture
+      f onComplete {
+        case Success(res: ResultSet) =>
+          log.info("query table " + tableName + " success")
+          promise.success()
+        case Failure(error: Throwable) =>
+          log.error("query table " + tableName + " error: " + error)
+          promise failure error
+      }
+    }catch{
+      case error: Throwable =>
+        log.error("setTokenExpires error: " + error)
+        promise failure error      
     }
     promise.future
   }
@@ -333,7 +400,7 @@ class CaptainService() extends Actor with akka.actor.ActorLogging{
                                     .withErrorDescription("user " + name + " not existed.")
                                     .withLoginResponse(new Response.LoginResponse()))
           }else{
-            val (passwordCorrected: Boolean, id: String) = loginType match {
+            val (passwordCorrected: Boolean, userID: UUID) = loginType match {
               case LoginType.LOGIN_BY_PHONENUM => 
                 await(isPasswordCorrected(userByPhonenumTable, phoneColumn, name, password))
               case LoginType.LOGIN_BY_USERNAME => 
@@ -350,8 +417,20 @@ class CaptainService() extends Actor with akka.actor.ActorLogging{
                                       .withErrorDescription("password incorrected.")
                                       .withLoginResponse(new Response.LoginResponse()))
             }else{
+              log.info("generate Json Web Token with " + userID.toString + "...")
+              val token = addPrefixToToken(Jwts.builder()
+                                               .setSubject(userID.toString)
+                                               .signWith(SignatureAlgorithm.HS512, jwtSecretKey)
+                                               .compact(), loginType)
+
+              log.info("token: " + token)
+              await(setTokenExpires(token, AuthType.LOCAL, "", userID, tokenExpiresIn))
+              val loginRes = new Response.LoginResponse()
+                                         .withToken(token)
+                                         .withExpiresIn(tokenExpiresIn)
+                                         .withUserId(userID.toString)
               promise.success(response.withResult(Response.ResultCode.SUCCESS)
-                                      .withLoginResponse(new Response.LoginResponse()))
+                                      .withLoginResponse(loginRes))
             }
           }
         }//async
@@ -370,15 +449,118 @@ class CaptainService() extends Actor with akka.actor.ActorLogging{
     promise.future
   }
 
+  /**
+   * @return  (isExpired: Boolean, userID: UUID, expiresIn: Int)
+   */
+  def isTokenExpired(token: String): Future[(Boolean, UUID, Int)] = {
+    val promise = Promise[(Boolean, UUID, Int)]()
+    try{
+      log.info("checking whether token is expired, token is " + token)
+      val session = client.get.getSession
+      val tableName = cfg.getString("echo.captain.cassandra.auth_tables.auth_table")
+      val tokenColumn = cfg.getString("echo.captain.cassandra.auth_tables.columns.auth_access_token")
+      val authNameColumn = cfg.getString("echo.captain.cassandra.auth_tables.columns.auth_name")
+      val userIDColumn = cfg.getString("echo.captain.cassandra.auth_tables.columns.user_id")
+
+      val queryString = "SELECT " + userIDColumn + ", ttl(" + userIDColumn + ") FROM " + tableName +
+        " WHERE " + tokenColumn + "=?"
+      log.debug("queryString: " + queryString)
+      val statement = session.prepare(queryString)
+      val boundStatement = new BoundStatement(statement).setString(0, token)
+      val f = session.executeAsync(boundStatement).toScalaFuture
+      f onComplete {
+        case Success(res: ResultSet) =>
+          log.info("query table " + tableName + " success")
+          val result = res.all.asScala.toList
+          if (result.length >0){
+            val row = result.head
+            val userID = row.getUUID(userIDColumn)
+            val expiresIn = row.getInt(1)
+            promise.success((false, userID, expiresIn))
+          }else{
+            promise.success((true, UUID.randomUUID, 0))
+          }
+        case Failure(error: Throwable) =>
+          log.error("query table " + tableName + " error: " + error)
+          promise failure error
+      }
+    }catch{
+      case error: Throwable =>
+        promise failure error
+    }
+    promise.future
+  }
+
+  def refreshToken(token: String): Future[Unit] = {
+    val promise = Promise[Unit]()
+    try{
+
+    }catch{
+      case error: Throwable =>
+        promise failure error
+    }
+    promise.future
+  }
+
+  def handleAuthenticationRequest(req: Request.AuthenticationRequest): Future[Response] = {
+    val promise = Promise[Response]()
+    try{
+      val session = client.get.getSession
+      var response = new Response()
+      // check request
+      val token: String = req.token
+      if (token.isEmpty){
+        promise.success(response.withResult(Response.ResultCode.FAIL)
+                                .withErrorDescription("token cannot be empty.")
+                                .withAuthenticationResponse(new Response.AuthenticationResponse()))
+      }else{
+        val f = async{
+          val (isExpired: Boolean, userID: UUID, expiresIn: Int) = await(isTokenExpired(token))
+          val authRes = if(isExpired){
+            log.info("token[" + token + "] is expired")
+            new Response.AuthenticationResponse()
+                        .withIsExpired(isExpired)
+                        .withExpiresIn(0)
+          }else{
+            log.info("user had logon, userID = " + userID.toString + 
+              ", expires in " + expiresIn + "seconds.")
+            new Response.AuthenticationResponse()
+                        .withIsExpired(isExpired)
+                        .withExpiresIn(expiresIn)
+                        .withUserId(userID.toString)
+          }
+          promise.success(response.withResult(Response.ResultCode.SUCCESS)
+                                  .withAuthenticationResponse(authRes))
+        }//async
+        // in case of async{...} throw exception
+        f onFailure {
+          case error: Throwable => 
+            log.error("handleLoginRequest async{...} error: " + error)
+            promise failure error
+        }
+      }
+    }catch{
+      case error: Throwable =>
+        log.error("handleAuthenticationRequest Exception: " + error)
+        promise failure error
+    }
+    promise.future
+  }
+
+
   // ===========end main function===============
   def receive = {
+    case req: Request.SignupRequest => {
+      log.info("receive signup request: " + req.toString)
+      handleSignupRequest(req) pipeTo sender
+    }
     case req: Request.LoginRequest => {
       log.info("receive login request: " + req.toString)
       handleLoginRequest(req) pipeTo sender
     }
-    case req: Request.SignupRequest => {
-      log.info("receive signup request: " + req.toString)
-      handleSignupRequest(req) pipeTo sender
-    }//signup request
+    case req: Request.AuthenticationRequest => {
+      log.info("receive authentication request: " + req.toString)
+      handleAuthenticationRequest(req) pipeTo sender
+    }
   }//receive
 }

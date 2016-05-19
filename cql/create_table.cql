@@ -27,33 +27,32 @@ CREATE TABLE user_info (
 
 CREATE TABLE user_by_phonenum(
 	phonenum text,
+	password text, //for fast retreiving password, instead of quering user_info table
 	id uuid,
-	password text //for fast retreiving password, instead of quering user_info table
 	PRIMARY KEY(phonenum, password)
 );
 
 CREATE TABLE user_by_username(
 	username text,
+	password text,
 	id uuid,
-	password text，
-	PRIMARY KEY(usename, password)
+	PRIMARY KEY(username, password)
 );
 
 CREATE TABLE user_by_email(
 	email text,
-	id uuid,
 	password text,
+	id uuid,
 	PRIMARY KEY(email, password)
 );
 
 CREATE TABLE auth(
-	id uuid,
-	oauth_access_token text,
-	oauth_name text,
-	oauth_id text,
+	auth_access_token text,
+	auth_name text,
+	auth_id text,
 	user_id uuid,
-	oauth_expires timestamp,
-	PRIMARY KEY(id, oauth_access_token, oauth_name, oauth_id)
+	auth_expires timestamp,
+	PRIMARY KEY(auth_access_token, auth_name, auth_id)
 );
 
-CREATE INDEX ON auth(oauth_name);
+CREATE INDEX ON auth(auth_name);
