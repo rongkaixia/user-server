@@ -18,7 +18,6 @@ import spray.routing._
 import spray.json._
 
 import com.datastax.driver.core._
-import com.google.common.util.concurrent.{FutureCallback, Futures}
 
 import io.jsonwebtoken.Jwts
 import io.jsonwebtoken.SignatureAlgorithm
@@ -29,7 +28,7 @@ import org.json4s.DefaultFormats
 
 import com.echo.protocol.{Request, Response, LoginType, AuthType}
 import com.echo.common._
-import utils._
+import com.echo.common.Utils._
 
 class CaptainService() extends Actor with akka.actor.ActorLogging{
   import context.dispatcher // ExecutionContext for the futures and scheduler

@@ -10,7 +10,7 @@ import scala.collection.JavaConverters._
 import com.datastax.driver.core._
 import com.google.common.util.concurrent.{FutureCallback, Futures}
 
-object utils{
+object Utils{
   implicit class ResultSetFuture2ScalaFuture(f: ResultSetFuture){
     def toScalaFuture: Future[ResultSet] = {
       val promise = Promise[ResultSet]()
