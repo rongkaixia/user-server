@@ -28,7 +28,7 @@ import org.json4s.DefaultFormats
 
 import com.echo.protocol.{Request, Response, LoginType, AuthType}
 import com.echo.common._
-import com.echo.common.Utils._
+import com.echo.common.CassandraClient._
 
 class CaptainService() extends Actor with akka.actor.ActorLogging{
   import context.dispatcher // ExecutionContext for the futures and scheduler

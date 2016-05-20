@@ -10,21 +10,5 @@ import scala.collection.JavaConverters._
 import com.datastax.driver.core._
 import com.google.common.util.concurrent.{FutureCallback, Futures}
 
-object Utils{
-  implicit class ResultSetFuture2ScalaFuture(f: ResultSetFuture){
-    def toScalaFuture: Future[ResultSet] = {
-      val promise = Promise[ResultSet]()
-      Futures.addCallback(f, new FutureCallback[ResultSet](){
-        override def onSuccess(res: ResultSet): Unit = {
-          promise success res
-        }
-        override def onFailure(error: Throwable): Unit = {
-          promise failure error
-        }
-      })
-      promise.future
-    }
-  }
-
-  
+object Utils{  
 }
