@@ -91,7 +91,7 @@ message Response{
 }
 
 message Message{
-  MsgType msg_type = 1; // useless
+  MsgType msg_type = 1; // useless for REST-ful API
 
   oneof body{
     Request request = 1001;

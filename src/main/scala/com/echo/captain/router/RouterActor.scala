@@ -69,10 +69,10 @@ class RouterActor() extends HttpServiceActor with akka.actor.ActorLogging {
   }
 
   def deserialize: Directive1[Message] = 
-    extract((ctx: RequestContext) => ctx.request.entity.asString).flatMap{ 
+    extract((ctx: RequestContext) => ctx.request.entity.data.toByteArray).flatMap{ 
       content => {
-        log.info("deserialize: " + content)
         try{
+          log.info("deserialize: " + content.map(_.toString).reduce((a,b)=>a + "," + b))
           provide(Serializer.deserialize(content))
         }catch{
           case e: Exception => 
@@ -131,14 +131,18 @@ class RouterActor() extends HttpServiceActor with akka.actor.ActorLogging {
     onComplete(f) {
       case Success(response: Response) => 
         log.info("send response: " + response.toString)
-        complete(Serializer.serialize(packResponse(response)))
+        val encodedMsg = Serializer.serialize(packResponse(response))
+        log.debug("binary response: " + encodedMsg.map(_.toInt.toString).reduce((a,b)=>a + "," + b))
+        complete(encodedMsg)
       case Failure(ex) => 
         log.error("handleRequest CaptainService error: " + ex.toString)
         val response = new Response()
           .withResult(Response.ResultCode.FAIL)
           .withErrorDescription(ErrorMessage.InteralServerError)
         log.info("send response: " + response.toString)
-        complete(Serializer.serialize(packResponse(response)))
+        val encodedMsg = Serializer.serialize(packResponse(response))
+        log.debug("binary response: " + encodedMsg.map(_.toInt.toString).reduce((a,b)=>a + "," + b))
+        complete(encodedMsg)
     }
   }
 
