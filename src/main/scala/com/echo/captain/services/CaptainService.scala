@@ -26,7 +26,7 @@ import io.jsonwebtoken.impl.crypto.MacProvider
 import org.json4s.native.Json
 import org.json4s.DefaultFormats
 
-import com.echo.protocol.{Request, Response, LoginType, AuthType}
+import com.echo.protocol.{Request, Response, LoginType, AuthType, ResultCode}
 import com.echo.common._
 import com.echo.common.CassandraClient._
 
@@ -128,11 +128,11 @@ class CaptainService() extends Actor with akka.actor.ActorLogging{
       val phonenum = req.phonenum
       val password = req.password
       if (phonenum.isEmpty){
-        response.withResult(Response.ResultCode.FAIL)
+        response.withResult(ResultCode.SIGNUP_INVALID_PHONENUM)
                 .withErrorDescription("phonenum cannot be empty.")
                 .withSignupResponse(new Response.SignupResponse())
       }else if(password.isEmpty){
-        response.withResult(Response.ResultCode.FAIL)
+        response.withResult(ResultCode.SIGNUP_INVALID_PASSWORD)
                 .withErrorDescription("password cannot be empty.")
                 .withSignupResponse(new Response.SignupResponse())
       }else{
@@ -152,7 +152,7 @@ class CaptainService() extends Actor with akka.actor.ActorLogging{
         val isExisted = await(isPhoneNumExisted(phonenum))
         log.info("isPhoneNumExisted: " + isExisted)
         if (isExisted){
-          response.withResult(Response.ResultCode.FAIL)
+          response.withResult(ResultCode.SIGNUP_PHONENUM_ALREADY_EXISTED)
                   .withErrorDescription("phonenum[" + phonenum + "] already existed.")
                   .withSignupResponse(new Response.SignupResponse())
         }else{
@@ -166,7 +166,7 @@ class CaptainService() extends Actor with akka.actor.ActorLogging{
           val res = await(session.executeAsync(boundStatement).toScalaFuture)
           log.info("insert new user success")
           val signupResponse = new Response.SignupResponse()
-          response.withResult(Response.ResultCode.SUCCESS)
+          response.withResult(ResultCode.SUCCESS)
                   .withErrorDescription("OK")
                   .withSignupResponse(signupResponse)
         }
@@ -299,12 +299,12 @@ class CaptainService() extends Actor with akka.actor.ActorLogging{
           (LoginType.LOGIN_TYPE_EMPTY, "")
       }
       if (loginType == LoginType.LOGIN_TYPE_EMPTY || name.isEmpty){
-        response.withResult(Response.ResultCode.FAIL)
+        response.withResult(ResultCode.LOGIN_INVALID_USER)
                 .withErrorDescription("name cannot be empty.")
                 .withLoginResponse(new Response.LoginResponse())
       }
       else if(password.isEmpty){
-        response.withResult(Response.ResultCode.FAIL)
+        response.withResult(ResultCode.LOGIN_INVALID_PASSWORD)
                 .withErrorDescription("password cannot be empty.")
                 .withLoginResponse(new Response.LoginResponse())
       }else{
@@ -326,7 +326,7 @@ class CaptainService() extends Actor with akka.actor.ActorLogging{
         }
         log.info("isUserExisted: " + userExisted)
         if (!userExisted){
-          response.withResult(Response.ResultCode.FAIL)
+          response.withResult(ResultCode.LOGIN_INVALID_USER)
                   .withErrorDescription("user " + name + " not existed.")
                   .withLoginResponse(new Response.LoginResponse())
         }else{
@@ -342,7 +342,7 @@ class CaptainService() extends Actor with akka.actor.ActorLogging{
           }
           log.info("isPasswordCorrected: " + passwordCorrected)
           if (!passwordCorrected){
-            response.withResult(Response.ResultCode.FAIL)
+            response.withResult(ResultCode.LOGIN_INVALID_PASSWORD)
                     .withErrorDescription("password incorrected.")
                     .withLoginResponse(new Response.LoginResponse())
           }else{
@@ -358,7 +358,7 @@ class CaptainService() extends Actor with akka.actor.ActorLogging{
                                        .withToken(token)
                                        .withExpiresIn(tokenExpiresIn)
                                        .withUserId(userID.toString)
-            response.withResult(Response.ResultCode.SUCCESS)
+            response.withResult(ResultCode.SUCCESS)
                     .withLoginResponse(loginRes)
           }
         }
@@ -418,7 +418,7 @@ class CaptainService() extends Actor with akka.actor.ActorLogging{
       // check request
       val token: String = req.token
       if (token.isEmpty){
-        response.withResult(Response.ResultCode.FAIL)
+        response.withResult(ResultCode.INVALID_TOKEN)
                 .withErrorDescription("token cannot be empty.")
                 .withAuthenticationResponse(new Response.AuthenticationResponse())
       }else{
@@ -436,7 +436,7 @@ class CaptainService() extends Actor with akka.actor.ActorLogging{
                       .withExpiresIn(expiresIn)
                       .withUserId(userID.toString)
         }
-        response.withResult(Response.ResultCode.SUCCESS)
+        response.withResult(ResultCode.SUCCESS)
                 .withAuthenticationResponse(authRes)
       }
     }

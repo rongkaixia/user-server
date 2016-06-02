@@ -9,14 +9,14 @@ package com.echo.protocol
 
 @SerialVersionUID(0L)
 final case class Response(
-    result: com.echo.protocol.Response.ResultCode = com.echo.protocol.Response.ResultCode.EMPTY,
+    result: com.echo.protocol.ResultCode = com.echo.protocol.ResultCode.SUCCESS,
     errorDescription: String = "",
     content: com.echo.protocol.Response.Content = com.echo.protocol.Response.Content.Empty
     ) extends com.trueaccord.scalapb.GeneratedMessage with com.trueaccord.scalapb.Message[Response] with com.trueaccord.lenses.Updatable[Response] {
     @transient
     lazy val serializedSize: Int = {
       var __size = 0
-      if (result != com.echo.protocol.Response.ResultCode.EMPTY) { __size += com.google.protobuf.CodedOutputStream.computeEnumSize(1, result.value) }
+      if (result != com.echo.protocol.ResultCode.SUCCESS) { __size += com.google.protobuf.CodedOutputStream.computeEnumSize(1, result.value) }
       if (errorDescription != "") { __size += com.google.protobuf.CodedOutputStream.computeStringSize(2, errorDescription) }
       if (content.signupResponse.isDefined) { __size += 2 + com.google.protobuf.CodedOutputStream.computeRawVarint32Size(content.signupResponse.get.serializedSize) + content.signupResponse.get.serializedSize }
       if (content.loginResponse.isDefined) { __size += 2 + com.google.protobuf.CodedOutputStream.computeRawVarint32Size(content.loginResponse.get.serializedSize) + content.loginResponse.get.serializedSize }
@@ -26,7 +26,7 @@ final case class Response(
     def writeTo(output: com.google.protobuf.CodedOutputStream): Unit = {
       {
         val __v = result
-        if (__v != com.echo.protocol.Response.ResultCode.EMPTY) {
+        if (__v != com.echo.protocol.ResultCode.SUCCESS) {
           output.writeEnum(1, __v.value)
         }
       };
@@ -62,7 +62,7 @@ final case class Response(
         _tag__ match {
           case 0 => _done__ = true
           case 8 =>
-            __result = com.echo.protocol.Response.ResultCode.fromValue(__input.readEnum())
+            __result = com.echo.protocol.ResultCode.fromValue(__input.readEnum())
           case 18 =>
             __errorDescription = __input.readString()
           case 8010 =>
@@ -80,7 +80,7 @@ final case class Response(
           content = __content
       )
     }
-    def withResult(__v: com.echo.protocol.Response.ResultCode): Response = copy(result = __v)
+    def withResult(__v: com.echo.protocol.ResultCode): Response = copy(result = __v)
     def withErrorDescription(__v: String): Response = copy(errorDescription = __v)
     def getSignupResponse: com.echo.protocol.Response.SignupResponse = content.signupResponse.getOrElse(com.echo.protocol.Response.SignupResponse.defaultInstance)
     def withSignupResponse(__v: com.echo.protocol.Response.SignupResponse): Response = copy(content = com.echo.protocol.Response.Content.SignupResponse(__v))
@@ -115,7 +115,7 @@ object Response extends com.trueaccord.scalapb.GeneratedMessageCompanion[Respons
     require(__fieldsMap.keys.forall(_.getContainingType() == descriptor), "FieldDescriptor does not match message type.")
     val __fields = descriptor.getFields
     com.echo.protocol.Response(
-      com.echo.protocol.Response.ResultCode.fromValue(__fieldsMap.getOrElse(__fields.get(0), com.echo.protocol.Response.ResultCode.EMPTY.valueDescriptor).asInstanceOf[com.google.protobuf.Descriptors.EnumValueDescriptor].getNumber),
+      com.echo.protocol.ResultCode.fromValue(__fieldsMap.getOrElse(__fields.get(0), com.echo.protocol.ResultCode.SUCCESS.valueDescriptor).asInstanceOf[com.google.protobuf.Descriptors.EnumValueDescriptor].getNumber),
       __fieldsMap.getOrElse(__fields.get(1), "").asInstanceOf[String],
       content = __fieldsMap.get(__fields.get(2)).asInstanceOf[scala.Option[com.echo.protocol.Response.SignupResponse]].map(com.echo.protocol.Response.Content.SignupResponse(_)) orElse
 __fieldsMap.get(__fields.get(3)).asInstanceOf[scala.Option[com.echo.protocol.Response.LoginResponse]].map(com.echo.protocol.Response.Content.LoginResponse(_)) orElse
@@ -136,62 +136,11 @@ __fieldsMap.get(__fields.get(4)).asInstanceOf[scala.Option[com.echo.protocol.Res
   def enumCompanionForField(__field: com.google.protobuf.Descriptors.FieldDescriptor): com.trueaccord.scalapb.GeneratedEnumCompanion[_] = {
     require(__field.getContainingType() == descriptor, "FieldDescriptor does not match message type.")
     __field.getNumber match {
-      case 1 => com.echo.protocol.Response.ResultCode
+      case 1 => com.echo.protocol.ResultCode
     }
   }
   lazy val defaultInstance = com.echo.protocol.Response(
   )
-  sealed trait ResultCode extends com.trueaccord.scalapb.GeneratedEnum {
-    type EnumType = ResultCode
-    def isEmpty: Boolean = false
-    def isSuccess: Boolean = false
-    def isFail: Boolean = false
-    def isUnrecognized: Boolean = false
-    def companion: com.trueaccord.scalapb.GeneratedEnumCompanion[ResultCode] = ResultCode
-  }
-  
-  object ResultCode extends com.trueaccord.scalapb.GeneratedEnumCompanion[ResultCode] {
-    implicit def enumCompanion: com.trueaccord.scalapb.GeneratedEnumCompanion[ResultCode] = this
-    @SerialVersionUID(0L)
-    case object EMPTY extends ResultCode {
-      val value = 0
-      val index = 0
-      val name = "EMPTY"
-      override def isEmpty: Boolean = true
-    }
-    
-    @SerialVersionUID(0L)
-    case object SUCCESS extends ResultCode {
-      val value = 1
-      val index = 1
-      val name = "SUCCESS"
-      override def isSuccess: Boolean = true
-    }
-    
-    @SerialVersionUID(0L)
-    case object FAIL extends ResultCode {
-      val value = 2
-      val index = 2
-      val name = "FAIL"
-      override def isFail: Boolean = true
-    }
-    
-    @SerialVersionUID(0L)
-    case class Unrecognized(value: Int) extends ResultCode {
-      val name = "UNRECOGNIZED"
-      val index = -1
-      override def isUnrecognized: Boolean = true
-    }
-    
-    lazy val values = Seq(EMPTY, SUCCESS, FAIL)
-    def fromValue(value: Int): ResultCode = value match {
-      case 0 => EMPTY
-      case 1 => SUCCESS
-      case 2 => FAIL
-      case __other => Unrecognized(__other)
-    }
-    def descriptor: com.google.protobuf.Descriptors.EnumDescriptor = com.echo.protocol.Response.descriptor.getEnumTypes.get(0)
-  }
   sealed trait Content extends com.trueaccord.scalapb.GeneratedOneof {
     def isEmpty: Boolean = false
     def isDefined: Boolean = true
@@ -385,7 +334,6 @@ __fieldsMap.get(__fields.get(4)).asInstanceOf[scala.Option[com.echo.protocol.Res
   final case class AuthenticationResponse(
       isExpired: Boolean = false,
       expiresIn: Int = 0,
-      token: String = "",
       userId: String = ""
       ) extends com.trueaccord.scalapb.GeneratedMessage with com.trueaccord.scalapb.Message[AuthenticationResponse] with com.trueaccord.lenses.Updatable[AuthenticationResponse] {
       @transient
@@ -393,8 +341,7 @@ __fieldsMap.get(__fields.get(4)).asInstanceOf[scala.Option[com.echo.protocol.Res
         var __size = 0
         if (isExpired != false) { __size += com.google.protobuf.CodedOutputStream.computeBoolSize(1, isExpired) }
         if (expiresIn != 0) { __size += com.google.protobuf.CodedOutputStream.computeInt32Size(2, expiresIn) }
-        if (token != "") { __size += com.google.protobuf.CodedOutputStream.computeStringSize(3, token) }
-        if (userId != "") { __size += com.google.protobuf.CodedOutputStream.computeStringSize(4, userId) }
+        if (userId != "") { __size += com.google.protobuf.CodedOutputStream.computeStringSize(3, userId) }
         __size
       }
       def writeTo(output: com.google.protobuf.CodedOutputStream): Unit = {
@@ -411,22 +358,15 @@ __fieldsMap.get(__fields.get(4)).asInstanceOf[scala.Option[com.echo.protocol.Res
           }
         };
         {
-          val __v = token
-          if (__v != "") {
-            output.writeString(3, __v)
-          }
-        };
-        {
           val __v = userId
           if (__v != "") {
-            output.writeString(4, __v)
+            output.writeString(3, __v)
           }
         };
       }
       def mergeFrom(__input: com.google.protobuf.CodedInputStream): com.echo.protocol.Response.AuthenticationResponse = {
         var __isExpired = this.isExpired
         var __expiresIn = this.expiresIn
-        var __token = this.token
         var __userId = this.userId
         var _done__ = false
         while (!_done__) {
@@ -438,8 +378,6 @@ __fieldsMap.get(__fields.get(4)).asInstanceOf[scala.Option[com.echo.protocol.Res
             case 16 =>
               __expiresIn = __input.readInt32()
             case 26 =>
-              __token = __input.readString()
-            case 34 =>
               __userId = __input.readString()
             case tag => __input.skipField(tag)
           }
@@ -447,13 +385,11 @@ __fieldsMap.get(__fields.get(4)).asInstanceOf[scala.Option[com.echo.protocol.Res
         com.echo.protocol.Response.AuthenticationResponse(
             isExpired = __isExpired,
             expiresIn = __expiresIn,
-            token = __token,
             userId = __userId
         )
       }
       def withIsExpired(__v: Boolean): AuthenticationResponse = copy(isExpired = __v)
       def withExpiresIn(__v: Int): AuthenticationResponse = copy(expiresIn = __v)
-      def withToken(__v: String): AuthenticationResponse = copy(token = __v)
       def withUserId(__v: String): AuthenticationResponse = copy(userId = __v)
       def getField(__field: com.google.protobuf.Descriptors.FieldDescriptor): scala.Any = {
         __field.getNumber match {
@@ -466,10 +402,6 @@ __fieldsMap.get(__fields.get(4)).asInstanceOf[scala.Option[com.echo.protocol.Res
             if (__t != 0) __t else null
           }
           case 3 => {
-            val __t = token
-            if (__t != "") __t else null
-          }
-          case 4 => {
             val __t = userId
             if (__t != "") __t else null
           }
@@ -487,8 +419,7 @@ __fieldsMap.get(__fields.get(4)).asInstanceOf[scala.Option[com.echo.protocol.Res
       com.echo.protocol.Response.AuthenticationResponse(
         __fieldsMap.getOrElse(__fields.get(0), false).asInstanceOf[Boolean],
         __fieldsMap.getOrElse(__fields.get(1), 0).asInstanceOf[Int],
-        __fieldsMap.getOrElse(__fields.get(2), "").asInstanceOf[String],
-        __fieldsMap.getOrElse(__fields.get(3), "").asInstanceOf[String]
+        __fieldsMap.getOrElse(__fields.get(2), "").asInstanceOf[String]
       )
     }
     def descriptor: com.google.protobuf.Descriptors.Descriptor = com.echo.protocol.Response.descriptor.getNestedTypes.get(2)
@@ -499,17 +430,15 @@ __fieldsMap.get(__fields.get(4)).asInstanceOf[scala.Option[com.echo.protocol.Res
     implicit class AuthenticationResponseLens[UpperPB](_l: com.trueaccord.lenses.Lens[UpperPB, AuthenticationResponse]) extends com.trueaccord.lenses.ObjectLens[UpperPB, AuthenticationResponse](_l) {
       def isExpired: com.trueaccord.lenses.Lens[UpperPB, Boolean] = field(_.isExpired)((c_, f_) => c_.copy(isExpired = f_))
       def expiresIn: com.trueaccord.lenses.Lens[UpperPB, Int] = field(_.expiresIn)((c_, f_) => c_.copy(expiresIn = f_))
-      def token: com.trueaccord.lenses.Lens[UpperPB, String] = field(_.token)((c_, f_) => c_.copy(token = f_))
       def userId: com.trueaccord.lenses.Lens[UpperPB, String] = field(_.userId)((c_, f_) => c_.copy(userId = f_))
     }
     final val IS_EXPIRED_FIELD_NUMBER = 1
     final val EXPIRES_IN_FIELD_NUMBER = 2
-    final val TOKEN_FIELD_NUMBER = 3
-    final val USER_ID_FIELD_NUMBER = 4
+    final val USER_ID_FIELD_NUMBER = 3
   }
   
   implicit class ResponseLens[UpperPB](_l: com.trueaccord.lenses.Lens[UpperPB, Response]) extends com.trueaccord.lenses.ObjectLens[UpperPB, Response](_l) {
-    def result: com.trueaccord.lenses.Lens[UpperPB, com.echo.protocol.Response.ResultCode] = field(_.result)((c_, f_) => c_.copy(result = f_))
+    def result: com.trueaccord.lenses.Lens[UpperPB, com.echo.protocol.ResultCode] = field(_.result)((c_, f_) => c_.copy(result = f_))
     def errorDescription: com.trueaccord.lenses.Lens[UpperPB, String] = field(_.errorDescription)((c_, f_) => c_.copy(errorDescription = f_))
     def signupResponse: com.trueaccord.lenses.Lens[UpperPB, com.echo.protocol.Response.SignupResponse] = field(_.getSignupResponse)((c_, f_) => c_.copy(content = com.echo.protocol.Response.Content.SignupResponse(f_)))
     def loginResponse: com.trueaccord.lenses.Lens[UpperPB, com.echo.protocol.Response.LoginResponse] = field(_.getLoginResponse)((c_, f_) => c_.copy(content = com.echo.protocol.Response.Content.LoginResponse(f_)))

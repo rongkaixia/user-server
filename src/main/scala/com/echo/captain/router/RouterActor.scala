@@ -48,22 +48,22 @@ class RouterActor() extends HttpServiceActor with akka.actor.ActorLogging {
   implicit val CaptainRejectionHandler = RejectionHandler {
     case MethodRejection(supported: HttpMethod) :: _ =>
       val response = new Response()
-        .withResult(Response.ResultCode.FAIL)
+        .withResult(ResultCode.METHOD_NOT_ALLOW)
         .withErrorDescription("method not allowed, supported methods: " + supported)
       complete(Serializer.serialize(packResponse(response)))
     case MsgTypeRejection(expected: MsgType) :: _ =>
       val response = new Response()
-        .withResult(Response.ResultCode.FAIL)
+        .withResult(ResultCode.MESSAGE_TYPE_ERROR)
         .withErrorDescription("msgType error, msgType MUST BE" + expected)
       complete(Serializer.serialize(packResponse(response)))
     case InvalidMessageRejection(info: String) :: _ =>
       val response = new Response()
-        .withResult(Response.ResultCode.FAIL)
+        .withResult(ResultCode.INVALID_MESSAGE)
         .withErrorDescription(info)
       complete(Serializer.serialize(packResponse(response)))
     case _ =>
       val response = new Response()
-        .withResult(Response.ResultCode.FAIL)
+        .withResult(ResultCode.REQUEST_RESOURCE_NOT_FOUND)
         .withErrorDescription("The requested resource could not be found.")
       complete(Serializer.serialize(packResponse(response)))
   }
@@ -137,7 +137,7 @@ class RouterActor() extends HttpServiceActor with akka.actor.ActorLogging {
       case Failure(ex) => 
         log.error("handleRequest CaptainService error: " + ex.toString)
         val response = new Response()
-          .withResult(Response.ResultCode.FAIL)
+          .withResult(ResultCode.INTERNAL_SERVER_ERROR)
           .withErrorDescription(ErrorMessage.InteralServerError)
         log.info("send response: " + response.toString)
         val encodedMsg = Serializer.serialize(packResponse(response))
