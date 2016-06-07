@@ -77,22 +77,42 @@ class CaptainService() extends Actor with akka.actor.ActorLogging{
   } 
 
   // ===========begin main function=============
-  def isPhoneNumExisted(phonenum: String): Future[Boolean] = {
-    // checking whether the phonenum is existed
+  def getUserInfo(id: UUID): Future[UserInfo] = {
     async{
+      log.info("getUserInfo")
       val session = client.get.getSession
-      val tableName = cfg.getString("echo.captain.cassandra.user_tables.user_by_phonenum_table")
-      val phoneColumn = cfg.getString("echo.captain.cassandra.user_tables.columns.phonenum")
+      val userInfoTable = cfg.getString("echo.captain.cassandra.user_tables.user_info_table")
+      val userIDColumn = cfg.getString("echo.captain.cassandra.user_tables.columns.user_id")
+      val queryString = "SELECT * FROM " + userInfoTable + " WHERE " + 
+        userIDColumn + "=?"
+      val statement = session.prepare(queryString)
+      log.debug("queryString: " + queryString)
+      val boundStatement = new BoundStatement(statement).setUUID(0, id)
+      val res = await(session.executeAsync(boundStatement).toScalaFuture)
+      val row = res.all.asScala.toList.head
+      new UserInfo(id, 
+                   row.getString("username"),
+                   row.getString("firstname"),
+                   row.getString("lastname"),
+                   row.getString("email"),
+                   row.getString("phonenum"))
+    }
+  }
 
-      val queryPhoneString = "SELECT " + phoneColumn + " FROM " +
-        tableName + " WHERE " + phoneColumn + "='" + phonenum + "'"
-      log.info("checking whether the phonenum is existed")
-      log.debug("queryPhoneString: " + queryPhoneString)
+  def isUserExisted(tableName: String, keyColumn: String, key: String): Future[Boolean] = {
+    async{
+      log.info("check username by " + tableName)
+      val session = client.get.getSession
+      val queryString = "SELECT count(*) FROM " + tableName + " WHERE " + keyColumn + "=?"
+      val statement = session.prepare(queryString)
+      log.debug("queryString: " + queryString)
 
-      val res = await(session.executeAsync(queryPhoneString).toScalaFuture)
+      val boundStatement = new BoundStatement(statement).setString(0, key)
+      val res = await(session.executeAsync(boundStatement).toScalaFuture)
+      log.info("query table " + tableName + " success")
       if (res.all.asScala.toList.length > 0)
         true
-      else
+      else 
         false
     }
   }
@@ -142,20 +162,21 @@ class CaptainService() extends Actor with akka.actor.ActorLogging{
         val phoneColumn = cfg.getString("echo.captain.cassandra.user_tables.columns.phonenum")
         val userIDColumn = cfg.getString("echo.captain.cassandra.user_tables.columns.user_id")
         val passwordColumn = cfg.getString("echo.captain.cassandra.user_tables.columns.password")
-        // insert statement
-        val insertString = "INSERT INTO " + userInfoTable + "(" +
-          userIDColumn + "," + phoneColumn + "," + passwordColumn + ") " +
-          "VALUES(?,?,?)"
-        log.debug("insertString: " + insertString)
-        val statement = session.prepare(insertString)
+
         // checking whether the phonenum is existed
-        val isExisted = await(isPhoneNumExisted(phonenum))
+        val isExisted = await(isUserExisted(userByPhonenumTable, phoneColumn, phonenum))
         log.info("isPhoneNumExisted: " + isExisted)
         if (isExisted){
           response.withResult(ResultCode.SIGNUP_PHONENUM_ALREADY_EXISTED)
                   .withErrorDescription("phonenum[" + phonenum + "] already existed.")
                   .withSignupResponse(new Response.SignupResponse())
         }else{
+          // insert statement
+          val insertString = "INSERT INTO " + userInfoTable + "(" +
+            userIDColumn + "," + phoneColumn + "," + passwordColumn + ") " +
+            "VALUES(?,?,?)"
+          log.debug("insertString: " + insertString)
+          val statement = session.prepare(insertString)
           val id = UUID.randomUUID
           await(insertUserByTable(userByPhonenumTable, phoneColumn, phonenum, id, password))
           log.info("insert new user into db")
@@ -179,26 +200,6 @@ class CaptainService() extends Actor with akka.actor.ActorLogging{
     }
 
     future
-  }
-
-  def isUserExisted(tableName: String, keyColumn: String, key: String): Future[Boolean] = {
-    async{
-      log.info("check username by " + tableName)
-      val session = client.get.getSession
-      val userIDColumn = cfg.getString("echo.captain.cassandra.user_tables.columns.user_id")
-      val passwordColumn = cfg.getString("echo.captain.cassandra.user_tables.columns.password")
-      val queryString = "SELECT count(*) FROM " + tableName + " WHERE " + keyColumn + "=?"
-      val statement = session.prepare(queryString)
-      log.debug("queryString: " + queryString)
-
-      val boundStatement = new BoundStatement(statement).setString(0, key)
-      val res = await(session.executeAsync(boundStatement).toScalaFuture)
-      log.info("query table " + tableName + " success")
-      if (res.all.asScala.toList.length > 0)
-        true
-      else 
-        false
-    }
   }
 
   /**
@@ -448,7 +449,6 @@ class CaptainService() extends Actor with akka.actor.ActorLogging{
     }
     future
   }
-
 
   // ===========end main function===============
   def receive = {
