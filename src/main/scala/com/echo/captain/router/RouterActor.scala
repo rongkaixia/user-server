@@ -114,6 +114,15 @@ class RouterActor() extends HttpServiceActor with akka.actor.ActorLogging {
             provide(request.getAuthenticationRequest.asInstanceOf[T])
           }
         }
+        case c if c == manifest[Request.LogoutRequest] => {
+          log.debug("request.content.isLogoutRequest: " + request.content.isLogoutRequest)
+          if (!request.content.isLogoutRequest){
+            reject(new InvalidMessageRejection("invalid message, message MUST BE a logout request"))
+          }else{
+            provide(request.getLogoutRequest.asInstanceOf[T])
+          }
+        }
+
         case _ => {
           log.error("unknow extractRequest type")
           reject()
@@ -169,6 +178,15 @@ class RouterActor() extends HttpServiceActor with akka.actor.ActorLogging {
       post {
         deserialize { msg =>
           extractRequest[Request.AuthenticationRequest](msg).apply { req =>
+            handleRequest(req)
+          }
+        }
+      }//post
+    }~
+    path("logout") {
+      post {
+        deserialize { msg =>
+          extractRequest[Request.LogoutRequest](msg).apply { req =>
             handleRequest(req)
           }
         }

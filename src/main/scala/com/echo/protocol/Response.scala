@@ -21,6 +21,7 @@ final case class Response(
       if (content.signupResponse.isDefined) { __size += 2 + com.google.protobuf.CodedOutputStream.computeRawVarint32Size(content.signupResponse.get.serializedSize) + content.signupResponse.get.serializedSize }
       if (content.loginResponse.isDefined) { __size += 2 + com.google.protobuf.CodedOutputStream.computeRawVarint32Size(content.loginResponse.get.serializedSize) + content.loginResponse.get.serializedSize }
       if (content.authenticationResponse.isDefined) { __size += 2 + com.google.protobuf.CodedOutputStream.computeRawVarint32Size(content.authenticationResponse.get.serializedSize) + content.authenticationResponse.get.serializedSize }
+      if (content.logoutResponse.isDefined) { __size += 2 + com.google.protobuf.CodedOutputStream.computeRawVarint32Size(content.logoutResponse.get.serializedSize) + content.logoutResponse.get.serializedSize }
       __size
     }
     def writeTo(output: com.google.protobuf.CodedOutputStream): Unit = {
@@ -51,6 +52,11 @@ final case class Response(
         output.writeRawVarint32(__v.serializedSize)
         __v.writeTo(output)
       };
+      content.logoutResponse.foreach { __v => 
+        output.writeTag(1004, 2)
+        output.writeRawVarint32(__v.serializedSize)
+        __v.writeTo(output)
+      };
     }
     def mergeFrom(__input: com.google.protobuf.CodedInputStream): com.echo.protocol.Response = {
       var __result = this.result
@@ -71,6 +77,8 @@ final case class Response(
             __content = com.echo.protocol.Response.Content.LoginResponse(com.trueaccord.scalapb.LiteParser.readMessage(__input, content.loginResponse.getOrElse(com.echo.protocol.Response.LoginResponse.defaultInstance)))
           case 8026 =>
             __content = com.echo.protocol.Response.Content.AuthenticationResponse(com.trueaccord.scalapb.LiteParser.readMessage(__input, content.authenticationResponse.getOrElse(com.echo.protocol.Response.AuthenticationResponse.defaultInstance)))
+          case 8034 =>
+            __content = com.echo.protocol.Response.Content.LogoutResponse(com.trueaccord.scalapb.LiteParser.readMessage(__input, content.logoutResponse.getOrElse(com.echo.protocol.Response.LogoutResponse.defaultInstance)))
           case tag => __input.skipField(tag)
         }
       }
@@ -88,6 +96,8 @@ final case class Response(
     def withLoginResponse(__v: com.echo.protocol.Response.LoginResponse): Response = copy(content = com.echo.protocol.Response.Content.LoginResponse(__v))
     def getAuthenticationResponse: com.echo.protocol.Response.AuthenticationResponse = content.authenticationResponse.getOrElse(com.echo.protocol.Response.AuthenticationResponse.defaultInstance)
     def withAuthenticationResponse(__v: com.echo.protocol.Response.AuthenticationResponse): Response = copy(content = com.echo.protocol.Response.Content.AuthenticationResponse(__v))
+    def getLogoutResponse: com.echo.protocol.Response.LogoutResponse = content.logoutResponse.getOrElse(com.echo.protocol.Response.LogoutResponse.defaultInstance)
+    def withLogoutResponse(__v: com.echo.protocol.Response.LogoutResponse): Response = copy(content = com.echo.protocol.Response.Content.LogoutResponse(__v))
     def clearContent: Response = copy(content = com.echo.protocol.Response.Content.Empty)
     def withContent(__v: com.echo.protocol.Response.Content): Response = copy(content = __v)
     def getField(__field: com.google.protobuf.Descriptors.FieldDescriptor): scala.Any = {
@@ -103,6 +113,7 @@ final case class Response(
         case 1001 => content.signupResponse.getOrElse(null)
         case 1002 => content.loginResponse.getOrElse(null)
         case 1003 => content.authenticationResponse.getOrElse(null)
+        case 1004 => content.logoutResponse.getOrElse(null)
       }
     }
     override def toString: String = com.trueaccord.scalapb.TextFormat.printToUnicodeString(this)
@@ -119,7 +130,8 @@ object Response extends com.trueaccord.scalapb.GeneratedMessageCompanion[Respons
       __fieldsMap.getOrElse(__fields.get(1), "").asInstanceOf[String],
       content = __fieldsMap.get(__fields.get(2)).asInstanceOf[scala.Option[com.echo.protocol.Response.SignupResponse]].map(com.echo.protocol.Response.Content.SignupResponse(_)) orElse
 __fieldsMap.get(__fields.get(3)).asInstanceOf[scala.Option[com.echo.protocol.Response.LoginResponse]].map(com.echo.protocol.Response.Content.LoginResponse(_)) orElse
-__fieldsMap.get(__fields.get(4)).asInstanceOf[scala.Option[com.echo.protocol.Response.AuthenticationResponse]].map(com.echo.protocol.Response.Content.AuthenticationResponse(_)) getOrElse com.echo.protocol.Response.Content.Empty
+__fieldsMap.get(__fields.get(4)).asInstanceOf[scala.Option[com.echo.protocol.Response.AuthenticationResponse]].map(com.echo.protocol.Response.Content.AuthenticationResponse(_)) orElse
+__fieldsMap.get(__fields.get(5)).asInstanceOf[scala.Option[com.echo.protocol.Response.LogoutResponse]].map(com.echo.protocol.Response.Content.LogoutResponse(_)) getOrElse com.echo.protocol.Response.Content.Empty
     )
   }
   def descriptor: com.google.protobuf.Descriptors.Descriptor = ProtocolComEchoProtocolProto.descriptor.getMessageTypes.get(1)
@@ -130,6 +142,7 @@ __fieldsMap.get(__fields.get(4)).asInstanceOf[scala.Option[com.echo.protocol.Res
       case 1001 => __out = com.echo.protocol.Response.SignupResponse
       case 1002 => __out = com.echo.protocol.Response.LoginResponse
       case 1003 => __out = com.echo.protocol.Response.AuthenticationResponse
+      case 1004 => __out = com.echo.protocol.Response.LogoutResponse
     }
   __out
   }
@@ -148,9 +161,11 @@ __fieldsMap.get(__fields.get(4)).asInstanceOf[scala.Option[com.echo.protocol.Res
     def isSignupResponse: Boolean = false
     def isLoginResponse: Boolean = false
     def isAuthenticationResponse: Boolean = false
+    def isLogoutResponse: Boolean = false
     def signupResponse: scala.Option[com.echo.protocol.Response.SignupResponse] = None
     def loginResponse: scala.Option[com.echo.protocol.Response.LoginResponse] = None
     def authenticationResponse: scala.Option[com.echo.protocol.Response.AuthenticationResponse] = None
+    def logoutResponse: scala.Option[com.echo.protocol.Response.LogoutResponse] = None
   }
   object Content extends {
     @SerialVersionUID(0L)
@@ -177,6 +192,12 @@ __fieldsMap.get(__fields.get(4)).asInstanceOf[scala.Option[com.echo.protocol.Res
       override def isAuthenticationResponse: Boolean = true
       override def authenticationResponse: scala.Option[com.echo.protocol.Response.AuthenticationResponse] = Some(value)
       override def number: Int = 1003
+    }
+    @SerialVersionUID(0L)
+    case class LogoutResponse(value: com.echo.protocol.Response.LogoutResponse) extends Content {
+      override def isLogoutResponse: Boolean = true
+      override def logoutResponse: scala.Option[com.echo.protocol.Response.LogoutResponse] = Some(value)
+      override def number: Int = 1004
     }
   }
   @SerialVersionUID(0L)
@@ -437,12 +458,57 @@ __fieldsMap.get(__fields.get(4)).asInstanceOf[scala.Option[com.echo.protocol.Res
     final val USER_ID_FIELD_NUMBER = 3
   }
   
+  @SerialVersionUID(0L)
+  final case class LogoutResponse(
+      ) extends com.trueaccord.scalapb.GeneratedMessage with com.trueaccord.scalapb.Message[LogoutResponse] with com.trueaccord.lenses.Updatable[LogoutResponse] {
+      @transient
+      lazy val serializedSize: Int = {
+        var __size = 0
+        __size
+      }
+      def writeTo(output: com.google.protobuf.CodedOutputStream): Unit = {
+      }
+      def mergeFrom(__input: com.google.protobuf.CodedInputStream): com.echo.protocol.Response.LogoutResponse = {
+        var _done__ = false
+        while (!_done__) {
+          val _tag__ = __input.readTag()
+          _tag__ match {
+            case 0 => _done__ = true
+            case tag => __input.skipField(tag)
+          }
+        }
+        com.echo.protocol.Response.LogoutResponse(
+        )
+      }
+      def getField(__field: com.google.protobuf.Descriptors.FieldDescriptor): scala.Any = throw new MatchError(__field)
+      override def toString: String = com.trueaccord.scalapb.TextFormat.printToUnicodeString(this)
+      def companion = com.echo.protocol.Response.LogoutResponse
+  }
+  
+  object LogoutResponse extends com.trueaccord.scalapb.GeneratedMessageCompanion[LogoutResponse] {
+    implicit def messageCompanion: com.trueaccord.scalapb.GeneratedMessageCompanion[LogoutResponse] = this
+    def fromFieldsMap(__fieldsMap: Map[com.google.protobuf.Descriptors.FieldDescriptor, scala.Any]): com.echo.protocol.Response.LogoutResponse = {
+      require(__fieldsMap.keys.forall(_.getContainingType() == descriptor), "FieldDescriptor does not match message type.")
+      val __fields = descriptor.getFields
+      com.echo.protocol.Response.LogoutResponse(
+      )
+    }
+    def descriptor: com.google.protobuf.Descriptors.Descriptor = com.echo.protocol.Response.descriptor.getNestedTypes.get(3)
+    def messageCompanionForField(__field: com.google.protobuf.Descriptors.FieldDescriptor): com.trueaccord.scalapb.GeneratedMessageCompanion[_] = throw new MatchError(__field)
+    def enumCompanionForField(__field: com.google.protobuf.Descriptors.FieldDescriptor): com.trueaccord.scalapb.GeneratedEnumCompanion[_] = throw new MatchError(__field)
+    lazy val defaultInstance = com.echo.protocol.Response.LogoutResponse(
+    )
+    implicit class LogoutResponseLens[UpperPB](_l: com.trueaccord.lenses.Lens[UpperPB, LogoutResponse]) extends com.trueaccord.lenses.ObjectLens[UpperPB, LogoutResponse](_l) {
+    }
+  }
+  
   implicit class ResponseLens[UpperPB](_l: com.trueaccord.lenses.Lens[UpperPB, Response]) extends com.trueaccord.lenses.ObjectLens[UpperPB, Response](_l) {
     def result: com.trueaccord.lenses.Lens[UpperPB, com.echo.protocol.ResultCode] = field(_.result)((c_, f_) => c_.copy(result = f_))
     def errorDescription: com.trueaccord.lenses.Lens[UpperPB, String] = field(_.errorDescription)((c_, f_) => c_.copy(errorDescription = f_))
     def signupResponse: com.trueaccord.lenses.Lens[UpperPB, com.echo.protocol.Response.SignupResponse] = field(_.getSignupResponse)((c_, f_) => c_.copy(content = com.echo.protocol.Response.Content.SignupResponse(f_)))
     def loginResponse: com.trueaccord.lenses.Lens[UpperPB, com.echo.protocol.Response.LoginResponse] = field(_.getLoginResponse)((c_, f_) => c_.copy(content = com.echo.protocol.Response.Content.LoginResponse(f_)))
     def authenticationResponse: com.trueaccord.lenses.Lens[UpperPB, com.echo.protocol.Response.AuthenticationResponse] = field(_.getAuthenticationResponse)((c_, f_) => c_.copy(content = com.echo.protocol.Response.Content.AuthenticationResponse(f_)))
+    def logoutResponse: com.trueaccord.lenses.Lens[UpperPB, com.echo.protocol.Response.LogoutResponse] = field(_.getLogoutResponse)((c_, f_) => c_.copy(content = com.echo.protocol.Response.Content.LogoutResponse(f_)))
     def content: com.trueaccord.lenses.Lens[UpperPB, com.echo.protocol.Response.Content] = field(_.content)((c_, f_) => c_.copy(content = f_))
   }
   final val RESULT_FIELD_NUMBER = 1
@@ -450,4 +516,5 @@ __fieldsMap.get(__fields.get(4)).asInstanceOf[scala.Option[com.echo.protocol.Res
   final val SIGNUP_RESPONSE_FIELD_NUMBER = 1001
   final val LOGIN_RESPONSE_FIELD_NUMBER = 1002
   final val AUTHENTICATION_RESPONSE_FIELD_NUMBER = 1003
+  final val LOGOUT_RESPONSE_FIELD_NUMBER = 1004
 }
