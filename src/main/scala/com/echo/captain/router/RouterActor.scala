@@ -122,6 +122,22 @@ class RouterActor() extends HttpServiceActor with akka.actor.ActorLogging {
             provide(request.getLogoutRequest.asInstanceOf[T])
           }
         }
+        case c if c == manifest[Request.QueryUserInfoRequest] => {
+          log.debug("request.content.isQueryUserInfoRequest: " + request.content.isQueryUserInfoRequest)
+          if (!request.content.isQueryUserInfoRequest){
+            reject(new InvalidMessageRejection("invalid message, message MUST BE a QueryUserInfoRequest"))
+          }else{
+            provide(request.getQueryUserInfoRequest.asInstanceOf[T])
+          }
+        }
+        case c if c == manifest[Request.UpdateUserInfoRequest] => {
+          log.debug("request.content.isUpdateUserInfoRequest: " + request.content.isUpdateUserInfoRequest)
+          if (!request.content.isUpdateUserInfoRequest){
+            reject(new InvalidMessageRejection("invalid message, message MUST BE a UpdateUserInfoRequest"))
+          }else{
+            provide(request.getUpdateUserInfoRequest.asInstanceOf[T])
+          }
+        }
 
         case _ => {
           log.error("unknow extractRequest type")
@@ -187,6 +203,22 @@ class RouterActor() extends HttpServiceActor with akka.actor.ActorLogging {
       post {
         deserialize { msg =>
           extractRequest[Request.LogoutRequest](msg).apply { req =>
+            handleRequest(req)
+          }
+        }
+      }//post
+    }~
+    path("user/info") {
+      get {
+        deserialize { msg =>
+          extractRequest[Request.QueryUserInfoRequest](msg).apply { req =>
+            handleRequest(req)
+          }
+        }
+      }//get
+      post {
+        deserialize { msg =>
+          extractRequest[Request.UpdateUserInfoRequest](msg).apply { req =>
             handleRequest(req)
           }
         }

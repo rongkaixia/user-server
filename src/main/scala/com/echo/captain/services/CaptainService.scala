@@ -37,9 +37,37 @@ class CaptainService() extends Actor with akka.actor.ActorLogging{
   val jwtSecretKey = cfg.getString("echo.captain.jwt_secret_key")
   val tokenExpiresIn = cfg.getInt("echo.captain.token_expires_in")
 
+  // cassandra user info table config
+  val userInfoTable = cfg.getString("echo.captain.cassandra.user_tables.user_info_table")
+  val userByPhonenumTable = cfg.getString("echo.captain.cassandra.user_tables.user_by_phonenum_table")
+  val userByUsernameTable = cfg.getString("echo.captain.cassandra.user_tables.user_by_username_table")
+  val userByEmailTable = cfg.getString("echo.captain.cassandra.user_tables.user_by_email_table")
+  val userIDColumn = cfg.getString("echo.captain.cassandra.user_tables.columns.user_id")
+  val passwordColumn = cfg.getString("echo.captain.cassandra.user_tables.columns.password")
+  val phoneColumn = cfg.getString("echo.captain.cassandra.user_tables.columns.phonenum")
+  val emailColumn = cfg.getString("echo.captain.cassandra.user_tables.columns.email")
+  val nicknameColumn = cfg.getString("echo.captain.cassandra.user_tables.columns.nickname")
+  val truenameColumn = cfg.getString("echo.captain.cassandra.user_tables.columns.truename")
+  val secQues1Column = cfg.getString("echo.captain.cassandra.user_tables.columns.security_question1")
+  val secQues2Column = cfg.getString("echo.captain.cassandra.user_tables.columns.security_question2")
+  val secQues3Column = cfg.getString("echo.captain.cassandra.user_tables.columns.security_question3")
+  val secQues1AnsColumn = cfg.getString("echo.captain.cassandra.user_tables.columns.security_question1_ans")
+  val secQues2AnsColumn = cfg.getString("echo.captain.cassandra.user_tables.columns.security_question2_ans")
+  val secQues3AnsColumn = cfg.getString("echo.captain.cassandra.user_tables.columns.security_question3_ans")
+  val createdTimeColumn = cfg.getString("echo.captain.cassandra.user_tables.columns.created")
+  val lastModifiedColumn = cfg.getString("echo.captain.cassandra.user_tables.columns.last_modified")
+
+  // cassandra auth table config
+  val authTable = cfg.getString("echo.captain.cassandra.auth_tables.auth_table")
+  val authNameColumn = cfg.getString("echo.captain.cassandra.auth_tables.columns.auth_name")
+  val authIDColumn = cfg.getString("echo.captain.cassandra.auth_tables.columns.auth_id")
+  val authUserIDColumn = cfg.getString("echo.captain.cassandra.auth_tables.columns.user_id")
+  val authUserNicknameColumn = cfg.getString("echo.captain.cassandra.auth_tables.columns.user_nickname")
+  val authTokenColumn = cfg.getString("echo.captain.cassandra.auth_tables.columns.auth_access_token")
+  val authExpiresColumn = cfg.getString("echo.captain.cassandra.auth_tables.columns.auth_expires")
+
   // cassandra connection
   var client: Option[CassandraClient] = None
-
   override def preStart(): Unit = {
     client = Some(CassandraClient(cfg.getConfig("echo.captain.cassandra.system")))
     client.get.connect
@@ -81,8 +109,6 @@ class CaptainService() extends Actor with akka.actor.ActorLogging{
     async{
       log.info("getUserInfo")
       val session = client.get.getSession
-      val userInfoTable = cfg.getString("echo.captain.cassandra.user_tables.user_info_table")
-      val userIDColumn = cfg.getString("echo.captain.cassandra.user_tables.columns.user_id")
       val queryString = "SELECT * FROM " + userInfoTable + " WHERE " + 
         userIDColumn + "=?"
       val statement = session.prepare(queryString)
@@ -90,11 +116,32 @@ class CaptainService() extends Actor with akka.actor.ActorLogging{
       val boundStatement = new BoundStatement(statement).setString(0, id)
       val res = await(session.executeAsync(boundStatement).toScalaFuture)
       val row = res.all.asScala.toList.head
-      new UserInfo(id, 
-                   row.getString("firstname"),
-                   row.getString("lastname"),
-                   row.getString("email"),
-                   row.getString("phonenum"))
+      new UserInfo(id = id, 
+                   truename = row.getString(truenameColumn),
+                   nickname = row.getString(nicknameColumn),
+                   email = row.getString(emailColumn),
+                   phonenum = row.getString(phoneColumn),
+                   securityQuestion1 = row.getString(secQues1Column),
+                   securityQuestion2 = row.getString(secQues2Column),
+                   securityQuestion3 = row.getString(secQues3Column),
+                   securityQuestion1Ans = row.getString(secQues1AnsColumn),
+                   securityQuestion2Ans = row.getString(secQues2AnsColumn),
+                   securityQuestion3Ans = row.getString(secQues3AnsColumn))
+    }
+  }
+
+  def updateUserInfo(userID: String, key: String, value: String): Future[Unit] = {
+    async {
+      val allowedKey = Array(phoneColumn, passwordColumn, emailColumn, truenameColumn, nicknameColumn)
+      // check kvs
+      if (!allowedKey.contains(key)) {
+        throw new IllegalArgumentException("updateUserInfo key [" + key + "] not allowed")
+      }
+      val session = client.get.getSession
+      val updateString = "UPDATE " + userInfoTable + " SET " + key + " = " + value +
+                          "WHERE " + userIDColumn + " = " + userID
+      await(session.executeAsync(updateString).toScalaFuture)
+      log.debug("updateUserInfo " + key + "=" + value + " success")
     }
   }
 
@@ -126,8 +173,6 @@ class CaptainService() extends Actor with akka.actor.ActorLogging{
     async{
       log.info("insert into table " + tableName)
       val session = client.get.getSession
-      val userIDColumn = cfg.getString("echo.captain.cassandra.user_tables.columns.user_id")
-      val passwordColumn = cfg.getString("echo.captain.cassandra.user_tables.columns.password")
       val insertString = "INSERT INTO " + tableName + "(" + keyColumn + "," + 
         userIDColumn + "," + passwordColumn +  ") VALUES(?,?,?)"
       val statement = session.prepare(insertString)
@@ -148,50 +193,44 @@ class CaptainService() extends Actor with akka.actor.ActorLogging{
       val phonenum = req.phonenum
       val password = req.password
       if (phonenum.isEmpty){
-        response.withResult(ResultCode.SIGNUP_INVALID_PHONENUM)
+        response.withResult(ResultCode.INVALID_PHONENUM)
                 .withErrorDescription("phonenum cannot be empty.")
                 .withSignupResponse(new Response.SignupResponse())
       }else if(password.isEmpty){
-        response.withResult(ResultCode.SIGNUP_INVALID_PASSWORD)
+        response.withResult(ResultCode.INVALID_PASSWORD)
                 .withErrorDescription("password cannot be empty.")
                 .withSignupResponse(new Response.SignupResponse())
       }else{
-        val userInfoTable = cfg.getString("echo.captain.cassandra.user_tables.user_info_table")
-        val userByPhonenumTable = cfg.getString("echo.captain.cassandra.user_tables.user_by_phonenum_table")
-        val userByUsernameTable = cfg.getString("echo.captain.cassandra.user_tables.user_by_username_table")
-        val phoneColumn = cfg.getString("echo.captain.cassandra.user_tables.columns.phonenum")
-        val userIDColumn = cfg.getString("echo.captain.cassandra.user_tables.columns.user_id")
-        val passwordColumn = cfg.getString("echo.captain.cassandra.user_tables.columns.password")
-        val createdTimeColumn = cfg.getString("echo.captain.cassandra.user_tables.columns.created")
-        val lastModifiedColumn = cfg.getString("echo.captain.cassandra.user_tables.columns.last_modified")
 
         // checking whether the phonenum is existed
         val isExisted = await(isUserExisted(userByPhonenumTable, phoneColumn, phonenum))
         log.info("isPhoneNumExisted: " + isExisted)
         if (isExisted){
-          response.withResult(ResultCode.SIGNUP_PHONENUM_ALREADY_EXISTED)
+          response.withResult(ResultCode.PHONENUM_ALREADY_EXISTED)
                   .withErrorDescription("phonenum[" + phonenum + "] already existed.")
                   .withSignupResponse(new Response.SignupResponse())
         }else{
           // insert user_by_phonenum table
           log.debug("inserting new user into user_by_phonenum table")
-          val id = phonenum // using phonenum as id
+          val id = UUID.randomUUID().toString // using random uuid as id
+          val nickname = phonenum
           await(insertUserByTable(userByPhonenumTable, phoneColumn, phonenum, id, password))
 
           // insert user_info table
           log.info("inserting new user into user_info table")
           val insertString = "INSERT INTO " + userInfoTable + "(" +
-            userIDColumn + "," + phoneColumn + "," + passwordColumn + "," +
+            userIDColumn + "," + nicknameColumn + "," + phoneColumn + "," + passwordColumn + "," +
             createdTimeColumn + "," + lastModifiedColumn + ") " +
-            "VALUES(?,?,?,?,?)"
+            "VALUES(?,?,?,?,?,?)"
           log.debug("insertString: " + insertString)
           val currentTime = Instant.now
           val statement = session.prepare(insertString)
           val boundStatement = new BoundStatement(statement).setString(0, id)
-                                                            .setString(1, phonenum)
-                                                            .setString(2, password)
-                                                            .setTimestamp(3, java.util.Date.from(currentTime))
+                                                            .setString(1, nickname)
+                                                            .setString(2, phonenum)
+                                                            .setString(3, password)
                                                             .setTimestamp(4, java.util.Date.from(currentTime))
+                                                            .setTimestamp(5, java.util.Date.from(currentTime))
           val res = await(session.executeAsync(boundStatement).toScalaFuture)
           log.info("insert new user success")
           val signupResponse = new Response.SignupResponse()
@@ -211,22 +250,20 @@ class CaptainService() extends Actor with akka.actor.ActorLogging{
   }
 
   /**
-   * @return  (isCorrected: Boolean, userID: String)
+   * @return  (isCorrected: Boolean, userID: String, userNickname: String)
    */
   def isPasswordCorrected(
     tableName: String, 
     keyColumn: String, 
     key: String,
-    password: String): Future[(Boolean, String)] = {
+    password: String): Future[(Boolean, String, String)] = {
     async{
       log.info("check password by " + tableName)
       val session = client.get.getSession
-      val userIDColumn = cfg.getString("echo.captain.cassandra.user_tables.columns.user_id")
-      val passwordColumn = cfg.getString("echo.captain.cassandra.user_tables.columns.password")
-      val queryString = "SELECT " + userIDColumn + ", " + passwordColumn +
-        " FROM " + tableName + " WHERE " + keyColumn + "=?"
-      val statement = session.prepare(queryString)
+      val queryString = "SELECT " + userIDColumn + ", " + passwordColumn + ", " +
+        nicknameColumn + " FROM " + tableName + " WHERE " + keyColumn + "=?"
       log.debug("queryString: " + queryString)
+      val statement = session.prepare(queryString)
 
       val boundStatement = new BoundStatement(statement).setString(0, key)
       val res = await(session.executeAsync(boundStatement).toScalaFuture)
@@ -234,14 +271,15 @@ class CaptainService() extends Actor with akka.actor.ActorLogging{
       val result = res.all.asScala.toList
       if (result.length >0){
         val row = result.head
-        val id = row.getString(userIDColumn)
-        val expectedPassword = row.getString(passwordColumn)
-        log.debug("user(id, password): " + "(" + id + "," + expectedPassword + ")")
+        val id: String = row.getString(userIDColumn)
+        val expectedPassword: String = row.getString(passwordColumn)
+        val nickname: String = row.getString(nicknameColumn)
+        log.debug("user(id, password, nickname): " + "(" + id + "," + expectedPassword + "," + nickname + ")")
         if (expectedPassword != password){
           log.info("password error: expected password is " + expectedPassword + " not " + password)
-          (false, "")
+          (false, "", "")
         }else{
-          (true, id)
+          (true, id, nickname)
         }
       }else{
         throw new NoSuchElementException("user " + key + " not existed")
@@ -259,24 +297,23 @@ class CaptainService() extends Actor with akka.actor.ActorLogging{
     authName: AuthType, 
     authID: String,
     userID: String,
+    userNickname: String,
     expiresIn: Int): Future[Unit] = {
     async{
       log.debug("set token expires")
       val expires = Instant.now.plusSeconds(expiresIn)
       log.info("token[" + authToken + "] expires at " + expires.toString)
       val session = client.get.getSession
-      val tableName = cfg.getString("echo.captain.cassandra.auth_tables.auth_table")
-      val uniqueIDColumn = cfg.getString("echo.captain.cassandra.auth_tables.columns.id")
-      val tokenColumn = cfg.getString("echo.captain.cassandra.auth_tables.columns.auth_access_token")
-      val authNameColumn = cfg.getString("echo.captain.cassandra.auth_tables.columns.auth_name")
-      val authIDColumn = cfg.getString("echo.captain.cassandra.auth_tables.columns.auth_id")
-      val userIDColumn = cfg.getString("echo.captain.cassandra.auth_tables.columns.user_id")
-      val authExpiresColumn = cfg.getString("echo.captain.cassandra.auth_tables.columns.auth_expires")
 
-      val insertString = "INSERT INTO " + tableName + "(" +
-        Array(tokenColumn, authNameColumn, authIDColumn, userIDColumn, authExpiresColumn)
-        .reduce((a,b) => a + "," + b) + ") " +
-        "VALUES(?,?,?,?,?) USING TTL " + expiresIn
+      val columns = Array(authTokenColumn, 
+                          authNameColumn, 
+                          authIDColumn, 
+                          authUserIDColumn, 
+                          authUserNicknameColumn, 
+                          authExpiresColumn)
+      val insertString = "INSERT INTO " + authTable + "(" +
+        columns.reduce((a,b) => a + "," + b) + ") " +
+        "VALUES(?,?,?,?,?,?) USING TTL " + expiresIn
       log.debug("insertString: " + insertString)
 
       val statement = session.prepare(insertString)
@@ -284,9 +321,10 @@ class CaptainService() extends Actor with akka.actor.ActorLogging{
                                                         .setString(1, authName.toString)
                                                         .setString(2, authID)
                                                         .setString(3, userID)
-                                                        .setTimestamp(4, java.util.Date.from(expires))
+                                                        .setString(4, userNickname)
+                                                        .setTimestamp(5, java.util.Date.from(expires))
       val res = await(session.executeAsync(boundStatement).toScalaFuture)
-      log.info("query table " + tableName + " success")
+      log.info("query table " + authTable + " success")
     }
   }
 
@@ -299,29 +337,23 @@ class CaptainService() extends Actor with akka.actor.ActorLogging{
       val (loginType, name: String) = {
         if (req.name.isPhonenum)
           (LoginType.LOGIN_BY_PHONENUM, req.getPhonenum)
-        else if(req.name.isUsername)
-          (LoginType.LOGIN_BY_USERNAME, req.getUsername)
+        else if(req.name.isUserId)
+          (LoginType.LOGIN_BY_USERNAME, req.getUserId)
         else if(req.name.isEmail)
           (LoginType.LOGIN_BY_EMAIL, req.getEmail)
         else
           (LoginType.LOGIN_TYPE_EMPTY, "")
       }
       if (loginType == LoginType.LOGIN_TYPE_EMPTY || name.isEmpty){
-        response.withResult(ResultCode.LOGIN_INVALID_USER)
+        response.withResult(ResultCode.INVALID_USER)
                 .withErrorDescription("name cannot be empty.")
                 .withLoginResponse(new Response.LoginResponse())
       }
       else if(password.isEmpty){
-        response.withResult(ResultCode.LOGIN_INVALID_PASSWORD)
+        response.withResult(ResultCode.INVALID_PASSWORD)
                 .withErrorDescription("password cannot be empty.")
                 .withLoginResponse(new Response.LoginResponse())
       }else{
-        val userInfoTable = cfg.getString("echo.captain.cassandra.user_tables.user_info_table")
-        val userByPhonenumTable = cfg.getString("echo.captain.cassandra.user_tables.user_by_phonenum_table")
-        val userByEmailTable = cfg.getString("echo.captain.cassandra.user_tables.user_by_email_table")
-        val phoneColumn = cfg.getString("echo.captain.cassandra.user_tables.columns.phonenum")
-        val userIDColumn = cfg.getString("echo.captain.cassandra.auth_tables.columns.user_id")
-        val emailColumn = cfg.getString("echo.captain.cassandra.user_tables.columns.email")
         val userExisted: Boolean = loginType match {
           case LoginType.LOGIN_BY_PHONENUM => 
             await(isUserExisted(userByPhonenumTable, phoneColumn, name))
@@ -334,23 +366,23 @@ class CaptainService() extends Actor with akka.actor.ActorLogging{
         }
         log.info("isUserExisted: " + userExisted)
         if (!userExisted){
-          response.withResult(ResultCode.LOGIN_INVALID_USER)
+          response.withResult(ResultCode.INVALID_USER)
                   .withErrorDescription("user " + name + " not existed.")
                   .withLoginResponse(new Response.LoginResponse())
         }else{
-          val (passwordCorrected: Boolean, userID: String) = loginType match {
+          val (passwordCorrected: Boolean, userID: String, nickname: String) = loginType match {
             case LoginType.LOGIN_BY_PHONENUM => 
-              await(isPasswordCorrected(userByPhonenumTable, phoneColumn, name, password))
+              await(isPasswordCorrected(userInfoTable, phoneColumn, name, password))
             case LoginType.LOGIN_BY_USERNAME => 
               await(isPasswordCorrected(userInfoTable, userIDColumn, name, password))
             case LoginType.LOGIN_BY_EMAIL => 
-              await(isPasswordCorrected(userByEmailTable, emailColumn, name, password))
+              await(isPasswordCorrected(userInfoTable, emailColumn, name, password))
             case _ =>
               throw new RuntimeException("loginType error, there is a critical server error if this message show up")
           }
           log.info("isPasswordCorrected: " + passwordCorrected)
           if (!passwordCorrected){
-            response.withResult(ResultCode.LOGIN_INVALID_PASSWORD)
+            response.withResult(ResultCode.INVALID_PASSWORD)
                     .withErrorDescription("password incorrected.")
                     .withLoginResponse(new Response.LoginResponse())
           }else{
@@ -361,11 +393,12 @@ class CaptainService() extends Actor with akka.actor.ActorLogging{
                                              .compact(), loginType)
 
             log.info("token: " + token)
-            await(setTokenExpires(token, AuthType.LOCAL, "", userID, tokenExpiresIn))
+            await(setTokenExpires(token, AuthType.LOCAL, "", userID, nickname, tokenExpiresIn))
             val loginRes = new Response.LoginResponse()
+                                       .withUserId(userID)
+                                       .withUserNickname(nickname)
                                        .withToken(token)
                                        .withExpiresIn(tokenExpiresIn)
-                                       .withUserId(userID)
             response.withResult(ResultCode.SUCCESS)
                     .withLoginResponse(loginRes)
           }
@@ -381,33 +414,31 @@ class CaptainService() extends Actor with akka.actor.ActorLogging{
   }
 
   /**
-   * @return  (isExpired: Boolean, userID: String, expiresIn: Int)
+   * @return  (isExpired: Boolean, expiresIn: Int, userID: String, userNickname: String)
    */
-  def isTokenExpired(token: String): Future[(Boolean, String, Int)] = {
+  def isTokenExpired(token: String): Future[(Boolean, Int, String, String)] = {
     async{
       log.info("checking whether token is expired, token is " + token)
       val session = client.get.getSession
-      val tableName = cfg.getString("echo.captain.cassandra.auth_tables.auth_table")
-      val tokenColumn = cfg.getString("echo.captain.cassandra.auth_tables.columns.auth_access_token")
-      val authNameColumn = cfg.getString("echo.captain.cassandra.auth_tables.columns.auth_name")
-      val userIDColumn = cfg.getString("echo.captain.cassandra.auth_tables.columns.user_id")
 
-      val queryString = "SELECT " + userIDColumn + ", ttl(" + userIDColumn + ") FROM " + tableName +
-        " WHERE " + tokenColumn + "=?"
+      val queryString = "SELECT " + authUserIDColumn + ", " + authUserNicknameColumn + 
+        ", ttl(" + authUserIDColumn + ")" +
+        " FROM " + authTable + " WHERE " + authTokenColumn + "=?"
       log.debug("queryString: " + queryString)
 
       val statement = session.prepare(queryString)
       val boundStatement = new BoundStatement(statement).setString(0, token)
       val res = await(session.executeAsync(boundStatement).toScalaFuture)
-      log.info("query table " + tableName + " success")
+      log.info("query table " + authTable + " success")
       val result = res.all.asScala.toList
       if (result.length >0){
         val row = result.head
-        val userID = row.getString(userIDColumn)
-        val expiresIn = row.getInt(1)
-        (false, userID, expiresIn)
+        val userID = row.getString(authUserIDColumn)
+        val userNickname = row.getString(authUserNicknameColumn)
+        val expiresIn = row.getInt(2)
+        (false, expiresIn, userID, userNickname)
       }else{
-        (true, "", 0)
+        (true, 0, "", "")
       }
     }
   }
@@ -420,7 +451,6 @@ class CaptainService() extends Actor with akka.actor.ActorLogging{
 
   def handleAuthenticationRequest(req: Request.AuthenticationRequest): Future[Response] = {
     val future = async{
-      val session = client.get.getSession
       var response = new Response()
       // check request
       val token: String = req.token
@@ -431,7 +461,7 @@ class CaptainService() extends Actor with akka.actor.ActorLogging{
         response.withResult(ResultCode.SUCCESS)
                 .withAuthenticationResponse(authRes)
       }else{
-        val (isExpired: Boolean, userID: String, expiresIn: Int) = await(isTokenExpired(token))
+        val (isExpired: Boolean, expiresIn: Int, userID: String, nickname: String) = await(isTokenExpired(token))
         val authRes = if(isExpired){
           log.info("token[" + token + "] is expired")
           new Response.AuthenticationResponse()
@@ -444,6 +474,7 @@ class CaptainService() extends Actor with akka.actor.ActorLogging{
                       .withIsExpired(isExpired)
                       .withExpiresIn(expiresIn)
                       .withUserId(userID)
+                      .withUserNickname(nickname)
         }
         response.withResult(ResultCode.SUCCESS)
                 .withAuthenticationResponse(authRes)
@@ -452,7 +483,7 @@ class CaptainService() extends Actor with akka.actor.ActorLogging{
     // just log
     future onFailure {
       case error: Throwable => 
-        log.error("handleLoginRequest async{...} error: " + error)
+        log.error("handleAuthenticationRequest async{...} error: " + error)
     }
     future
   }
@@ -461,22 +492,19 @@ class CaptainService() extends Actor with akka.actor.ActorLogging{
     async{
       log.info("clearToken, token is " + token)
       val session = client.get.getSession
-      val tableName = cfg.getString("echo.captain.cassandra.auth_tables.auth_table")
-      val tokenColumn = cfg.getString("echo.captain.cassandra.auth_tables.columns.auth_access_token")
 
-      val queryString = "DELETE FROM " + tableName + " WHERE " + tokenColumn + "=?"
+      val queryString = "DELETE FROM " + authTable + " WHERE " + authTokenColumn + "=?"
       log.debug("queryString: " + queryString)
 
       val statement = session.prepare(queryString)
       val boundStatement = new BoundStatement(statement).setString(0, token)
       val res = await(session.executeAsync(boundStatement).toScalaFuture)
-      log.info("query table " + tableName + " success")
+      log.info("query table " + authTable + " success")
     }
   }
 
   def handleLogoutRequest(req: Request.LogoutRequest): Future[Response] = {
     val future = async{
-      val session = client.get.getSession
       var response = new Response()
       // check request
       val token: String = req.token
@@ -499,6 +527,76 @@ class CaptainService() extends Actor with akka.actor.ActorLogging{
     future
   }
 
+  def handleUpdateUserInfoRequest(req: Request.UpdateUserInfoRequest): Future[Response] = {
+    val future = async{
+      var response = new Response()
+      // check request
+      // 
+      
+      val userID: String = req.userId
+      val key: String = req.key
+      val value: String = req.value
+      if (userID.isEmpty) {
+        response.withResult(ResultCode.INVALID_USER)
+                .withUpdateUserInfoResponse(new Response.UpdateUserInfoResponse())
+      }else if (key.isEmpty) {
+        response.withResult(ResultCode.UPDATE_INVALID_KEY)
+                .withUpdateUserInfoResponse(new Response.UpdateUserInfoResponse())
+      }else if (value.isEmpty) {
+        response.withResult(ResultCode.UPDATE_INVALID_VALUE)
+                .withUpdateUserInfoResponse(new Response.UpdateUserInfoResponse())
+      }else {
+        log.debug("updating user info, key = " + key + ", value = " + value)
+        await(updateUserInfo(userID, key, value))
+        response.withResult(ResultCode.SUCCESS)
+                .withUpdateUserInfoResponse(new Response.UpdateUserInfoResponse())
+      }
+    }
+    // just log
+    future onFailure {
+      case error: Throwable => 
+        log.error("handleUpdateUserInfoRequest async{...} error: " + error)
+    }
+    future
+  }
+
+  def handleQueryUserInfoRequest(req: Request.QueryUserInfoRequest): Future[Response] = {
+    val future = async{
+      var response = new Response()
+      // check request
+      // 
+      
+      val userID: String = req.userId
+      if (userID.isEmpty) {
+        response.withResult(ResultCode.INVALID_USER)
+                .withUpdateUserInfoResponse(new Response.UpdateUserInfoResponse())
+      }else {
+        log.debug("getting user info for userID=" + userID)
+        val user = await(getUserInfo(userID))
+        val res = new Response.QueryUserInfoResponse()
+                               .withUserId(user.id)
+                               .withNickname(user.nickname)
+                               .withTruename(user.truename)
+                               .withEmail(user.email)
+                               .withPhonenum(user.phonenum)
+                               .withSecurityQuestion1(user.securityQuestion1)
+                               .withSecurityQuestion2(user.securityQuestion2)
+                               .withSecurityQuestion3(user.securityQuestion3)
+                               .withSecurityQuestion1Ans(user.securityQuestion1Ans)
+                               .withSecurityQuestion2Ans(user.securityQuestion2Ans)
+                               .withSecurityQuestion3Ans(user.securityQuestion3Ans)
+        response.withResult(ResultCode.SUCCESS)
+                .withQueryUserInfoResponse(res)
+      }
+    }
+    // just log
+    future onFailure {
+      case error: Throwable => 
+        log.error("handleQueryUserInfoRequest async{...} error: " + error)
+    }
+    future
+  }
+
   // ===========end main function===============
   def receive = {
     case req: Request.SignupRequest => {
@@ -516,6 +614,14 @@ class CaptainService() extends Actor with akka.actor.ActorLogging{
     case req: Request.LogoutRequest => {
       log.info("receive logout request: " + req.toString)
       handleLogoutRequest(req) pipeTo sender
+    }
+    case req: Request.QueryUserInfoRequest => {
+      log.info("receive get user info request: " + req.toString)
+      handleQueryUserInfoRequest(req) pipeTo sender
+    }
+    case req: Request.UpdateUserInfoRequest => {
+      log.info("receive update user info request: " + req.toString)
+      handleUpdateUserInfoRequest(req) pipeTo sender
     }
   }//receive
 }

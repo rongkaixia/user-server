@@ -22,6 +22,9 @@ final case class Response(
       if (content.loginResponse.isDefined) { __size += 2 + com.google.protobuf.CodedOutputStream.computeRawVarint32Size(content.loginResponse.get.serializedSize) + content.loginResponse.get.serializedSize }
       if (content.authenticationResponse.isDefined) { __size += 2 + com.google.protobuf.CodedOutputStream.computeRawVarint32Size(content.authenticationResponse.get.serializedSize) + content.authenticationResponse.get.serializedSize }
       if (content.logoutResponse.isDefined) { __size += 2 + com.google.protobuf.CodedOutputStream.computeRawVarint32Size(content.logoutResponse.get.serializedSize) + content.logoutResponse.get.serializedSize }
+      if (content.updateUserInfoResponse.isDefined) { __size += 2 + com.google.protobuf.CodedOutputStream.computeRawVarint32Size(content.updateUserInfoResponse.get.serializedSize) + content.updateUserInfoResponse.get.serializedSize }
+      if (content.updateSecQuestionResponse.isDefined) { __size += 2 + com.google.protobuf.CodedOutputStream.computeRawVarint32Size(content.updateSecQuestionResponse.get.serializedSize) + content.updateSecQuestionResponse.get.serializedSize }
+      if (content.queryUserInfoResponse.isDefined) { __size += 2 + com.google.protobuf.CodedOutputStream.computeRawVarint32Size(content.queryUserInfoResponse.get.serializedSize) + content.queryUserInfoResponse.get.serializedSize }
       __size
     }
     def writeTo(output: com.google.protobuf.CodedOutputStream): Unit = {
@@ -57,6 +60,21 @@ final case class Response(
         output.writeRawVarint32(__v.serializedSize)
         __v.writeTo(output)
       };
+      content.updateUserInfoResponse.foreach { __v => 
+        output.writeTag(1005, 2)
+        output.writeRawVarint32(__v.serializedSize)
+        __v.writeTo(output)
+      };
+      content.updateSecQuestionResponse.foreach { __v => 
+        output.writeTag(1006, 2)
+        output.writeRawVarint32(__v.serializedSize)
+        __v.writeTo(output)
+      };
+      content.queryUserInfoResponse.foreach { __v => 
+        output.writeTag(1007, 2)
+        output.writeRawVarint32(__v.serializedSize)
+        __v.writeTo(output)
+      };
     }
     def mergeFrom(__input: com.google.protobuf.CodedInputStream): com.echo.protocol.Response = {
       var __result = this.result
@@ -79,6 +97,12 @@ final case class Response(
             __content = com.echo.protocol.Response.Content.AuthenticationResponse(com.trueaccord.scalapb.LiteParser.readMessage(__input, content.authenticationResponse.getOrElse(com.echo.protocol.Response.AuthenticationResponse.defaultInstance)))
           case 8034 =>
             __content = com.echo.protocol.Response.Content.LogoutResponse(com.trueaccord.scalapb.LiteParser.readMessage(__input, content.logoutResponse.getOrElse(com.echo.protocol.Response.LogoutResponse.defaultInstance)))
+          case 8042 =>
+            __content = com.echo.protocol.Response.Content.UpdateUserInfoResponse(com.trueaccord.scalapb.LiteParser.readMessage(__input, content.updateUserInfoResponse.getOrElse(com.echo.protocol.Response.UpdateUserInfoResponse.defaultInstance)))
+          case 8050 =>
+            __content = com.echo.protocol.Response.Content.UpdateSecQuestionResponse(com.trueaccord.scalapb.LiteParser.readMessage(__input, content.updateSecQuestionResponse.getOrElse(com.echo.protocol.Response.UpdateSecQuestionResponse.defaultInstance)))
+          case 8058 =>
+            __content = com.echo.protocol.Response.Content.QueryUserInfoResponse(com.trueaccord.scalapb.LiteParser.readMessage(__input, content.queryUserInfoResponse.getOrElse(com.echo.protocol.Response.QueryUserInfoResponse.defaultInstance)))
           case tag => __input.skipField(tag)
         }
       }
@@ -98,6 +122,12 @@ final case class Response(
     def withAuthenticationResponse(__v: com.echo.protocol.Response.AuthenticationResponse): Response = copy(content = com.echo.protocol.Response.Content.AuthenticationResponse(__v))
     def getLogoutResponse: com.echo.protocol.Response.LogoutResponse = content.logoutResponse.getOrElse(com.echo.protocol.Response.LogoutResponse.defaultInstance)
     def withLogoutResponse(__v: com.echo.protocol.Response.LogoutResponse): Response = copy(content = com.echo.protocol.Response.Content.LogoutResponse(__v))
+    def getUpdateUserInfoResponse: com.echo.protocol.Response.UpdateUserInfoResponse = content.updateUserInfoResponse.getOrElse(com.echo.protocol.Response.UpdateUserInfoResponse.defaultInstance)
+    def withUpdateUserInfoResponse(__v: com.echo.protocol.Response.UpdateUserInfoResponse): Response = copy(content = com.echo.protocol.Response.Content.UpdateUserInfoResponse(__v))
+    def getUpdateSecQuestionResponse: com.echo.protocol.Response.UpdateSecQuestionResponse = content.updateSecQuestionResponse.getOrElse(com.echo.protocol.Response.UpdateSecQuestionResponse.defaultInstance)
+    def withUpdateSecQuestionResponse(__v: com.echo.protocol.Response.UpdateSecQuestionResponse): Response = copy(content = com.echo.protocol.Response.Content.UpdateSecQuestionResponse(__v))
+    def getQueryUserInfoResponse: com.echo.protocol.Response.QueryUserInfoResponse = content.queryUserInfoResponse.getOrElse(com.echo.protocol.Response.QueryUserInfoResponse.defaultInstance)
+    def withQueryUserInfoResponse(__v: com.echo.protocol.Response.QueryUserInfoResponse): Response = copy(content = com.echo.protocol.Response.Content.QueryUserInfoResponse(__v))
     def clearContent: Response = copy(content = com.echo.protocol.Response.Content.Empty)
     def withContent(__v: com.echo.protocol.Response.Content): Response = copy(content = __v)
     def getField(__field: com.google.protobuf.Descriptors.FieldDescriptor): scala.Any = {
@@ -114,6 +144,9 @@ final case class Response(
         case 1002 => content.loginResponse.getOrElse(null)
         case 1003 => content.authenticationResponse.getOrElse(null)
         case 1004 => content.logoutResponse.getOrElse(null)
+        case 1005 => content.updateUserInfoResponse.getOrElse(null)
+        case 1006 => content.updateSecQuestionResponse.getOrElse(null)
+        case 1007 => content.queryUserInfoResponse.getOrElse(null)
       }
     }
     override def toString: String = com.trueaccord.scalapb.TextFormat.printToUnicodeString(this)
@@ -131,7 +164,10 @@ object Response extends com.trueaccord.scalapb.GeneratedMessageCompanion[Respons
       content = __fieldsMap.get(__fields.get(2)).asInstanceOf[scala.Option[com.echo.protocol.Response.SignupResponse]].map(com.echo.protocol.Response.Content.SignupResponse(_)) orElse
 __fieldsMap.get(__fields.get(3)).asInstanceOf[scala.Option[com.echo.protocol.Response.LoginResponse]].map(com.echo.protocol.Response.Content.LoginResponse(_)) orElse
 __fieldsMap.get(__fields.get(4)).asInstanceOf[scala.Option[com.echo.protocol.Response.AuthenticationResponse]].map(com.echo.protocol.Response.Content.AuthenticationResponse(_)) orElse
-__fieldsMap.get(__fields.get(5)).asInstanceOf[scala.Option[com.echo.protocol.Response.LogoutResponse]].map(com.echo.protocol.Response.Content.LogoutResponse(_)) getOrElse com.echo.protocol.Response.Content.Empty
+__fieldsMap.get(__fields.get(5)).asInstanceOf[scala.Option[com.echo.protocol.Response.LogoutResponse]].map(com.echo.protocol.Response.Content.LogoutResponse(_)) orElse
+__fieldsMap.get(__fields.get(6)).asInstanceOf[scala.Option[com.echo.protocol.Response.UpdateUserInfoResponse]].map(com.echo.protocol.Response.Content.UpdateUserInfoResponse(_)) orElse
+__fieldsMap.get(__fields.get(7)).asInstanceOf[scala.Option[com.echo.protocol.Response.UpdateSecQuestionResponse]].map(com.echo.protocol.Response.Content.UpdateSecQuestionResponse(_)) orElse
+__fieldsMap.get(__fields.get(8)).asInstanceOf[scala.Option[com.echo.protocol.Response.QueryUserInfoResponse]].map(com.echo.protocol.Response.Content.QueryUserInfoResponse(_)) getOrElse com.echo.protocol.Response.Content.Empty
     )
   }
   def descriptor: com.google.protobuf.Descriptors.Descriptor = ProtocolComEchoProtocolProto.descriptor.getMessageTypes.get(1)
@@ -143,6 +179,9 @@ __fieldsMap.get(__fields.get(5)).asInstanceOf[scala.Option[com.echo.protocol.Res
       case 1002 => __out = com.echo.protocol.Response.LoginResponse
       case 1003 => __out = com.echo.protocol.Response.AuthenticationResponse
       case 1004 => __out = com.echo.protocol.Response.LogoutResponse
+      case 1005 => __out = com.echo.protocol.Response.UpdateUserInfoResponse
+      case 1006 => __out = com.echo.protocol.Response.UpdateSecQuestionResponse
+      case 1007 => __out = com.echo.protocol.Response.QueryUserInfoResponse
     }
   __out
   }
@@ -162,10 +201,16 @@ __fieldsMap.get(__fields.get(5)).asInstanceOf[scala.Option[com.echo.protocol.Res
     def isLoginResponse: Boolean = false
     def isAuthenticationResponse: Boolean = false
     def isLogoutResponse: Boolean = false
+    def isUpdateUserInfoResponse: Boolean = false
+    def isUpdateSecQuestionResponse: Boolean = false
+    def isQueryUserInfoResponse: Boolean = false
     def signupResponse: scala.Option[com.echo.protocol.Response.SignupResponse] = None
     def loginResponse: scala.Option[com.echo.protocol.Response.LoginResponse] = None
     def authenticationResponse: scala.Option[com.echo.protocol.Response.AuthenticationResponse] = None
     def logoutResponse: scala.Option[com.echo.protocol.Response.LogoutResponse] = None
+    def updateUserInfoResponse: scala.Option[com.echo.protocol.Response.UpdateUserInfoResponse] = None
+    def updateSecQuestionResponse: scala.Option[com.echo.protocol.Response.UpdateSecQuestionResponse] = None
+    def queryUserInfoResponse: scala.Option[com.echo.protocol.Response.QueryUserInfoResponse] = None
   }
   object Content extends {
     @SerialVersionUID(0L)
@@ -198,6 +243,24 @@ __fieldsMap.get(__fields.get(5)).asInstanceOf[scala.Option[com.echo.protocol.Res
       override def isLogoutResponse: Boolean = true
       override def logoutResponse: scala.Option[com.echo.protocol.Response.LogoutResponse] = Some(value)
       override def number: Int = 1004
+    }
+    @SerialVersionUID(0L)
+    case class UpdateUserInfoResponse(value: com.echo.protocol.Response.UpdateUserInfoResponse) extends Content {
+      override def isUpdateUserInfoResponse: Boolean = true
+      override def updateUserInfoResponse: scala.Option[com.echo.protocol.Response.UpdateUserInfoResponse] = Some(value)
+      override def number: Int = 1005
+    }
+    @SerialVersionUID(0L)
+    case class UpdateSecQuestionResponse(value: com.echo.protocol.Response.UpdateSecQuestionResponse) extends Content {
+      override def isUpdateSecQuestionResponse: Boolean = true
+      override def updateSecQuestionResponse: scala.Option[com.echo.protocol.Response.UpdateSecQuestionResponse] = Some(value)
+      override def number: Int = 1006
+    }
+    @SerialVersionUID(0L)
+    case class QueryUserInfoResponse(value: com.echo.protocol.Response.QueryUserInfoResponse) extends Content {
+      override def isQueryUserInfoResponse: Boolean = true
+      override def queryUserInfoResponse: scala.Option[com.echo.protocol.Response.QueryUserInfoResponse] = Some(value)
+      override def number: Int = 1007
     }
   }
   @SerialVersionUID(0L)
@@ -248,7 +311,8 @@ __fieldsMap.get(__fields.get(5)).asInstanceOf[scala.Option[com.echo.protocol.Res
   final case class LoginResponse(
       token: String = "",
       expiresIn: Int = 0,
-      userId: String = ""
+      userId: String = "",
+      userNickname: String = ""
       ) extends com.trueaccord.scalapb.GeneratedMessage with com.trueaccord.scalapb.Message[LoginResponse] with com.trueaccord.lenses.Updatable[LoginResponse] {
       @transient
       lazy val serializedSize: Int = {
@@ -256,6 +320,7 @@ __fieldsMap.get(__fields.get(5)).asInstanceOf[scala.Option[com.echo.protocol.Res
         if (token != "") { __size += com.google.protobuf.CodedOutputStream.computeStringSize(1, token) }
         if (expiresIn != 0) { __size += com.google.protobuf.CodedOutputStream.computeInt32Size(2, expiresIn) }
         if (userId != "") { __size += com.google.protobuf.CodedOutputStream.computeStringSize(3, userId) }
+        if (userNickname != "") { __size += com.google.protobuf.CodedOutputStream.computeStringSize(4, userNickname) }
         __size
       }
       def writeTo(output: com.google.protobuf.CodedOutputStream): Unit = {
@@ -277,11 +342,18 @@ __fieldsMap.get(__fields.get(5)).asInstanceOf[scala.Option[com.echo.protocol.Res
             output.writeString(3, __v)
           }
         };
+        {
+          val __v = userNickname
+          if (__v != "") {
+            output.writeString(4, __v)
+          }
+        };
       }
       def mergeFrom(__input: com.google.protobuf.CodedInputStream): com.echo.protocol.Response.LoginResponse = {
         var __token = this.token
         var __expiresIn = this.expiresIn
         var __userId = this.userId
+        var __userNickname = this.userNickname
         var _done__ = false
         while (!_done__) {
           val _tag__ = __input.readTag()
@@ -293,18 +365,22 @@ __fieldsMap.get(__fields.get(5)).asInstanceOf[scala.Option[com.echo.protocol.Res
               __expiresIn = __input.readInt32()
             case 26 =>
               __userId = __input.readString()
+            case 34 =>
+              __userNickname = __input.readString()
             case tag => __input.skipField(tag)
           }
         }
         com.echo.protocol.Response.LoginResponse(
             token = __token,
             expiresIn = __expiresIn,
-            userId = __userId
+            userId = __userId,
+            userNickname = __userNickname
         )
       }
       def withToken(__v: String): LoginResponse = copy(token = __v)
       def withExpiresIn(__v: Int): LoginResponse = copy(expiresIn = __v)
       def withUserId(__v: String): LoginResponse = copy(userId = __v)
+      def withUserNickname(__v: String): LoginResponse = copy(userNickname = __v)
       def getField(__field: com.google.protobuf.Descriptors.FieldDescriptor): scala.Any = {
         __field.getNumber match {
           case 1 => {
@@ -317,6 +393,10 @@ __fieldsMap.get(__fields.get(5)).asInstanceOf[scala.Option[com.echo.protocol.Res
           }
           case 3 => {
             val __t = userId
+            if (__t != "") __t else null
+          }
+          case 4 => {
+            val __t = userNickname
             if (__t != "") __t else null
           }
         }
@@ -333,7 +413,8 @@ __fieldsMap.get(__fields.get(5)).asInstanceOf[scala.Option[com.echo.protocol.Res
       com.echo.protocol.Response.LoginResponse(
         __fieldsMap.getOrElse(__fields.get(0), "").asInstanceOf[String],
         __fieldsMap.getOrElse(__fields.get(1), 0).asInstanceOf[Int],
-        __fieldsMap.getOrElse(__fields.get(2), "").asInstanceOf[String]
+        __fieldsMap.getOrElse(__fields.get(2), "").asInstanceOf[String],
+        __fieldsMap.getOrElse(__fields.get(3), "").asInstanceOf[String]
       )
     }
     def descriptor: com.google.protobuf.Descriptors.Descriptor = com.echo.protocol.Response.descriptor.getNestedTypes.get(1)
@@ -345,17 +426,20 @@ __fieldsMap.get(__fields.get(5)).asInstanceOf[scala.Option[com.echo.protocol.Res
       def token: com.trueaccord.lenses.Lens[UpperPB, String] = field(_.token)((c_, f_) => c_.copy(token = f_))
       def expiresIn: com.trueaccord.lenses.Lens[UpperPB, Int] = field(_.expiresIn)((c_, f_) => c_.copy(expiresIn = f_))
       def userId: com.trueaccord.lenses.Lens[UpperPB, String] = field(_.userId)((c_, f_) => c_.copy(userId = f_))
+      def userNickname: com.trueaccord.lenses.Lens[UpperPB, String] = field(_.userNickname)((c_, f_) => c_.copy(userNickname = f_))
     }
     final val TOKEN_FIELD_NUMBER = 1
     final val EXPIRES_IN_FIELD_NUMBER = 2
     final val USER_ID_FIELD_NUMBER = 3
+    final val USER_NICKNAME_FIELD_NUMBER = 4
   }
   
   @SerialVersionUID(0L)
   final case class AuthenticationResponse(
       isExpired: Boolean = false,
       expiresIn: Int = 0,
-      userId: String = ""
+      userId: String = "",
+      userNickname: String = ""
       ) extends com.trueaccord.scalapb.GeneratedMessage with com.trueaccord.scalapb.Message[AuthenticationResponse] with com.trueaccord.lenses.Updatable[AuthenticationResponse] {
       @transient
       lazy val serializedSize: Int = {
@@ -363,6 +447,7 @@ __fieldsMap.get(__fields.get(5)).asInstanceOf[scala.Option[com.echo.protocol.Res
         if (isExpired != false) { __size += com.google.protobuf.CodedOutputStream.computeBoolSize(1, isExpired) }
         if (expiresIn != 0) { __size += com.google.protobuf.CodedOutputStream.computeInt32Size(2, expiresIn) }
         if (userId != "") { __size += com.google.protobuf.CodedOutputStream.computeStringSize(3, userId) }
+        if (userNickname != "") { __size += com.google.protobuf.CodedOutputStream.computeStringSize(4, userNickname) }
         __size
       }
       def writeTo(output: com.google.protobuf.CodedOutputStream): Unit = {
@@ -384,11 +469,18 @@ __fieldsMap.get(__fields.get(5)).asInstanceOf[scala.Option[com.echo.protocol.Res
             output.writeString(3, __v)
           }
         };
+        {
+          val __v = userNickname
+          if (__v != "") {
+            output.writeString(4, __v)
+          }
+        };
       }
       def mergeFrom(__input: com.google.protobuf.CodedInputStream): com.echo.protocol.Response.AuthenticationResponse = {
         var __isExpired = this.isExpired
         var __expiresIn = this.expiresIn
         var __userId = this.userId
+        var __userNickname = this.userNickname
         var _done__ = false
         while (!_done__) {
           val _tag__ = __input.readTag()
@@ -400,18 +492,22 @@ __fieldsMap.get(__fields.get(5)).asInstanceOf[scala.Option[com.echo.protocol.Res
               __expiresIn = __input.readInt32()
             case 26 =>
               __userId = __input.readString()
+            case 34 =>
+              __userNickname = __input.readString()
             case tag => __input.skipField(tag)
           }
         }
         com.echo.protocol.Response.AuthenticationResponse(
             isExpired = __isExpired,
             expiresIn = __expiresIn,
-            userId = __userId
+            userId = __userId,
+            userNickname = __userNickname
         )
       }
       def withIsExpired(__v: Boolean): AuthenticationResponse = copy(isExpired = __v)
       def withExpiresIn(__v: Int): AuthenticationResponse = copy(expiresIn = __v)
       def withUserId(__v: String): AuthenticationResponse = copy(userId = __v)
+      def withUserNickname(__v: String): AuthenticationResponse = copy(userNickname = __v)
       def getField(__field: com.google.protobuf.Descriptors.FieldDescriptor): scala.Any = {
         __field.getNumber match {
           case 1 => {
@@ -424,6 +520,10 @@ __fieldsMap.get(__fields.get(5)).asInstanceOf[scala.Option[com.echo.protocol.Res
           }
           case 3 => {
             val __t = userId
+            if (__t != "") __t else null
+          }
+          case 4 => {
+            val __t = userNickname
             if (__t != "") __t else null
           }
         }
@@ -440,7 +540,8 @@ __fieldsMap.get(__fields.get(5)).asInstanceOf[scala.Option[com.echo.protocol.Res
       com.echo.protocol.Response.AuthenticationResponse(
         __fieldsMap.getOrElse(__fields.get(0), false).asInstanceOf[Boolean],
         __fieldsMap.getOrElse(__fields.get(1), 0).asInstanceOf[Int],
-        __fieldsMap.getOrElse(__fields.get(2), "").asInstanceOf[String]
+        __fieldsMap.getOrElse(__fields.get(2), "").asInstanceOf[String],
+        __fieldsMap.getOrElse(__fields.get(3), "").asInstanceOf[String]
       )
     }
     def descriptor: com.google.protobuf.Descriptors.Descriptor = com.echo.protocol.Response.descriptor.getNestedTypes.get(2)
@@ -452,10 +553,12 @@ __fieldsMap.get(__fields.get(5)).asInstanceOf[scala.Option[com.echo.protocol.Res
       def isExpired: com.trueaccord.lenses.Lens[UpperPB, Boolean] = field(_.isExpired)((c_, f_) => c_.copy(isExpired = f_))
       def expiresIn: com.trueaccord.lenses.Lens[UpperPB, Int] = field(_.expiresIn)((c_, f_) => c_.copy(expiresIn = f_))
       def userId: com.trueaccord.lenses.Lens[UpperPB, String] = field(_.userId)((c_, f_) => c_.copy(userId = f_))
+      def userNickname: com.trueaccord.lenses.Lens[UpperPB, String] = field(_.userNickname)((c_, f_) => c_.copy(userNickname = f_))
     }
     final val IS_EXPIRED_FIELD_NUMBER = 1
     final val EXPIRES_IN_FIELD_NUMBER = 2
     final val USER_ID_FIELD_NUMBER = 3
+    final val USER_NICKNAME_FIELD_NUMBER = 4
   }
   
   @SerialVersionUID(0L)
@@ -502,6 +605,361 @@ __fieldsMap.get(__fields.get(5)).asInstanceOf[scala.Option[com.echo.protocol.Res
     }
   }
   
+  @SerialVersionUID(0L)
+  final case class UpdateUserInfoResponse(
+      ) extends com.trueaccord.scalapb.GeneratedMessage with com.trueaccord.scalapb.Message[UpdateUserInfoResponse] with com.trueaccord.lenses.Updatable[UpdateUserInfoResponse] {
+      @transient
+      lazy val serializedSize: Int = {
+        var __size = 0
+        __size
+      }
+      def writeTo(output: com.google.protobuf.CodedOutputStream): Unit = {
+      }
+      def mergeFrom(__input: com.google.protobuf.CodedInputStream): com.echo.protocol.Response.UpdateUserInfoResponse = {
+        var _done__ = false
+        while (!_done__) {
+          val _tag__ = __input.readTag()
+          _tag__ match {
+            case 0 => _done__ = true
+            case tag => __input.skipField(tag)
+          }
+        }
+        com.echo.protocol.Response.UpdateUserInfoResponse(
+        )
+      }
+      def getField(__field: com.google.protobuf.Descriptors.FieldDescriptor): scala.Any = throw new MatchError(__field)
+      override def toString: String = com.trueaccord.scalapb.TextFormat.printToUnicodeString(this)
+      def companion = com.echo.protocol.Response.UpdateUserInfoResponse
+  }
+  
+  object UpdateUserInfoResponse extends com.trueaccord.scalapb.GeneratedMessageCompanion[UpdateUserInfoResponse] {
+    implicit def messageCompanion: com.trueaccord.scalapb.GeneratedMessageCompanion[UpdateUserInfoResponse] = this
+    def fromFieldsMap(__fieldsMap: Map[com.google.protobuf.Descriptors.FieldDescriptor, scala.Any]): com.echo.protocol.Response.UpdateUserInfoResponse = {
+      require(__fieldsMap.keys.forall(_.getContainingType() == descriptor), "FieldDescriptor does not match message type.")
+      val __fields = descriptor.getFields
+      com.echo.protocol.Response.UpdateUserInfoResponse(
+      )
+    }
+    def descriptor: com.google.protobuf.Descriptors.Descriptor = com.echo.protocol.Response.descriptor.getNestedTypes.get(4)
+    def messageCompanionForField(__field: com.google.protobuf.Descriptors.FieldDescriptor): com.trueaccord.scalapb.GeneratedMessageCompanion[_] = throw new MatchError(__field)
+    def enumCompanionForField(__field: com.google.protobuf.Descriptors.FieldDescriptor): com.trueaccord.scalapb.GeneratedEnumCompanion[_] = throw new MatchError(__field)
+    lazy val defaultInstance = com.echo.protocol.Response.UpdateUserInfoResponse(
+    )
+    implicit class UpdateUserInfoResponseLens[UpperPB](_l: com.trueaccord.lenses.Lens[UpperPB, UpdateUserInfoResponse]) extends com.trueaccord.lenses.ObjectLens[UpperPB, UpdateUserInfoResponse](_l) {
+    }
+  }
+  
+  @SerialVersionUID(0L)
+  final case class UpdateSecQuestionResponse(
+      ) extends com.trueaccord.scalapb.GeneratedMessage with com.trueaccord.scalapb.Message[UpdateSecQuestionResponse] with com.trueaccord.lenses.Updatable[UpdateSecQuestionResponse] {
+      @transient
+      lazy val serializedSize: Int = {
+        var __size = 0
+        __size
+      }
+      def writeTo(output: com.google.protobuf.CodedOutputStream): Unit = {
+      }
+      def mergeFrom(__input: com.google.protobuf.CodedInputStream): com.echo.protocol.Response.UpdateSecQuestionResponse = {
+        var _done__ = false
+        while (!_done__) {
+          val _tag__ = __input.readTag()
+          _tag__ match {
+            case 0 => _done__ = true
+            case tag => __input.skipField(tag)
+          }
+        }
+        com.echo.protocol.Response.UpdateSecQuestionResponse(
+        )
+      }
+      def getField(__field: com.google.protobuf.Descriptors.FieldDescriptor): scala.Any = throw new MatchError(__field)
+      override def toString: String = com.trueaccord.scalapb.TextFormat.printToUnicodeString(this)
+      def companion = com.echo.protocol.Response.UpdateSecQuestionResponse
+  }
+  
+  object UpdateSecQuestionResponse extends com.trueaccord.scalapb.GeneratedMessageCompanion[UpdateSecQuestionResponse] {
+    implicit def messageCompanion: com.trueaccord.scalapb.GeneratedMessageCompanion[UpdateSecQuestionResponse] = this
+    def fromFieldsMap(__fieldsMap: Map[com.google.protobuf.Descriptors.FieldDescriptor, scala.Any]): com.echo.protocol.Response.UpdateSecQuestionResponse = {
+      require(__fieldsMap.keys.forall(_.getContainingType() == descriptor), "FieldDescriptor does not match message type.")
+      val __fields = descriptor.getFields
+      com.echo.protocol.Response.UpdateSecQuestionResponse(
+      )
+    }
+    def descriptor: com.google.protobuf.Descriptors.Descriptor = com.echo.protocol.Response.descriptor.getNestedTypes.get(5)
+    def messageCompanionForField(__field: com.google.protobuf.Descriptors.FieldDescriptor): com.trueaccord.scalapb.GeneratedMessageCompanion[_] = throw new MatchError(__field)
+    def enumCompanionForField(__field: com.google.protobuf.Descriptors.FieldDescriptor): com.trueaccord.scalapb.GeneratedEnumCompanion[_] = throw new MatchError(__field)
+    lazy val defaultInstance = com.echo.protocol.Response.UpdateSecQuestionResponse(
+    )
+    implicit class UpdateSecQuestionResponseLens[UpperPB](_l: com.trueaccord.lenses.Lens[UpperPB, UpdateSecQuestionResponse]) extends com.trueaccord.lenses.ObjectLens[UpperPB, UpdateSecQuestionResponse](_l) {
+    }
+  }
+  
+  @SerialVersionUID(0L)
+  final case class QueryUserInfoResponse(
+      userId: String = "",
+      nickname: String = "",
+      truename: String = "",
+      email: String = "",
+      phonenum: String = "",
+      securityQuestion1: String = "",
+      securityQuestion2: String = "",
+      securityQuestion3: String = "",
+      securityQuestion1Ans: String = "",
+      securityQuestion2Ans: String = "",
+      securityQuestion3Ans: String = ""
+      ) extends com.trueaccord.scalapb.GeneratedMessage with com.trueaccord.scalapb.Message[QueryUserInfoResponse] with com.trueaccord.lenses.Updatable[QueryUserInfoResponse] {
+      @transient
+      lazy val serializedSize: Int = {
+        var __size = 0
+        if (userId != "") { __size += com.google.protobuf.CodedOutputStream.computeStringSize(1, userId) }
+        if (nickname != "") { __size += com.google.protobuf.CodedOutputStream.computeStringSize(2, nickname) }
+        if (truename != "") { __size += com.google.protobuf.CodedOutputStream.computeStringSize(3, truename) }
+        if (email != "") { __size += com.google.protobuf.CodedOutputStream.computeStringSize(4, email) }
+        if (phonenum != "") { __size += com.google.protobuf.CodedOutputStream.computeStringSize(5, phonenum) }
+        if (securityQuestion1 != "") { __size += com.google.protobuf.CodedOutputStream.computeStringSize(6, securityQuestion1) }
+        if (securityQuestion2 != "") { __size += com.google.protobuf.CodedOutputStream.computeStringSize(7, securityQuestion2) }
+        if (securityQuestion3 != "") { __size += com.google.protobuf.CodedOutputStream.computeStringSize(8, securityQuestion3) }
+        if (securityQuestion1Ans != "") { __size += com.google.protobuf.CodedOutputStream.computeStringSize(9, securityQuestion1Ans) }
+        if (securityQuestion2Ans != "") { __size += com.google.protobuf.CodedOutputStream.computeStringSize(10, securityQuestion2Ans) }
+        if (securityQuestion3Ans != "") { __size += com.google.protobuf.CodedOutputStream.computeStringSize(11, securityQuestion3Ans) }
+        __size
+      }
+      def writeTo(output: com.google.protobuf.CodedOutputStream): Unit = {
+        {
+          val __v = userId
+          if (__v != "") {
+            output.writeString(1, __v)
+          }
+        };
+        {
+          val __v = nickname
+          if (__v != "") {
+            output.writeString(2, __v)
+          }
+        };
+        {
+          val __v = truename
+          if (__v != "") {
+            output.writeString(3, __v)
+          }
+        };
+        {
+          val __v = email
+          if (__v != "") {
+            output.writeString(4, __v)
+          }
+        };
+        {
+          val __v = phonenum
+          if (__v != "") {
+            output.writeString(5, __v)
+          }
+        };
+        {
+          val __v = securityQuestion1
+          if (__v != "") {
+            output.writeString(6, __v)
+          }
+        };
+        {
+          val __v = securityQuestion2
+          if (__v != "") {
+            output.writeString(7, __v)
+          }
+        };
+        {
+          val __v = securityQuestion3
+          if (__v != "") {
+            output.writeString(8, __v)
+          }
+        };
+        {
+          val __v = securityQuestion1Ans
+          if (__v != "") {
+            output.writeString(9, __v)
+          }
+        };
+        {
+          val __v = securityQuestion2Ans
+          if (__v != "") {
+            output.writeString(10, __v)
+          }
+        };
+        {
+          val __v = securityQuestion3Ans
+          if (__v != "") {
+            output.writeString(11, __v)
+          }
+        };
+      }
+      def mergeFrom(__input: com.google.protobuf.CodedInputStream): com.echo.protocol.Response.QueryUserInfoResponse = {
+        var __userId = this.userId
+        var __nickname = this.nickname
+        var __truename = this.truename
+        var __email = this.email
+        var __phonenum = this.phonenum
+        var __securityQuestion1 = this.securityQuestion1
+        var __securityQuestion2 = this.securityQuestion2
+        var __securityQuestion3 = this.securityQuestion3
+        var __securityQuestion1Ans = this.securityQuestion1Ans
+        var __securityQuestion2Ans = this.securityQuestion2Ans
+        var __securityQuestion3Ans = this.securityQuestion3Ans
+        var _done__ = false
+        while (!_done__) {
+          val _tag__ = __input.readTag()
+          _tag__ match {
+            case 0 => _done__ = true
+            case 10 =>
+              __userId = __input.readString()
+            case 18 =>
+              __nickname = __input.readString()
+            case 26 =>
+              __truename = __input.readString()
+            case 34 =>
+              __email = __input.readString()
+            case 42 =>
+              __phonenum = __input.readString()
+            case 50 =>
+              __securityQuestion1 = __input.readString()
+            case 58 =>
+              __securityQuestion2 = __input.readString()
+            case 66 =>
+              __securityQuestion3 = __input.readString()
+            case 74 =>
+              __securityQuestion1Ans = __input.readString()
+            case 82 =>
+              __securityQuestion2Ans = __input.readString()
+            case 90 =>
+              __securityQuestion3Ans = __input.readString()
+            case tag => __input.skipField(tag)
+          }
+        }
+        com.echo.protocol.Response.QueryUserInfoResponse(
+            userId = __userId,
+            nickname = __nickname,
+            truename = __truename,
+            email = __email,
+            phonenum = __phonenum,
+            securityQuestion1 = __securityQuestion1,
+            securityQuestion2 = __securityQuestion2,
+            securityQuestion3 = __securityQuestion3,
+            securityQuestion1Ans = __securityQuestion1Ans,
+            securityQuestion2Ans = __securityQuestion2Ans,
+            securityQuestion3Ans = __securityQuestion3Ans
+        )
+      }
+      def withUserId(__v: String): QueryUserInfoResponse = copy(userId = __v)
+      def withNickname(__v: String): QueryUserInfoResponse = copy(nickname = __v)
+      def withTruename(__v: String): QueryUserInfoResponse = copy(truename = __v)
+      def withEmail(__v: String): QueryUserInfoResponse = copy(email = __v)
+      def withPhonenum(__v: String): QueryUserInfoResponse = copy(phonenum = __v)
+      def withSecurityQuestion1(__v: String): QueryUserInfoResponse = copy(securityQuestion1 = __v)
+      def withSecurityQuestion2(__v: String): QueryUserInfoResponse = copy(securityQuestion2 = __v)
+      def withSecurityQuestion3(__v: String): QueryUserInfoResponse = copy(securityQuestion3 = __v)
+      def withSecurityQuestion1Ans(__v: String): QueryUserInfoResponse = copy(securityQuestion1Ans = __v)
+      def withSecurityQuestion2Ans(__v: String): QueryUserInfoResponse = copy(securityQuestion2Ans = __v)
+      def withSecurityQuestion3Ans(__v: String): QueryUserInfoResponse = copy(securityQuestion3Ans = __v)
+      def getField(__field: com.google.protobuf.Descriptors.FieldDescriptor): scala.Any = {
+        __field.getNumber match {
+          case 1 => {
+            val __t = userId
+            if (__t != "") __t else null
+          }
+          case 2 => {
+            val __t = nickname
+            if (__t != "") __t else null
+          }
+          case 3 => {
+            val __t = truename
+            if (__t != "") __t else null
+          }
+          case 4 => {
+            val __t = email
+            if (__t != "") __t else null
+          }
+          case 5 => {
+            val __t = phonenum
+            if (__t != "") __t else null
+          }
+          case 6 => {
+            val __t = securityQuestion1
+            if (__t != "") __t else null
+          }
+          case 7 => {
+            val __t = securityQuestion2
+            if (__t != "") __t else null
+          }
+          case 8 => {
+            val __t = securityQuestion3
+            if (__t != "") __t else null
+          }
+          case 9 => {
+            val __t = securityQuestion1Ans
+            if (__t != "") __t else null
+          }
+          case 10 => {
+            val __t = securityQuestion2Ans
+            if (__t != "") __t else null
+          }
+          case 11 => {
+            val __t = securityQuestion3Ans
+            if (__t != "") __t else null
+          }
+        }
+      }
+      override def toString: String = com.trueaccord.scalapb.TextFormat.printToUnicodeString(this)
+      def companion = com.echo.protocol.Response.QueryUserInfoResponse
+  }
+  
+  object QueryUserInfoResponse extends com.trueaccord.scalapb.GeneratedMessageCompanion[QueryUserInfoResponse] {
+    implicit def messageCompanion: com.trueaccord.scalapb.GeneratedMessageCompanion[QueryUserInfoResponse] = this
+    def fromFieldsMap(__fieldsMap: Map[com.google.protobuf.Descriptors.FieldDescriptor, scala.Any]): com.echo.protocol.Response.QueryUserInfoResponse = {
+      require(__fieldsMap.keys.forall(_.getContainingType() == descriptor), "FieldDescriptor does not match message type.")
+      val __fields = descriptor.getFields
+      com.echo.protocol.Response.QueryUserInfoResponse(
+        __fieldsMap.getOrElse(__fields.get(0), "").asInstanceOf[String],
+        __fieldsMap.getOrElse(__fields.get(1), "").asInstanceOf[String],
+        __fieldsMap.getOrElse(__fields.get(2), "").asInstanceOf[String],
+        __fieldsMap.getOrElse(__fields.get(3), "").asInstanceOf[String],
+        __fieldsMap.getOrElse(__fields.get(4), "").asInstanceOf[String],
+        __fieldsMap.getOrElse(__fields.get(5), "").asInstanceOf[String],
+        __fieldsMap.getOrElse(__fields.get(6), "").asInstanceOf[String],
+        __fieldsMap.getOrElse(__fields.get(7), "").asInstanceOf[String],
+        __fieldsMap.getOrElse(__fields.get(8), "").asInstanceOf[String],
+        __fieldsMap.getOrElse(__fields.get(9), "").asInstanceOf[String],
+        __fieldsMap.getOrElse(__fields.get(10), "").asInstanceOf[String]
+      )
+    }
+    def descriptor: com.google.protobuf.Descriptors.Descriptor = com.echo.protocol.Response.descriptor.getNestedTypes.get(6)
+    def messageCompanionForField(__field: com.google.protobuf.Descriptors.FieldDescriptor): com.trueaccord.scalapb.GeneratedMessageCompanion[_] = throw new MatchError(__field)
+    def enumCompanionForField(__field: com.google.protobuf.Descriptors.FieldDescriptor): com.trueaccord.scalapb.GeneratedEnumCompanion[_] = throw new MatchError(__field)
+    lazy val defaultInstance = com.echo.protocol.Response.QueryUserInfoResponse(
+    )
+    implicit class QueryUserInfoResponseLens[UpperPB](_l: com.trueaccord.lenses.Lens[UpperPB, QueryUserInfoResponse]) extends com.trueaccord.lenses.ObjectLens[UpperPB, QueryUserInfoResponse](_l) {
+      def userId: com.trueaccord.lenses.Lens[UpperPB, String] = field(_.userId)((c_, f_) => c_.copy(userId = f_))
+      def nickname: com.trueaccord.lenses.Lens[UpperPB, String] = field(_.nickname)((c_, f_) => c_.copy(nickname = f_))
+      def truename: com.trueaccord.lenses.Lens[UpperPB, String] = field(_.truename)((c_, f_) => c_.copy(truename = f_))
+      def email: com.trueaccord.lenses.Lens[UpperPB, String] = field(_.email)((c_, f_) => c_.copy(email = f_))
+      def phonenum: com.trueaccord.lenses.Lens[UpperPB, String] = field(_.phonenum)((c_, f_) => c_.copy(phonenum = f_))
+      def securityQuestion1: com.trueaccord.lenses.Lens[UpperPB, String] = field(_.securityQuestion1)((c_, f_) => c_.copy(securityQuestion1 = f_))
+      def securityQuestion2: com.trueaccord.lenses.Lens[UpperPB, String] = field(_.securityQuestion2)((c_, f_) => c_.copy(securityQuestion2 = f_))
+      def securityQuestion3: com.trueaccord.lenses.Lens[UpperPB, String] = field(_.securityQuestion3)((c_, f_) => c_.copy(securityQuestion3 = f_))
+      def securityQuestion1Ans: com.trueaccord.lenses.Lens[UpperPB, String] = field(_.securityQuestion1Ans)((c_, f_) => c_.copy(securityQuestion1Ans = f_))
+      def securityQuestion2Ans: com.trueaccord.lenses.Lens[UpperPB, String] = field(_.securityQuestion2Ans)((c_, f_) => c_.copy(securityQuestion2Ans = f_))
+      def securityQuestion3Ans: com.trueaccord.lenses.Lens[UpperPB, String] = field(_.securityQuestion3Ans)((c_, f_) => c_.copy(securityQuestion3Ans = f_))
+    }
+    final val USER_ID_FIELD_NUMBER = 1
+    final val NICKNAME_FIELD_NUMBER = 2
+    final val TRUENAME_FIELD_NUMBER = 3
+    final val EMAIL_FIELD_NUMBER = 4
+    final val PHONENUM_FIELD_NUMBER = 5
+    final val SECURITY_QUESTION1_FIELD_NUMBER = 6
+    final val SECURITY_QUESTION2_FIELD_NUMBER = 7
+    final val SECURITY_QUESTION3_FIELD_NUMBER = 8
+    final val SECURITY_QUESTION1_ANS_FIELD_NUMBER = 9
+    final val SECURITY_QUESTION2_ANS_FIELD_NUMBER = 10
+    final val SECURITY_QUESTION3_ANS_FIELD_NUMBER = 11
+  }
+  
   implicit class ResponseLens[UpperPB](_l: com.trueaccord.lenses.Lens[UpperPB, Response]) extends com.trueaccord.lenses.ObjectLens[UpperPB, Response](_l) {
     def result: com.trueaccord.lenses.Lens[UpperPB, com.echo.protocol.ResultCode] = field(_.result)((c_, f_) => c_.copy(result = f_))
     def errorDescription: com.trueaccord.lenses.Lens[UpperPB, String] = field(_.errorDescription)((c_, f_) => c_.copy(errorDescription = f_))
@@ -509,6 +967,9 @@ __fieldsMap.get(__fields.get(5)).asInstanceOf[scala.Option[com.echo.protocol.Res
     def loginResponse: com.trueaccord.lenses.Lens[UpperPB, com.echo.protocol.Response.LoginResponse] = field(_.getLoginResponse)((c_, f_) => c_.copy(content = com.echo.protocol.Response.Content.LoginResponse(f_)))
     def authenticationResponse: com.trueaccord.lenses.Lens[UpperPB, com.echo.protocol.Response.AuthenticationResponse] = field(_.getAuthenticationResponse)((c_, f_) => c_.copy(content = com.echo.protocol.Response.Content.AuthenticationResponse(f_)))
     def logoutResponse: com.trueaccord.lenses.Lens[UpperPB, com.echo.protocol.Response.LogoutResponse] = field(_.getLogoutResponse)((c_, f_) => c_.copy(content = com.echo.protocol.Response.Content.LogoutResponse(f_)))
+    def updateUserInfoResponse: com.trueaccord.lenses.Lens[UpperPB, com.echo.protocol.Response.UpdateUserInfoResponse] = field(_.getUpdateUserInfoResponse)((c_, f_) => c_.copy(content = com.echo.protocol.Response.Content.UpdateUserInfoResponse(f_)))
+    def updateSecQuestionResponse: com.trueaccord.lenses.Lens[UpperPB, com.echo.protocol.Response.UpdateSecQuestionResponse] = field(_.getUpdateSecQuestionResponse)((c_, f_) => c_.copy(content = com.echo.protocol.Response.Content.UpdateSecQuestionResponse(f_)))
+    def queryUserInfoResponse: com.trueaccord.lenses.Lens[UpperPB, com.echo.protocol.Response.QueryUserInfoResponse] = field(_.getQueryUserInfoResponse)((c_, f_) => c_.copy(content = com.echo.protocol.Response.Content.QueryUserInfoResponse(f_)))
     def content: com.trueaccord.lenses.Lens[UpperPB, com.echo.protocol.Response.Content] = field(_.content)((c_, f_) => c_.copy(content = f_))
   }
   final val RESULT_FIELD_NUMBER = 1
@@ -517,4 +978,7 @@ __fieldsMap.get(__fields.get(5)).asInstanceOf[scala.Option[com.echo.protocol.Res
   final val LOGIN_RESPONSE_FIELD_NUMBER = 1002
   final val AUTHENTICATION_RESPONSE_FIELD_NUMBER = 1003
   final val LOGOUT_RESPONSE_FIELD_NUMBER = 1004
+  final val UPDATE_USER_INFO_RESPONSE_FIELD_NUMBER = 1005
+  final val UPDATE_SEC_QUESTION_RESPONSE_FIELD_NUMBER = 1006
+  final val QUERY_USER_INFO_RESPONSE_FIELD_NUMBER = 1007
 }
