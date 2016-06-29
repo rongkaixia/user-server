@@ -4,8 +4,7 @@ import java.util.UUID
 
 case class UserInfo(
   id: String,
-  nickname: String,
-  truename: String,
+  username: String,
   email: String,
   phonenum: String,
   securityQuestion1: String,

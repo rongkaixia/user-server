@@ -312,7 +312,7 @@ __fieldsMap.get(__fields.get(8)).asInstanceOf[scala.Option[com.echo.protocol.Res
       token: String = "",
       expiresIn: Int = 0,
       userId: String = "",
-      userNickname: String = ""
+      username: String = ""
       ) extends com.trueaccord.scalapb.GeneratedMessage with com.trueaccord.scalapb.Message[LoginResponse] with com.trueaccord.lenses.Updatable[LoginResponse] {
       @transient
       lazy val serializedSize: Int = {
@@ -320,7 +320,7 @@ __fieldsMap.get(__fields.get(8)).asInstanceOf[scala.Option[com.echo.protocol.Res
         if (token != "") { __size += com.google.protobuf.CodedOutputStream.computeStringSize(1, token) }
         if (expiresIn != 0) { __size += com.google.protobuf.CodedOutputStream.computeInt32Size(2, expiresIn) }
         if (userId != "") { __size += com.google.protobuf.CodedOutputStream.computeStringSize(3, userId) }
-        if (userNickname != "") { __size += com.google.protobuf.CodedOutputStream.computeStringSize(4, userNickname) }
+        if (username != "") { __size += com.google.protobuf.CodedOutputStream.computeStringSize(4, username) }
         __size
       }
       def writeTo(output: com.google.protobuf.CodedOutputStream): Unit = {
@@ -343,7 +343,7 @@ __fieldsMap.get(__fields.get(8)).asInstanceOf[scala.Option[com.echo.protocol.Res
           }
         };
         {
-          val __v = userNickname
+          val __v = username
           if (__v != "") {
             output.writeString(4, __v)
           }
@@ -353,7 +353,7 @@ __fieldsMap.get(__fields.get(8)).asInstanceOf[scala.Option[com.echo.protocol.Res
         var __token = this.token
         var __expiresIn = this.expiresIn
         var __userId = this.userId
-        var __userNickname = this.userNickname
+        var __username = this.username
         var _done__ = false
         while (!_done__) {
           val _tag__ = __input.readTag()
@@ -366,7 +366,7 @@ __fieldsMap.get(__fields.get(8)).asInstanceOf[scala.Option[com.echo.protocol.Res
             case 26 =>
               __userId = __input.readString()
             case 34 =>
-              __userNickname = __input.readString()
+              __username = __input.readString()
             case tag => __input.skipField(tag)
           }
         }
@@ -374,13 +374,13 @@ __fieldsMap.get(__fields.get(8)).asInstanceOf[scala.Option[com.echo.protocol.Res
             token = __token,
             expiresIn = __expiresIn,
             userId = __userId,
-            userNickname = __userNickname
+            username = __username
         )
       }
       def withToken(__v: String): LoginResponse = copy(token = __v)
       def withExpiresIn(__v: Int): LoginResponse = copy(expiresIn = __v)
       def withUserId(__v: String): LoginResponse = copy(userId = __v)
-      def withUserNickname(__v: String): LoginResponse = copy(userNickname = __v)
+      def withUsername(__v: String): LoginResponse = copy(username = __v)
       def getField(__field: com.google.protobuf.Descriptors.FieldDescriptor): scala.Any = {
         __field.getNumber match {
           case 1 => {
@@ -396,7 +396,7 @@ __fieldsMap.get(__fields.get(8)).asInstanceOf[scala.Option[com.echo.protocol.Res
             if (__t != "") __t else null
           }
           case 4 => {
-            val __t = userNickname
+            val __t = username
             if (__t != "") __t else null
           }
         }
@@ -426,12 +426,12 @@ __fieldsMap.get(__fields.get(8)).asInstanceOf[scala.Option[com.echo.protocol.Res
       def token: com.trueaccord.lenses.Lens[UpperPB, String] = field(_.token)((c_, f_) => c_.copy(token = f_))
       def expiresIn: com.trueaccord.lenses.Lens[UpperPB, Int] = field(_.expiresIn)((c_, f_) => c_.copy(expiresIn = f_))
       def userId: com.trueaccord.lenses.Lens[UpperPB, String] = field(_.userId)((c_, f_) => c_.copy(userId = f_))
-      def userNickname: com.trueaccord.lenses.Lens[UpperPB, String] = field(_.userNickname)((c_, f_) => c_.copy(userNickname = f_))
+      def username: com.trueaccord.lenses.Lens[UpperPB, String] = field(_.username)((c_, f_) => c_.copy(username = f_))
     }
     final val TOKEN_FIELD_NUMBER = 1
     final val EXPIRES_IN_FIELD_NUMBER = 2
     final val USER_ID_FIELD_NUMBER = 3
-    final val USER_NICKNAME_FIELD_NUMBER = 4
+    final val USERNAME_FIELD_NUMBER = 4
   }
   
   @SerialVersionUID(0L)
@@ -439,7 +439,7 @@ __fieldsMap.get(__fields.get(8)).asInstanceOf[scala.Option[com.echo.protocol.Res
       isExpired: Boolean = false,
       expiresIn: Int = 0,
       userId: String = "",
-      userNickname: String = ""
+      username: String = ""
       ) extends com.trueaccord.scalapb.GeneratedMessage with com.trueaccord.scalapb.Message[AuthenticationResponse] with com.trueaccord.lenses.Updatable[AuthenticationResponse] {
       @transient
       lazy val serializedSize: Int = {
@@ -447,7 +447,7 @@ __fieldsMap.get(__fields.get(8)).asInstanceOf[scala.Option[com.echo.protocol.Res
         if (isExpired != false) { __size += com.google.protobuf.CodedOutputStream.computeBoolSize(1, isExpired) }
         if (expiresIn != 0) { __size += com.google.protobuf.CodedOutputStream.computeInt32Size(2, expiresIn) }
         if (userId != "") { __size += com.google.protobuf.CodedOutputStream.computeStringSize(3, userId) }
-        if (userNickname != "") { __size += com.google.protobuf.CodedOutputStream.computeStringSize(4, userNickname) }
+        if (username != "") { __size += com.google.protobuf.CodedOutputStream.computeStringSize(4, username) }
         __size
       }
       def writeTo(output: com.google.protobuf.CodedOutputStream): Unit = {
@@ -470,7 +470,7 @@ __fieldsMap.get(__fields.get(8)).asInstanceOf[scala.Option[com.echo.protocol.Res
           }
         };
         {
-          val __v = userNickname
+          val __v = username
           if (__v != "") {
             output.writeString(4, __v)
           }
@@ -480,7 +480,7 @@ __fieldsMap.get(__fields.get(8)).asInstanceOf[scala.Option[com.echo.protocol.Res
         var __isExpired = this.isExpired
         var __expiresIn = this.expiresIn
         var __userId = this.userId
-        var __userNickname = this.userNickname
+        var __username = this.username
         var _done__ = false
         while (!_done__) {
           val _tag__ = __input.readTag()
@@ -493,7 +493,7 @@ __fieldsMap.get(__fields.get(8)).asInstanceOf[scala.Option[com.echo.protocol.Res
             case 26 =>
               __userId = __input.readString()
             case 34 =>
-              __userNickname = __input.readString()
+              __username = __input.readString()
             case tag => __input.skipField(tag)
           }
         }
@@ -501,13 +501,13 @@ __fieldsMap.get(__fields.get(8)).asInstanceOf[scala.Option[com.echo.protocol.Res
             isExpired = __isExpired,
             expiresIn = __expiresIn,
             userId = __userId,
-            userNickname = __userNickname
+            username = __username
         )
       }
       def withIsExpired(__v: Boolean): AuthenticationResponse = copy(isExpired = __v)
       def withExpiresIn(__v: Int): AuthenticationResponse = copy(expiresIn = __v)
       def withUserId(__v: String): AuthenticationResponse = copy(userId = __v)
-      def withUserNickname(__v: String): AuthenticationResponse = copy(userNickname = __v)
+      def withUsername(__v: String): AuthenticationResponse = copy(username = __v)
       def getField(__field: com.google.protobuf.Descriptors.FieldDescriptor): scala.Any = {
         __field.getNumber match {
           case 1 => {
@@ -523,7 +523,7 @@ __fieldsMap.get(__fields.get(8)).asInstanceOf[scala.Option[com.echo.protocol.Res
             if (__t != "") __t else null
           }
           case 4 => {
-            val __t = userNickname
+            val __t = username
             if (__t != "") __t else null
           }
         }
@@ -553,12 +553,12 @@ __fieldsMap.get(__fields.get(8)).asInstanceOf[scala.Option[com.echo.protocol.Res
       def isExpired: com.trueaccord.lenses.Lens[UpperPB, Boolean] = field(_.isExpired)((c_, f_) => c_.copy(isExpired = f_))
       def expiresIn: com.trueaccord.lenses.Lens[UpperPB, Int] = field(_.expiresIn)((c_, f_) => c_.copy(expiresIn = f_))
       def userId: com.trueaccord.lenses.Lens[UpperPB, String] = field(_.userId)((c_, f_) => c_.copy(userId = f_))
-      def userNickname: com.trueaccord.lenses.Lens[UpperPB, String] = field(_.userNickname)((c_, f_) => c_.copy(userNickname = f_))
+      def username: com.trueaccord.lenses.Lens[UpperPB, String] = field(_.username)((c_, f_) => c_.copy(username = f_))
     }
     final val IS_EXPIRED_FIELD_NUMBER = 1
     final val EXPIRES_IN_FIELD_NUMBER = 2
     final val USER_ID_FIELD_NUMBER = 3
-    final val USER_NICKNAME_FIELD_NUMBER = 4
+    final val USERNAME_FIELD_NUMBER = 4
   }
   
   @SerialVersionUID(0L)
@@ -696,8 +696,7 @@ __fieldsMap.get(__fields.get(8)).asInstanceOf[scala.Option[com.echo.protocol.Res
   @SerialVersionUID(0L)
   final case class QueryUserInfoResponse(
       userId: String = "",
-      nickname: String = "",
-      truename: String = "",
+      username: String = "",
       email: String = "",
       phonenum: String = "",
       securityQuestion1: String = "",
@@ -711,8 +710,7 @@ __fieldsMap.get(__fields.get(8)).asInstanceOf[scala.Option[com.echo.protocol.Res
       lazy val serializedSize: Int = {
         var __size = 0
         if (userId != "") { __size += com.google.protobuf.CodedOutputStream.computeStringSize(1, userId) }
-        if (nickname != "") { __size += com.google.protobuf.CodedOutputStream.computeStringSize(2, nickname) }
-        if (truename != "") { __size += com.google.protobuf.CodedOutputStream.computeStringSize(3, truename) }
+        if (username != "") { __size += com.google.protobuf.CodedOutputStream.computeStringSize(2, username) }
         if (email != "") { __size += com.google.protobuf.CodedOutputStream.computeStringSize(4, email) }
         if (phonenum != "") { __size += com.google.protobuf.CodedOutputStream.computeStringSize(5, phonenum) }
         if (securityQuestion1 != "") { __size += com.google.protobuf.CodedOutputStream.computeStringSize(6, securityQuestion1) }
@@ -731,15 +729,9 @@ __fieldsMap.get(__fields.get(8)).asInstanceOf[scala.Option[com.echo.protocol.Res
           }
         };
         {
-          val __v = nickname
+          val __v = username
           if (__v != "") {
             output.writeString(2, __v)
-          }
-        };
-        {
-          val __v = truename
-          if (__v != "") {
-            output.writeString(3, __v)
           }
         };
         {
@@ -793,8 +785,7 @@ __fieldsMap.get(__fields.get(8)).asInstanceOf[scala.Option[com.echo.protocol.Res
       }
       def mergeFrom(__input: com.google.protobuf.CodedInputStream): com.echo.protocol.Response.QueryUserInfoResponse = {
         var __userId = this.userId
-        var __nickname = this.nickname
-        var __truename = this.truename
+        var __username = this.username
         var __email = this.email
         var __phonenum = this.phonenum
         var __securityQuestion1 = this.securityQuestion1
@@ -811,9 +802,7 @@ __fieldsMap.get(__fields.get(8)).asInstanceOf[scala.Option[com.echo.protocol.Res
             case 10 =>
               __userId = __input.readString()
             case 18 =>
-              __nickname = __input.readString()
-            case 26 =>
-              __truename = __input.readString()
+              __username = __input.readString()
             case 34 =>
               __email = __input.readString()
             case 42 =>
@@ -835,8 +824,7 @@ __fieldsMap.get(__fields.get(8)).asInstanceOf[scala.Option[com.echo.protocol.Res
         }
         com.echo.protocol.Response.QueryUserInfoResponse(
             userId = __userId,
-            nickname = __nickname,
-            truename = __truename,
+            username = __username,
             email = __email,
             phonenum = __phonenum,
             securityQuestion1 = __securityQuestion1,
@@ -848,8 +836,7 @@ __fieldsMap.get(__fields.get(8)).asInstanceOf[scala.Option[com.echo.protocol.Res
         )
       }
       def withUserId(__v: String): QueryUserInfoResponse = copy(userId = __v)
-      def withNickname(__v: String): QueryUserInfoResponse = copy(nickname = __v)
-      def withTruename(__v: String): QueryUserInfoResponse = copy(truename = __v)
+      def withUsername(__v: String): QueryUserInfoResponse = copy(username = __v)
       def withEmail(__v: String): QueryUserInfoResponse = copy(email = __v)
       def withPhonenum(__v: String): QueryUserInfoResponse = copy(phonenum = __v)
       def withSecurityQuestion1(__v: String): QueryUserInfoResponse = copy(securityQuestion1 = __v)
@@ -865,11 +852,7 @@ __fieldsMap.get(__fields.get(8)).asInstanceOf[scala.Option[com.echo.protocol.Res
             if (__t != "") __t else null
           }
           case 2 => {
-            val __t = nickname
-            if (__t != "") __t else null
-          }
-          case 3 => {
-            val __t = truename
+            val __t = username
             if (__t != "") __t else null
           }
           case 4 => {
@@ -925,8 +908,7 @@ __fieldsMap.get(__fields.get(8)).asInstanceOf[scala.Option[com.echo.protocol.Res
         __fieldsMap.getOrElse(__fields.get(6), "").asInstanceOf[String],
         __fieldsMap.getOrElse(__fields.get(7), "").asInstanceOf[String],
         __fieldsMap.getOrElse(__fields.get(8), "").asInstanceOf[String],
-        __fieldsMap.getOrElse(__fields.get(9), "").asInstanceOf[String],
-        __fieldsMap.getOrElse(__fields.get(10), "").asInstanceOf[String]
+        __fieldsMap.getOrElse(__fields.get(9), "").asInstanceOf[String]
       )
     }
     def descriptor: com.google.protobuf.Descriptors.Descriptor = com.echo.protocol.Response.descriptor.getNestedTypes.get(6)
@@ -936,8 +918,7 @@ __fieldsMap.get(__fields.get(8)).asInstanceOf[scala.Option[com.echo.protocol.Res
     )
     implicit class QueryUserInfoResponseLens[UpperPB](_l: com.trueaccord.lenses.Lens[UpperPB, QueryUserInfoResponse]) extends com.trueaccord.lenses.ObjectLens[UpperPB, QueryUserInfoResponse](_l) {
       def userId: com.trueaccord.lenses.Lens[UpperPB, String] = field(_.userId)((c_, f_) => c_.copy(userId = f_))
-      def nickname: com.trueaccord.lenses.Lens[UpperPB, String] = field(_.nickname)((c_, f_) => c_.copy(nickname = f_))
-      def truename: com.trueaccord.lenses.Lens[UpperPB, String] = field(_.truename)((c_, f_) => c_.copy(truename = f_))
+      def username: com.trueaccord.lenses.Lens[UpperPB, String] = field(_.username)((c_, f_) => c_.copy(username = f_))
       def email: com.trueaccord.lenses.Lens[UpperPB, String] = field(_.email)((c_, f_) => c_.copy(email = f_))
       def phonenum: com.trueaccord.lenses.Lens[UpperPB, String] = field(_.phonenum)((c_, f_) => c_.copy(phonenum = f_))
       def securityQuestion1: com.trueaccord.lenses.Lens[UpperPB, String] = field(_.securityQuestion1)((c_, f_) => c_.copy(securityQuestion1 = f_))
@@ -948,8 +929,7 @@ __fieldsMap.get(__fields.get(8)).asInstanceOf[scala.Option[com.echo.protocol.Res
       def securityQuestion3Ans: com.trueaccord.lenses.Lens[UpperPB, String] = field(_.securityQuestion3Ans)((c_, f_) => c_.copy(securityQuestion3Ans = f_))
     }
     final val USER_ID_FIELD_NUMBER = 1
-    final val NICKNAME_FIELD_NUMBER = 2
-    final val TRUENAME_FIELD_NUMBER = 3
+    final val USERNAME_FIELD_NUMBER = 2
     final val EMAIL_FIELD_NUMBER = 4
     final val PHONENUM_FIELD_NUMBER = 5
     final val SECURITY_QUESTION1_FIELD_NUMBER = 6

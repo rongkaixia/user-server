@@ -13,9 +13,8 @@ USE user_keyspace;
 
 CREATE TABLE user_info (
 	id text,
+	username text, // user true name, not unique
 	password text,
-	nickname text,
-	truename text,
 	email text,
 	phonenum text,
 	register_from text,
@@ -51,7 +50,7 @@ CREATE TABLE auth(
 	auth_name text,
 	auth_id text,
 	user_id text,
-	user_nickname text,
+	username text, //for fast retreiving username, instead of query user_info table
 	auth_expires timestamp,
 	PRIMARY KEY(auth_access_token, auth_name, auth_id)
 );

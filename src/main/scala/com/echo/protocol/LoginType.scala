@@ -10,7 +10,6 @@ package com.echo.protocol
 sealed trait LoginType extends com.trueaccord.scalapb.GeneratedEnum {
   type EnumType = LoginType
   def isLoginTypeEmpty: Boolean = false
-  def isLoginByUsername: Boolean = false
   def isLoginByPhonenum: Boolean = false
   def isLoginByEmail: Boolean = false
   def isLoginByWechat: Boolean = false
@@ -30,41 +29,33 @@ object LoginType extends com.trueaccord.scalapb.GeneratedEnumCompanion[LoginType
   }
   
   @SerialVersionUID(0L)
-  case object LOGIN_BY_USERNAME extends LoginType {
+  case object LOGIN_BY_PHONENUM extends LoginType {
     val value = 1
     val index = 1
-    val name = "LOGIN_BY_USERNAME"
-    override def isLoginByUsername: Boolean = true
-  }
-  
-  @SerialVersionUID(0L)
-  case object LOGIN_BY_PHONENUM extends LoginType {
-    val value = 2
-    val index = 2
     val name = "LOGIN_BY_PHONENUM"
     override def isLoginByPhonenum: Boolean = true
   }
   
   @SerialVersionUID(0L)
   case object LOGIN_BY_EMAIL extends LoginType {
-    val value = 3
-    val index = 3
+    val value = 2
+    val index = 2
     val name = "LOGIN_BY_EMAIL"
     override def isLoginByEmail: Boolean = true
   }
   
   @SerialVersionUID(0L)
   case object LOGIN_BY_WECHAT extends LoginType {
-    val value = 4
-    val index = 4
+    val value = 3
+    val index = 3
     val name = "LOGIN_BY_WECHAT"
     override def isLoginByWechat: Boolean = true
   }
   
   @SerialVersionUID(0L)
   case object LOGIN_BY_WEIBO extends LoginType {
-    val value = 5
-    val index = 5
+    val value = 4
+    val index = 4
     val name = "LOGIN_BY_WEIBO"
     override def isLoginByWeibo: Boolean = true
   }
@@ -76,14 +67,13 @@ object LoginType extends com.trueaccord.scalapb.GeneratedEnumCompanion[LoginType
     override def isUnrecognized: Boolean = true
   }
   
-  lazy val values = Seq(LOGIN_TYPE_EMPTY, LOGIN_BY_USERNAME, LOGIN_BY_PHONENUM, LOGIN_BY_EMAIL, LOGIN_BY_WECHAT, LOGIN_BY_WEIBO)
+  lazy val values = Seq(LOGIN_TYPE_EMPTY, LOGIN_BY_PHONENUM, LOGIN_BY_EMAIL, LOGIN_BY_WECHAT, LOGIN_BY_WEIBO)
   def fromValue(value: Int): LoginType = value match {
     case 0 => LOGIN_TYPE_EMPTY
-    case 1 => LOGIN_BY_USERNAME
-    case 2 => LOGIN_BY_PHONENUM
-    case 3 => LOGIN_BY_EMAIL
-    case 4 => LOGIN_BY_WECHAT
-    case 5 => LOGIN_BY_WEIBO
+    case 1 => LOGIN_BY_PHONENUM
+    case 2 => LOGIN_BY_EMAIL
+    case 3 => LOGIN_BY_WECHAT
+    case 4 => LOGIN_BY_WEIBO
     case __other => Unrecognized(__other)
   }
   def descriptor: com.google.protobuf.Descriptors.EnumDescriptor = ProtocolComEchoProtocolProto.descriptor.getEnumTypes.get(1)
