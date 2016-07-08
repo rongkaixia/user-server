@@ -39,8 +39,6 @@ class CaptainService() extends Actor with akka.actor.ActorLogging{
 
   // cassandra user info table config
   val userInfoTable = cfg.getString("echo.captain.cassandra.user_tables.user_info_table")
-  val userByPhonenumTable = cfg.getString("echo.captain.cassandra.user_tables.user_by_phonenum_table")
-  val userByEmailTable = cfg.getString("echo.captain.cassandra.user_tables.user_by_email_table")
   val userIDColumn = cfg.getString("echo.captain.cassandra.user_tables.columns.user_id")
   val usernameColumn = cfg.getString("echo.captain.cassandra.user_tables.columns.username")
   val passwordColumn = cfg.getString("echo.captain.cassandra.user_tables.columns.password")
@@ -129,15 +127,18 @@ class CaptainService() extends Actor with akka.actor.ActorLogging{
 
   def updateUserInfo(userID: String, key: String, value: String): Future[Unit] = {
     async {
-      val allowedKey = Array(phoneColumn, passwordColumn, emailColumn, usernameColumn)
+      val allowedKey = Array(usernameColumn, phoneColumn, passwordColumn, emailColumn)
       // check kvs
       if (!allowedKey.contains(key)) {
         throw new IllegalArgumentException("updateUserInfo key [" + key + "] not allowed")
       }
       val session = client.get.getSession
-      val updateString = "UPDATE " + userInfoTable + " SET " + key + " = " + value +
-                          "WHERE " + userIDColumn + " = " + userID
-      await(session.executeAsync(updateString).toScalaFuture)
+      val updateString = "UPDATE " + userInfoTable + " SET " + key + " = ?" +
+                          " WHERE " + userIDColumn + " = ?"
+      log.debug("updateString: " + updateString)
+      val statement = session.prepare(updateString)
+      val boundStatement = new BoundStatement(statement).setString(0, value).setString(1, userID)
+      await(session.executeAsync(boundStatement).toScalaFuture)
       log.debug("updateUserInfo " + key + "=" + value + " success")
     }
   }
@@ -147,9 +148,8 @@ class CaptainService() extends Actor with akka.actor.ActorLogging{
       log.info("check username by " + tableName)
       val session = client.get.getSession
       val queryString = "SELECT * FROM " + tableName + " WHERE " + keyColumn + "=?"
-      val statement = session.prepare(queryString)
       log.debug("queryString: " + queryString)
-
+      val statement = session.prepare(queryString)
       val boundStatement = new BoundStatement(statement).setString(0, key)
       val res = await(session.executeAsync(boundStatement).toScalaFuture)
       log.info("query table " + tableName + " success")
@@ -158,27 +158,6 @@ class CaptainService() extends Actor with akka.actor.ActorLogging{
       } else {
         false
       }
-    }
-  }
-
-  def insertUserByTable(
-    tableName: String, 
-    keyColumn: String, 
-    key: String, 
-    id: String,
-    password: String): Future[Unit] = {
-    async{
-      log.info("insert into table " + tableName)
-      val session = client.get.getSession
-      val insertString = "INSERT INTO " + tableName + "(" + keyColumn + "," + 
-        userIDColumn + "," + passwordColumn +  ") VALUES(?,?,?)"
-      val statement = session.prepare(insertString)
-      log.debug("insertString: " + insertString)
-      val boundStatement = new BoundStatement(statement).setString(0, key)
-                                                        .setString(1, id)
-                                                        .setString(2, password)
-      val res = await(session.executeAsync(boundStatement).toScalaFuture)
-      log.info("insert into table " + tableName + " success")
     }
   }
 
@@ -207,13 +186,9 @@ class CaptainService() extends Actor with akka.actor.ActorLogging{
                   .withErrorDescription("phonenum[" + phonenum + "] already existed.")
                   .withSignupResponse(new Response.SignupResponse())
         }else{
-          // insert user_by_phonenum table
-          log.debug("inserting new user into user_by_phonenum table")
+          // insert user_info table
           val id = UUID.randomUUID().toString // using random uuid as id
           val username = phonenum
-          await(insertUserByTable(userByPhonenumTable, phoneColumn, phonenum, id, password))
-
-          // insert user_info table
           log.info("inserting new user into user_info table")
           val insertString = "INSERT INTO " + userInfoTable + "(" +
             userIDColumn + "," + usernameColumn + "," + phoneColumn + "," + passwordColumn + "," +
@@ -564,19 +539,19 @@ class CaptainService() extends Actor with akka.actor.ActorLogging{
       }else {
         log.debug("getting user info for userID=" + userID)
         val user = await(getUserInfo(userID))
-        val res = new Response.QueryUserInfoResponse()
+        var res = new Response.QueryUserInfoResponse()
                                .withUserId(user.id)
                                .withUsername(user.username)
-                               .withEmail(user.email)
-                               .withPhonenum(user.phonenum)
-                               .withSecurityQuestion1(user.securityQuestion1)
-                               .withSecurityQuestion2(user.securityQuestion2)
-                               .withSecurityQuestion3(user.securityQuestion3)
-                               .withSecurityQuestion1Ans(user.securityQuestion1Ans)
-                               .withSecurityQuestion2Ans(user.securityQuestion2Ans)
-                               .withSecurityQuestion3Ans(user.securityQuestion3Ans)
-        response.withResult(ResultCode.SUCCESS)
-                .withQueryUserInfoResponse(res)
+        if (user.email != null) res = res.withEmail(user.email)
+        if (user.phonenum != null) res = res.withPhonenum(user.phonenum)
+        if (user.securityQuestion1 != null) res = res.withSecurityQuestion1(user.securityQuestion1)
+        if (user.securityQuestion2 != null) res = res.withSecurityQuestion2(user.securityQuestion2)
+        if (user.securityQuestion3 != null) res = res.withSecurityQuestion3(user.securityQuestion3)
+        if (user.securityQuestion1Ans != null) res = res.withSecurityQuestion1Ans(user.securityQuestion1Ans)
+        if (user.securityQuestion2Ans != null) res = res.withSecurityQuestion2Ans(user.securityQuestion2Ans)
+        if (user.securityQuestion3Ans != null) res = res.withSecurityQuestion3Ans(user.securityQuestion3Ans)
+
+        response.withResult(ResultCode.SUCCESS).withQueryUserInfoResponse(res)
       }
     }
     // just log

@@ -208,21 +208,23 @@ class RouterActor() extends HttpServiceActor with akka.actor.ActorLogging {
         }
       }//post
     }~
-    path("user/info") {
-      get {
+    path("user" / "info" / "query") {
+      post {
         deserialize { msg =>
           extractRequest[Request.QueryUserInfoRequest](msg).apply { req =>
             handleRequest(req)
           }
         }
-      }//get
+      }
+    }~
+    path("user" / "info" / "update") {
       post {
         deserialize { msg =>
           extractRequest[Request.UpdateUserInfoRequest](msg).apply { req =>
             handleRequest(req)
           }
         }
-      }//post
+      }
     }
   }//route
 

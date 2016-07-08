@@ -31,20 +31,6 @@ CREATE TABLE user_info (
 CREATE INDEX ON user_info(email);
 CREATE INDEX ON user_info(phonenum);
 
-CREATE TABLE user_by_phonenum(
-	phonenum text,
-	password text, //for fast retreiving password, instead of quering user_info table
-	id text,
-	PRIMARY KEY(phonenum, password)
-);
-
-CREATE TABLE user_by_email(
-	email text,
-	password text,
-	id text,
-	PRIMARY KEY(email, password)
-);
-
 CREATE TABLE auth(
 	auth_access_token text,
 	auth_name text,
