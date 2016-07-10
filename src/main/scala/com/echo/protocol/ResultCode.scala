@@ -16,14 +16,15 @@ sealed trait ResultCode extends com.trueaccord.scalapb.GeneratedEnum {
   def isMessageTypeError: Boolean = false
   def isInvalidMessage: Boolean = false
   def isInvalidPhonenum: Boolean = false
+  def isInvalidEmail: Boolean = false
   def isPhonenumAlreadyExisted: Boolean = false
-  def isInvalidUser: Boolean = false
+  def isEmailAlreadyExisted: Boolean = false
   def isInvalidPassword: Boolean = false
   def isInvalidSessionToken: Boolean = false
+  def isSessionTokenExpired: Boolean = false
   def isInvalidFromToken: Boolean = false
   def isExpiredFromToken: Boolean = false
-  def isUpdateInvalidKey: Boolean = false
-  def isUpdateInvalidValue: Boolean = false
+  def isIllegalArgument: Boolean = false
   def isUnrecognized: Boolean = false
   def companion: com.trueaccord.scalapb.GeneratedEnumCompanion[ResultCode] = ResultCode
 }
@@ -87,25 +88,33 @@ object ResultCode extends com.trueaccord.scalapb.GeneratedEnumCompanion[ResultCo
   }
   
   @SerialVersionUID(0L)
-  case object PHONENUM_ALREADY_EXISTED extends ResultCode {
+  case object INVALID_EMAIL extends ResultCode {
     val value = 20002
     val index = 7
+    val name = "INVALID_EMAIL"
+    override def isInvalidEmail: Boolean = true
+  }
+  
+  @SerialVersionUID(0L)
+  case object PHONENUM_ALREADY_EXISTED extends ResultCode {
+    val value = 20005
+    val index = 8
     val name = "PHONENUM_ALREADY_EXISTED"
     override def isPhonenumAlreadyExisted: Boolean = true
   }
   
   @SerialVersionUID(0L)
-  case object INVALID_USER extends ResultCode {
-    val value = 20003
-    val index = 8
-    val name = "INVALID_USER"
-    override def isInvalidUser: Boolean = true
+  case object EMAIL_ALREADY_EXISTED extends ResultCode {
+    val value = 20006
+    val index = 9
+    val name = "EMAIL_ALREADY_EXISTED"
+    override def isEmailAlreadyExisted: Boolean = true
   }
   
   @SerialVersionUID(0L)
   case object INVALID_PASSWORD extends ResultCode {
-    val value = 20004
-    val index = 9
+    val value = 20011
+    val index = 10
     val name = "INVALID_PASSWORD"
     override def isInvalidPassword: Boolean = true
   }
@@ -113,15 +122,23 @@ object ResultCode extends com.trueaccord.scalapb.GeneratedEnumCompanion[ResultCo
   @SerialVersionUID(0L)
   case object INVALID_SESSION_TOKEN extends ResultCode {
     val value = 30001
-    val index = 10
+    val index = 11
     val name = "INVALID_SESSION_TOKEN"
     override def isInvalidSessionToken: Boolean = true
   }
   
   @SerialVersionUID(0L)
+  case object SESSION_TOKEN_EXPIRED extends ResultCode {
+    val value = 30002
+    val index = 12
+    val name = "SESSION_TOKEN_EXPIRED"
+    override def isSessionTokenExpired: Boolean = true
+  }
+  
+  @SerialVersionUID(0L)
   case object INVALID_FROM_TOKEN extends ResultCode {
     val value = 40001
-    val index = 11
+    val index = 13
     val name = "INVALID_FROM_TOKEN"
     override def isInvalidFromToken: Boolean = true
   }
@@ -129,25 +146,17 @@ object ResultCode extends com.trueaccord.scalapb.GeneratedEnumCompanion[ResultCo
   @SerialVersionUID(0L)
   case object EXPIRED_FROM_TOKEN extends ResultCode {
     val value = 40002
-    val index = 12
+    val index = 14
     val name = "EXPIRED_FROM_TOKEN"
     override def isExpiredFromToken: Boolean = true
   }
   
   @SerialVersionUID(0L)
-  case object UPDATE_INVALID_KEY extends ResultCode {
+  case object ILLEGAL_ARGUMENT extends ResultCode {
     val value = 50001
-    val index = 13
-    val name = "UPDATE_INVALID_KEY"
-    override def isUpdateInvalidKey: Boolean = true
-  }
-  
-  @SerialVersionUID(0L)
-  case object UPDATE_INVALID_VALUE extends ResultCode {
-    val value = 50002
-    val index = 14
-    val name = "UPDATE_INVALID_VALUE"
-    override def isUpdateInvalidValue: Boolean = true
+    val index = 15
+    val name = "ILLEGAL_ARGUMENT"
+    override def isIllegalArgument: Boolean = true
   }
   
   @SerialVersionUID(0L)
@@ -157,7 +166,7 @@ object ResultCode extends com.trueaccord.scalapb.GeneratedEnumCompanion[ResultCo
     override def isUnrecognized: Boolean = true
   }
   
-  lazy val values = Seq(SUCCESS, INTERNAL_SERVER_ERROR, REQUEST_RESOURCE_NOT_FOUND, METHOD_NOT_ALLOW, MESSAGE_TYPE_ERROR, INVALID_MESSAGE, INVALID_PHONENUM, PHONENUM_ALREADY_EXISTED, INVALID_USER, INVALID_PASSWORD, INVALID_SESSION_TOKEN, INVALID_FROM_TOKEN, EXPIRED_FROM_TOKEN, UPDATE_INVALID_KEY, UPDATE_INVALID_VALUE)
+  lazy val values = Seq(SUCCESS, INTERNAL_SERVER_ERROR, REQUEST_RESOURCE_NOT_FOUND, METHOD_NOT_ALLOW, MESSAGE_TYPE_ERROR, INVALID_MESSAGE, INVALID_PHONENUM, INVALID_EMAIL, PHONENUM_ALREADY_EXISTED, EMAIL_ALREADY_EXISTED, INVALID_PASSWORD, INVALID_SESSION_TOKEN, SESSION_TOKEN_EXPIRED, INVALID_FROM_TOKEN, EXPIRED_FROM_TOKEN, ILLEGAL_ARGUMENT)
   def fromValue(value: Int): ResultCode = value match {
     case 0 => SUCCESS
     case 10000 => INTERNAL_SERVER_ERROR
@@ -166,15 +175,16 @@ object ResultCode extends com.trueaccord.scalapb.GeneratedEnumCompanion[ResultCo
     case 10003 => MESSAGE_TYPE_ERROR
     case 10004 => INVALID_MESSAGE
     case 20001 => INVALID_PHONENUM
-    case 20002 => PHONENUM_ALREADY_EXISTED
-    case 20003 => INVALID_USER
-    case 20004 => INVALID_PASSWORD
+    case 20002 => INVALID_EMAIL
+    case 20005 => PHONENUM_ALREADY_EXISTED
+    case 20006 => EMAIL_ALREADY_EXISTED
+    case 20011 => INVALID_PASSWORD
     case 30001 => INVALID_SESSION_TOKEN
+    case 30002 => SESSION_TOKEN_EXPIRED
     case 40001 => INVALID_FROM_TOKEN
     case 40002 => EXPIRED_FROM_TOKEN
-    case 50001 => UPDATE_INVALID_KEY
-    case 50002 => UPDATE_INVALID_VALUE
+    case 50001 => ILLEGAL_ARGUMENT
     case __other => Unrecognized(__other)
   }
-  def descriptor: com.google.protobuf.Descriptors.EnumDescriptor = ProtocolComEchoProtocolProto.descriptor.getEnumTypes.get(3)
+  def descriptor: com.google.protobuf.Descriptors.EnumDescriptor = ProtocolProtocolProto.descriptor.getEnumTypes.get(3)
 }

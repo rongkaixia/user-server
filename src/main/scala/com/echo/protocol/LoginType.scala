@@ -76,5 +76,5 @@ object LoginType extends com.trueaccord.scalapb.GeneratedEnumCompanion[LoginType
     case 4 => LOGIN_BY_WEIBO
     case __other => Unrecognized(__other)
   }
-  def descriptor: com.google.protobuf.Descriptors.EnumDescriptor = ProtocolComEchoProtocolProto.descriptor.getEnumTypes.get(1)
+  def descriptor: com.google.protobuf.Descriptors.EnumDescriptor = ProtocolProtocolProto.descriptor.getEnumTypes.get(1)
 }

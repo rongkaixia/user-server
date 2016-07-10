@@ -66,5 +66,5 @@ object AuthType extends com.trueaccord.scalapb.GeneratedEnumCompanion[AuthType] 
     case 3 => WEIBO
     case __other => Unrecognized(__other)
   }
-  def descriptor: com.google.protobuf.Descriptors.EnumDescriptor = ProtocolComEchoProtocolProto.descriptor.getEnumTypes.get(2)
+  def descriptor: com.google.protobuf.Descriptors.EnumDescriptor = ProtocolProtocolProto.descriptor.getEnumTypes.get(2)
 }

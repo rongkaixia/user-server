@@ -92,7 +92,7 @@ object Message extends com.trueaccord.scalapb.GeneratedMessageCompanion[Message]
 __fieldsMap.get(__fields.get(2)).asInstanceOf[scala.Option[com.echo.protocol.Response]].map(com.echo.protocol.Message.Body.Response(_)) getOrElse com.echo.protocol.Message.Body.Empty
     )
   }
-  def descriptor: com.google.protobuf.Descriptors.Descriptor = ProtocolComEchoProtocolProto.descriptor.getMessageTypes.get(2)
+  def descriptor: com.google.protobuf.Descriptors.Descriptor = ProtocolProtocolProto.descriptor.getMessageTypes.get(2)
   def messageCompanionForField(__field: com.google.protobuf.Descriptors.FieldDescriptor): com.trueaccord.scalapb.GeneratedMessageCompanion[_] = {
     require(__field.getContainingType() == descriptor, "FieldDescriptor does not match message type.")
     var __out: com.trueaccord.scalapb.GeneratedMessageCompanion[_] = null

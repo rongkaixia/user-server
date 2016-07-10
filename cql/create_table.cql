@@ -3,10 +3,9 @@ CREATE KEYSPACE IF NOT EXISTS user_keyspace WITH REPLICATION =
 { 'class' : 'SimpleStrategy', 'replication_factor' : 1 };
 
 DROP TABLE user_keyspace.user_info;
-DROP TABLE user_keyspace.user_by_phonenum;
-DROP TABLE user_keyspace.user_by_email;
 DROP TABLE user_keyspace.auth;
 DROP TABLE user_keyspace.security_question;
+DROP TABLE user_keyspace.user_address;
 
 
 USE user_keyspace;
@@ -40,10 +39,20 @@ CREATE TABLE auth(
 	auth_expires timestamp,
 	PRIMARY KEY(auth_access_token, auth_name, auth_id)
 );
-CREATE INDEX ON auth(auth_name);
+// CREATE INDEX ON auth(auth_name);
 
 CREATE TABLE security_question(
-	id UUID,
+	id text,
 	content text,
 	PRIMARY KEY(id)
+);
+
+CREATE TABLE user_address(
+	id text,
+	user_id text,
+	recipientsName text,
+	recipientsPhone text,
+	recipientsAddress text,
+	recipientsPostcode text,
+	PRIMARY KEY(id, user_id)
 );

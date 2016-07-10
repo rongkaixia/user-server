@@ -96,5 +96,5 @@ object MsgType extends com.trueaccord.scalapb.GeneratedEnumCompanion[MsgType] {
     case 65538 => AUTHENTICATION_RESPONSE
     case __other => Unrecognized(__other)
   }
-  def descriptor: com.google.protobuf.Descriptors.EnumDescriptor = ProtocolComEchoProtocolProto.descriptor.getEnumTypes.get(0)
+  def descriptor: com.google.protobuf.Descriptors.EnumDescriptor = ProtocolProtocolProto.descriptor.getEnumTypes.get(0)
 }

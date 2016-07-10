@@ -26,7 +26,7 @@ import io.jsonwebtoken.impl.crypto.MacProvider
 import org.json4s.native.Json
 import org.json4s.DefaultFormats
 
-import com.echo.protocol.{Request, Response, LoginType, AuthType, ResultCode}
+import com.echo.protocol._
 import com.echo.common._
 import com.echo.common.CassandraClient._
 
@@ -61,6 +61,15 @@ class CaptainService() extends Actor with akka.actor.ActorLogging{
   val authUsernameColumn = cfg.getString("echo.captain.cassandra.auth_tables.columns.username")
   val authTokenColumn = cfg.getString("echo.captain.cassandra.auth_tables.columns.auth_access_token")
   val authExpiresColumn = cfg.getString("echo.captain.cassandra.auth_tables.columns.auth_expires")
+
+  // cassandra address table config
+  val addressTable = cfg.getString("echo.captain.cassandra.address_tables.address_table")
+  val addressIDColumn = cfg.getString("echo.captain.cassandra.address_tables.columns.address_id")
+  val addressUserIDColumn = cfg.getString("echo.captain.cassandra.address_tables.columns.user_id")
+  val recipientsNameColumn = cfg.getString("echo.captain.cassandra.address_tables.columns.recipients_name")
+  val recipientsPhoneColumn = cfg.getString("echo.captain.cassandra.address_tables.columns.recipients_phone")
+  val recipientsAddressColumn = cfg.getString("echo.captain.cassandra.address_tables.columns.recipients_address")
+  val recipientsPostCodeColumn = cfg.getString("echo.captain.cassandra.address_tables.columns.recipients_postcode")
 
   // cassandra connection
   var client: Option[CassandraClient] = None
@@ -101,6 +110,30 @@ class CaptainService() extends Actor with akka.actor.ActorLogging{
   } 
 
   // ===========begin main function=============
+  def getUserAddresses(id: String): Future[Seq[Response.QueryUserInfoResponse.AddressData]] = {
+    async{
+      log.debug("getUserAddresses")
+      val session = client.get.getSession
+      val queryString = "select * from " + addressTable + " WHERE " +
+                        addressUserIDColumn + "=? ALLOW FILTERING"
+      log.debug("queryString: " + queryString)
+      val statement = session.prepare(queryString)
+      val boundStatement = new BoundStatement(statement).setString(0, id)
+      val res = await(session.executeAsync(boundStatement).toScalaFuture)
+      res.all.asScala.toList.map(row => {
+        val id = row.getString(addressIDColumn)
+        val name = row.getString(recipientsNameColumn)
+        val phonenum = row.getString(recipientsPhoneColumn)
+        val address = row.getString(recipientsAddressColumn)
+        var addressData = new Response.QueryUserInfoResponse.AddressData()
+        if (id != null) addressData = addressData.withId(id)
+        if (name != null) addressData = addressData.withRecipientsName(name)
+        if (phonenum != null) addressData = addressData.withRecipientsPhone(phonenum)
+        if (address != null) addressData = addressData.withRecipientsAddress(address)
+        addressData
+      }).toSeq
+    }
+  }
   def getUserInfo(id: String): Future[UserInfo] = {
     async{
       log.info("getUserInfo")
@@ -112,6 +145,7 @@ class CaptainService() extends Actor with akka.actor.ActorLogging{
       val boundStatement = new BoundStatement(statement).setString(0, id)
       val res = await(session.executeAsync(boundStatement).toScalaFuture)
       val row = res.all.asScala.toList.head
+      val addresses = await(getUserAddresses(id))
       new UserInfo(id = id, 
                    username = row.getString(usernameColumn),
                    email = row.getString(emailColumn),
@@ -121,7 +155,8 @@ class CaptainService() extends Actor with akka.actor.ActorLogging{
                    securityQuestion3 = row.getString(secQues3Column),
                    securityQuestion1Ans = row.getString(secQues1AnsColumn),
                    securityQuestion2Ans = row.getString(secQues2AnsColumn),
-                   securityQuestion3Ans = row.getString(secQues3AnsColumn))
+                   securityQuestion3Ans = row.getString(secQues3AnsColumn),
+                   addresses = addresses)
     }
   }
 
@@ -315,7 +350,7 @@ class CaptainService() extends Actor with akka.actor.ActorLogging{
           (LoginType.LOGIN_TYPE_EMPTY, "")
       }
       if (loginType == LoginType.LOGIN_TYPE_EMPTY || name.isEmpty){
-        response.withResult(ResultCode.INVALID_USER)
+        response.withResult(ResultCode.ILLEGAL_ARGUMENT)
                 .withErrorDescription("name cannot be empty.")
                 .withLoginResponse(new Response.LoginResponse())
       }
@@ -334,7 +369,7 @@ class CaptainService() extends Actor with akka.actor.ActorLogging{
         }
         log.info("isUserExisted: " + userExisted)
         if (!userExisted){
-          response.withResult(ResultCode.INVALID_USER)
+          response.withResult(ResultCode.ILLEGAL_ARGUMENT)
                   .withErrorDescription("user " + name + " not existed.")
                   .withLoginResponse(new Response.LoginResponse())
         }else{
@@ -493,71 +528,360 @@ class CaptainService() extends Actor with akka.actor.ActorLogging{
     future
   }
 
-  def handleUpdateUserInfoRequest(req: Request.UpdateUserInfoRequest): Future[Response] = {
-    val future = async{
-      var response = new Response()
-      // check request
-      // 
-      
-      val userID: String = req.userId
-      val key: String = req.key
-      val value: String = req.value
-      if (userID.isEmpty) {
-        response.withResult(ResultCode.INVALID_USER)
-                .withUpdateUserInfoResponse(new Response.UpdateUserInfoResponse())
-      }else if (key.isEmpty) {
-        response.withResult(ResultCode.UPDATE_INVALID_KEY)
-                .withUpdateUserInfoResponse(new Response.UpdateUserInfoResponse())
-      }else if (value.isEmpty) {
-        response.withResult(ResultCode.UPDATE_INVALID_VALUE)
-                .withUpdateUserInfoResponse(new Response.UpdateUserInfoResponse())
-      }else {
-        log.debug("updating user info, key = " + key + ", value = " + value)
-        await(updateUserInfo(userID, key, value))
-        response.withResult(ResultCode.SUCCESS)
-                .withUpdateUserInfoResponse(new Response.UpdateUserInfoResponse())
-      }
-    }
-    // just log
-    future onFailure {
-      case error: Throwable => 
-        log.error("handleUpdateUserInfoRequest async{...} error: " + error)
-    }
-    future
-  }
-
   def handleQueryUserInfoRequest(req: Request.QueryUserInfoRequest): Future[Response] = {
     val future = async{
       var response = new Response()
       // check request
-      // 
-      
-      val userID: String = req.userId
-      if (userID.isEmpty) {
-        response.withResult(ResultCode.INVALID_USER)
-                .withUpdateUserInfoResponse(new Response.UpdateUserInfoResponse())
+      val token: String = req.token
+      if (token.isEmpty) {
+        response.withResult(ResultCode.INVALID_SESSION_TOKEN)
+                .withErrorDescription("token cannot be empty.")
+                .withQueryUserInfoResponse(new Response.QueryUserInfoResponse())
       }else {
-        log.debug("getting user info for userID=" + userID)
-        val user = await(getUserInfo(userID))
-        var res = new Response.QueryUserInfoResponse()
-                               .withUserId(user.id)
-                               .withUsername(user.username)
-        if (user.email != null) res = res.withEmail(user.email)
-        if (user.phonenum != null) res = res.withPhonenum(user.phonenum)
-        if (user.securityQuestion1 != null) res = res.withSecurityQuestion1(user.securityQuestion1)
-        if (user.securityQuestion2 != null) res = res.withSecurityQuestion2(user.securityQuestion2)
-        if (user.securityQuestion3 != null) res = res.withSecurityQuestion3(user.securityQuestion3)
-        if (user.securityQuestion1Ans != null) res = res.withSecurityQuestion1Ans(user.securityQuestion1Ans)
-        if (user.securityQuestion2Ans != null) res = res.withSecurityQuestion2Ans(user.securityQuestion2Ans)
-        if (user.securityQuestion3Ans != null) res = res.withSecurityQuestion3Ans(user.securityQuestion3Ans)
+        val (isExpired: Boolean, expiresIn: Int, userID: String, username: String) = await(isTokenExpired(token))
+        if (isExpired) {
+          response.withResult(ResultCode.SESSION_TOKEN_EXPIRED)
+                  .withErrorDescription("user is not logged in or token is expired.")
+                  .withQueryUserInfoResponse(new Response.QueryUserInfoResponse())
+        }else {
+          val user = await(getUserInfo(userID))
+          var res = new Response.QueryUserInfoResponse()
+                                 .withUserId(user.id)
+                                 .withUsername(user.username)
+          if (user.email != null) res = res.withEmail(user.email)
+          if (user.phonenum != null) res = res.withPhonenum(user.phonenum)
+          if (user.securityQuestion1 != null) res = res.withSecurityQuestion1(user.securityQuestion1)
+          if (user.securityQuestion2 != null) res = res.withSecurityQuestion2(user.securityQuestion2)
+          if (user.securityQuestion3 != null) res = res.withSecurityQuestion3(user.securityQuestion3)
+          if (user.securityQuestion1Ans != null) res = res.withSecurityQuestion1Ans(user.securityQuestion1Ans)
+          if (user.securityQuestion2Ans != null) res = res.withSecurityQuestion2Ans(user.securityQuestion2Ans)
+          if (user.securityQuestion3Ans != null) res = res.withSecurityQuestion3Ans(user.securityQuestion3Ans)
+          if (user.addresses != null) res = res.withAddressArray(user.addresses)
 
-        response.withResult(ResultCode.SUCCESS).withQueryUserInfoResponse(res)
+          response.withResult(ResultCode.SUCCESS).withQueryUserInfoResponse(res)
+        }
       }
     }
     // just log
     future onFailure {
       case error: Throwable => 
         log.error("handleQueryUserInfoRequest async{...} error: " + error)
+    }
+    future
+  }
+
+  def handleUpdateUsernameRequest(req: Request.UpdateUsernameRequest): Future[Response] = {
+    val future = async{
+      var response = new Response()
+      // check request
+      req match {
+        case _ if req.token.isEmpty =>
+          response.withResult(ResultCode.INVALID_SESSION_TOKEN)
+                  .withErrorDescription("token cannot be empty.")
+        case _ if req.newUsername.isEmpty =>
+          response.withResult(ResultCode.ILLEGAL_ARGUMENT)
+                  .withErrorDescription("new_usernmae cannot be empty.")
+        case _ =>
+          val (isExpired: Boolean, expiresIn: Int, userID: String, username: String) = 
+            await(isTokenExpired(req.token))
+          if (isExpired) {
+            response.withResult(ResultCode.SESSION_TOKEN_EXPIRED)
+                    .withErrorDescription("user is not logged in or token is expired.")
+          }else {
+            val newUsername = req.newUsername
+            val key = usernameColumn
+            val value = newUsername
+            log.debug("updating user info, key = " + key + ", value = " + value)
+            await(updateUserInfo(userID, key, value))
+            response.withResult(ResultCode.SUCCESS)
+          }
+      }
+    }
+    // just log
+    future onFailure {
+      case error: Throwable => 
+        log.error("handleUpdateUsernameRequest async{...} error: " + error)
+    }
+    future
+  }
+
+  def handleUpdatePhonenumRequest(req: Request.UpdatePhonenumRequest): Future[Response] = {
+    val future = async{
+      var response = new Response()
+      // check request
+      req match {
+        case _ if req.token.isEmpty =>
+          response.withResult(ResultCode.INVALID_SESSION_TOKEN)
+                  .withErrorDescription("token cannot be empty.")
+        case _ if req.newPhonenum.isEmpty =>
+          response.withResult(ResultCode.ILLEGAL_ARGUMENT)
+                  .withErrorDescription("new_phonenum cannot be empty.")
+        case _ =>
+          val (isExpired: Boolean, expiresIn: Int, userID: String, username: String) = 
+            await(isTokenExpired(req.token))
+          if (isExpired) {
+            response.withResult(ResultCode.SESSION_TOKEN_EXPIRED)
+                    .withErrorDescription("user is not logged in or token is expired.")
+          }else {
+            val newPhonenum = req.newPhonenum
+            val key = phoneColumn
+            val value = newPhonenum
+            log.debug("updating user info, key = " + key + ", value = " + value)
+            await(updateUserInfo(userID, key, value))
+            response.withResult(ResultCode.SUCCESS)
+          }
+      }
+    }
+    // just log
+    future onFailure {
+      case error: Throwable => 
+        log.error("handleUpdatePhonenumRequest async{...} error: " + error)
+    }
+    future
+  }
+
+  def handleUpdateEmailRequest(req: Request.UpdateEmailRequest): Future[Response] = {
+    val future = async{
+      var response = new Response()
+      // check request
+      req match {
+        case _ if req.token.isEmpty =>
+          response.withResult(ResultCode.INVALID_SESSION_TOKEN)
+                  .withErrorDescription("token cannot be empty.")
+        case _ if req.newEmail.isEmpty =>
+          response.withResult(ResultCode.ILLEGAL_ARGUMENT)
+                  .withErrorDescription("new_email cannot be empty.")
+        case _ =>
+          val (isExpired: Boolean, expiresIn: Int, userID: String, username: String) = 
+            await(isTokenExpired(req.token))
+          if (isExpired) {
+            response.withResult(ResultCode.SESSION_TOKEN_EXPIRED)
+                    .withErrorDescription("user is not logged in or token is expired.")
+          }else {
+            val newEmail = req.newEmail
+            val key = emailColumn
+            val value = newEmail
+            log.debug("updating user info, key = " + key + ", value = " + value)
+            await(updateUserInfo(userID, key, value))
+            response.withResult(ResultCode.SUCCESS)
+          }
+      }
+    }
+    // just log
+    future onFailure {
+      case error: Throwable => 
+        log.error("handleUpdateEmailRequest async{...} error: " + error)
+    }
+    future
+  }
+
+  def handleUpdatePasswordRequest(req: Request.UpdatePasswordRequest): Future[Response] = {
+    val future = async{
+      var response = new Response()
+      // check request
+      req match {
+        case _ if req.token.isEmpty =>
+          response.withResult(ResultCode.INVALID_SESSION_TOKEN)
+                  .withErrorDescription("token cannot be empty.")
+        case _ if req.newPassword.isEmpty =>
+          response.withResult(ResultCode.ILLEGAL_ARGUMENT)
+                  .withErrorDescription("new_password cannot be empty.")
+        case _ if req.oldPassword.isEmpty =>
+          response.withResult(ResultCode.ILLEGAL_ARGUMENT)
+                  .withErrorDescription("old_password cannot be empty.")
+
+        case _ =>
+          val (isExpired: Boolean, expiresIn: Int, userID: String, username: String) = 
+            await(isTokenExpired(req.token))
+          if (isExpired) {
+            response.withResult(ResultCode.SESSION_TOKEN_EXPIRED)
+                    .withErrorDescription("user is not logged in or token is expired.")
+          }else {
+            val oldPassword = req.oldPassword
+            val (isCorrected, _, _) = 
+              await(isPasswordCorrected(userInfoTable, userIDColumn, userID, oldPassword))
+            log.debug("update password isCorrected: " + isCorrected)
+            isCorrected match {
+              case false =>
+                response.withResult(ResultCode.INVALID_PASSWORD)
+                        .withErrorDescription("password incorrected.")
+              case true => 
+                val newPassword = req.newPassword
+                val key = passwordColumn
+                val value = newPassword
+                log.debug("updating user info, key = " + key + ", value = " + value)
+                await(updateUserInfo(userID, key, value))
+                response.withResult(ResultCode.SUCCESS)
+            }
+          }
+      }
+    }
+    // just log
+    future onFailure {
+      case error: Throwable => 
+        log.error("handleUpdatePasswordRequest async{...} error: " + error)
+    }
+    future
+  }
+
+  def updateUserAddress(addressID: String,
+                        userID: String,
+                        recipientsName: String,
+                        recipientsPhone: String,
+                        recipientsAddress: String): Future[Unit] = {
+    async {
+      val session = client.get.getSession
+      val updateString = "UPDATE " + addressTable + " SET " + 
+                          recipientsNameColumn + " = ?, " +
+                          recipientsPhoneColumn + " = ?, " +
+                          recipientsAddressColumn + " = ? " +
+                          " WHERE " + addressIDColumn + " = ? and " +
+                          addressUserIDColumn + " = ?"
+      log.debug("updateString: " + updateString)
+      val statement = session.prepare(updateString)
+      val boundStatement = new BoundStatement(statement).setString(recipientsNameColumn, recipientsName)
+                                                        .setString(recipientsPhoneColumn, recipientsPhone)
+                                                        .setString(recipientsAddressColumn, recipientsAddress)
+                                                        .setString(addressIDColumn, addressID)
+                                                        .setString(addressUserIDColumn, userID)
+      await(session.executeAsync(boundStatement).toScalaFuture)
+      log.debug("updateUserAddress success")
+    }
+  }
+
+  def deleteUserAddress(addressID: String): Future[Unit] = {
+    async {
+      val session = client.get.getSession
+      val deleteString = "DELETE FROM " + addressTable + 
+                          " WHERE " + addressIDColumn + " = ?"
+      log.debug("deleteString: " + deleteString)
+      val statement = session.prepare(deleteString)
+      val boundStatement = new BoundStatement(statement).setString(0, addressID)
+      await(session.executeAsync(boundStatement).toScalaFuture)
+      log.debug("deleteUserAddress success")
+    }
+  }
+
+  def handleAddUserAddressRequest(req: Request.AddUserAddressRequest): Future[Response] = {
+    val future = async{
+      var response = new Response()
+      // check request
+      req match {
+        case _ if req.token.isEmpty =>
+          response.withResult(ResultCode.INVALID_SESSION_TOKEN)
+                  .withErrorDescription("token cannot be empty.")
+        case _ if req.recipientsName.isEmpty =>
+          response.withResult(ResultCode.ILLEGAL_ARGUMENT)
+                  .withErrorDescription("recipientsName cannot be empty.")
+        case _ if req.recipientsPhone.isEmpty =>
+          response.withResult(ResultCode.ILLEGAL_ARGUMENT)
+                  .withErrorDescription("recipientsPhone cannot be empty.")
+        case _ if req.recipientsAddress.isEmpty =>
+          response.withResult(ResultCode.ILLEGAL_ARGUMENT)
+                  .withErrorDescription("recipientsAddress cannot be empty.")
+        case _ =>
+          val (isExpired: Boolean, expiresIn: Int, userID: String, username: String) = 
+            await(isTokenExpired(req.token))
+          if (isExpired) {
+            response.withResult(ResultCode.SESSION_TOKEN_EXPIRED)
+                    .withErrorDescription("user is not logged in or token is expired.")
+          }else {
+            val id = UUID.randomUUID.toString
+            log.debug("add new user address (" + id + "," + username + "," + req.recipientsName + "," +
+                      req.recipientsPhone + "," + req.recipientsAddress + ")")
+            await(updateUserAddress(addressID = id,
+                                    userID = userID,
+                                    recipientsName = req.recipientsName,
+                                    recipientsPhone = req.recipientsPhone,
+                                    recipientsAddress = req.recipientsAddress))
+            response.withResult(ResultCode.SUCCESS)
+          }
+      }
+    }
+    // just log
+    future onFailure {
+      case error: Throwable => 
+        log.error("handleAddUserAddressRequest async{...} error: " + error)
+    }
+    future
+  }
+
+  def handleUpdateUserAddressRequest(req: Request.UpdateUserAddressRequest): Future[Response] = {
+    val future = async{
+      var response = new Response()
+      // check request
+      req match {
+        case _ if req.token.isEmpty =>
+          response.withResult(ResultCode.INVALID_SESSION_TOKEN)
+                  .withErrorDescription("token cannot be empty.")
+        case _ if req.id.isEmpty =>
+          response.withResult(ResultCode.ILLEGAL_ARGUMENT)
+                  .withErrorDescription("id cannot be empty.")
+        case _ if req.recipientsName.isEmpty =>
+          response.withResult(ResultCode.ILLEGAL_ARGUMENT)
+                  .withErrorDescription("recipientsName cannot be empty.")
+        case _ if req.recipientsPhone.isEmpty =>
+          response.withResult(ResultCode.ILLEGAL_ARGUMENT)
+                  .withErrorDescription("recipientsPhone cannot be empty.")
+        case _ if req.recipientsAddress.isEmpty =>
+          response.withResult(ResultCode.ILLEGAL_ARGUMENT)
+                  .withErrorDescription("recipientsAddress cannot be empty.")
+        case _ =>
+          val (isExpired: Boolean, expiresIn: Int, userID: String, username: String) = 
+            await(isTokenExpired(req.token))
+          if (isExpired) {
+            response.withResult(ResultCode.SESSION_TOKEN_EXPIRED)
+                    .withErrorDescription("user is not logged in or token is expired.")
+          }else {
+            val id = req.id
+            log.debug("update user address (" + id + "," + username + "," + req.recipientsName + "," +
+                      req.recipientsPhone + "," + req.recipientsAddress + ")")
+            await(updateUserAddress(addressID = id,
+                                    userID = userID,
+                                    recipientsName = req.recipientsName,
+                                    recipientsPhone = req.recipientsPhone,
+                                    recipientsAddress = req.recipientsAddress))
+            response.withResult(ResultCode.SUCCESS)
+          }
+      }
+    }
+    // just log
+    future onFailure {
+      case error: Throwable => 
+        log.error("handleUpdateUserAddressRequest async{...} error: " + error)
+    }
+    future
+  }
+
+  def handleDeleteUserAddressRequest(req: Request.DeleteUserAddressRequest): Future[Response] = {
+    val future = async{
+      var response = new Response()
+      // check request
+      req match {
+        case _ if req.token.isEmpty =>
+          response.withResult(ResultCode.INVALID_SESSION_TOKEN)
+                  .withErrorDescription("token cannot be empty.")
+        case _ if req.id.isEmpty =>
+          response.withResult(ResultCode.ILLEGAL_ARGUMENT)
+                  .withErrorDescription("id cannot be empty.")
+        case _ =>
+          val (isExpired: Boolean, expiresIn: Int, userID: String, username: String) = 
+            await(isTokenExpired(req.token))
+          if (isExpired) {
+            response.withResult(ResultCode.SESSION_TOKEN_EXPIRED)
+                    .withErrorDescription("user is not logged in or token is expired.")
+          }else {
+            val id = req.id
+            log.debug("delete user address (" + id + ")")
+            await(deleteUserAddress(addressID = id))
+            response.withResult(ResultCode.SUCCESS)
+          }
+      }
+    }
+    // just log
+    future onFailure {
+      case error: Throwable => 
+        log.error("handleDeleteUserAddressRequest async{...} error: " + error)
     }
     future
   }
@@ -584,9 +908,35 @@ class CaptainService() extends Actor with akka.actor.ActorLogging{
       log.info("receive get user info request: " + req.toString)
       handleQueryUserInfoRequest(req) pipeTo sender
     }
-    case req: Request.UpdateUserInfoRequest => {
-      log.info("receive update user info request: " + req.toString)
-      handleUpdateUserInfoRequest(req) pipeTo sender
+    case req: Request.UpdateUsernameRequest => {
+      log.info("receive update username request: " + req.toString)
+      handleUpdateUsernameRequest(req) pipeTo sender
     }
+    case req: Request.UpdatePasswordRequest => {
+      log.info("receive update user password request: " + req.toString)
+      handleUpdatePasswordRequest(req) pipeTo sender
+    }
+    case req: Request.UpdatePhonenumRequest => {
+      log.info("receive update user phonenum request: " + req.toString)
+      handleUpdatePhonenumRequest(req) pipeTo sender
+    }
+    case req: Request.UpdateEmailRequest => {
+      log.info("receive update user email request: " + req.toString)
+      handleUpdateEmailRequest(req) pipeTo sender
+    }
+    case req: Request.AddUserAddressRequest => {
+      log.info("receive add user address request: " + req.toString)
+      handleAddUserAddressRequest(req) pipeTo sender
+    }
+    case req: Request.UpdateUserAddressRequest => {
+      log.info("receive update user address request: " + req.toString)
+      handleUpdateUserAddressRequest(req) pipeTo sender
+    }
+    case req: Request.DeleteUserAddressRequest => {
+      log.info("receive delete user address request: " + req.toString)
+      handleDeleteUserAddressRequest(req) pipeTo sender
+    }
+    case default => 
+      log.info("receive unknow request: " + default)
   }//receive
 }

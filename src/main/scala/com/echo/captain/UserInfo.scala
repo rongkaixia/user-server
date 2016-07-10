@@ -1,6 +1,7 @@
 package com.echo.captain
 
 import java.util.UUID
+import com.echo.protocol.Response.QueryUserInfoResponse.AddressData
 
 case class UserInfo(
   id: String,
@@ -12,5 +13,6 @@ case class UserInfo(
   securityQuestion3: String,
   securityQuestion1Ans: String,
   securityQuestion2Ans: String,
-  securityQuestion3Ans: String
+  securityQuestion3Ans: String,
+  addresses: Seq[AddressData]
 )

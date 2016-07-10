@@ -34,13 +34,6 @@ class RouterActor() extends HttpServiceActor with akka.actor.ActorLogging {
     }
 
   def packResponse(res: Response): Message = {
-    if (res.content.isLoginResponse)
-      new Message().withMsgType(MsgType.LOGIN_RESPONSE).withResponse(res)
-    else if(res.content.isSignupResponse)
-      new Message().withMsgType(MsgType.SIGNUP_RESPONSE).withResponse(res)
-    else if(res.content.isAuthenticationResponse)
-      new Message().withMsgType(MsgType.AUTHENTICATION_RESPONSE).withResponse(res)
-    else
       new Message().withResponse(res)
   }
 
@@ -82,72 +75,33 @@ class RouterActor() extends HttpServiceActor with akka.actor.ActorLogging {
       }
     }
 
-  def extractRequest[T](msg: Message)(implicit m: Manifest[T]): Directive1[T] = {
+  def handleRequest(msg: Message) = {
     log.info("extractRequest: " + msg)
     if (!msg.body.isRequest){
       log.info("invalid message, message MUST BE a request")
       reject(new InvalidMessageRejection("invalid message, message MUST BE a request"))
-    }else{
+    }else {
       val request = msg.getRequest
-      manifest[T] match {
-        case c if c == manifest[Request.LoginRequest] => {
-          log.debug("request.content.isLoginRequest: " + request.content.isLoginRequest)
-          if (!request.content.isLoginRequest){
-            reject(new InvalidMessageRejection("invalid message, message MUST BE a login request"))
-          }else{
-            provide(request.getLoginRequest.asInstanceOf[T])
-          }
-        }
-        case c if c == manifest[Request.SignupRequest] => {
-          log.debug("request.content.isSignupRequest: " + request.content.isSignupRequest)
-          if (!request.content.isSignupRequest){
-            reject(new InvalidMessageRejection("invalid message, message MUST BE a signup request"))
-          }else{
-            provide(request.getSignupRequest.asInstanceOf[T])
-          }
-        }
-        case c if c == manifest[Request.AuthenticationRequest] => {
-          log.debug("request.content.isAuthenticationRequest: " + request.content.isAuthenticationRequest)
-          if (!request.content.isAuthenticationRequest){
-            reject(new InvalidMessageRejection("invalid message, message MUST BE a authentication request"))
-          }else{
-            provide(request.getAuthenticationRequest.asInstanceOf[T])
-          }
-        }
-        case c if c == manifest[Request.LogoutRequest] => {
-          log.debug("request.content.isLogoutRequest: " + request.content.isLogoutRequest)
-          if (!request.content.isLogoutRequest){
-            reject(new InvalidMessageRejection("invalid message, message MUST BE a logout request"))
-          }else{
-            provide(request.getLogoutRequest.asInstanceOf[T])
-          }
-        }
-        case c if c == manifest[Request.QueryUserInfoRequest] => {
-          log.debug("request.content.isQueryUserInfoRequest: " + request.content.isQueryUserInfoRequest)
-          if (!request.content.isQueryUserInfoRequest){
-            reject(new InvalidMessageRejection("invalid message, message MUST BE a QueryUserInfoRequest"))
-          }else{
-            provide(request.getQueryUserInfoRequest.asInstanceOf[T])
-          }
-        }
-        case c if c == manifest[Request.UpdateUserInfoRequest] => {
-          log.debug("request.content.isUpdateUserInfoRequest: " + request.content.isUpdateUserInfoRequest)
-          if (!request.content.isUpdateUserInfoRequest){
-            reject(new InvalidMessageRejection("invalid message, message MUST BE a UpdateUserInfoRequest"))
-          }else{
-            provide(request.getUpdateUserInfoRequest.asInstanceOf[T])
-          }
-        }
-
-        case _ => {
-          log.error("unknow extractRequest type")
-          reject()
-        }
+      if (request.content.isSignupRequest) sendRequest(request.getSignupRequest)
+      else if (request.content.isLoginRequest) sendRequest(request.getLoginRequest)
+      else if (request.content.isLogoutRequest) sendRequest(request.getLogoutRequest)
+      else if (request.content.isAuthenticationRequest) sendRequest(request.getAuthenticationRequest)
+      else if (request.content.isQueryUserInfoRequest) sendRequest(request.getQueryUserInfoRequest)
+      else if (request.content.isUpdateUsernameRequest) sendRequest(request.getUpdateUsernameRequest)
+      else if (request.content.isUpdatePasswordRequest) sendRequest(request.getUpdatePasswordRequest)
+      else if (request.content.isUpdatePhonenumRequest) sendRequest(request.getUpdatePhonenumRequest)
+      else if (request.content.isUpdateEmailRequest) sendRequest(request.getUpdateEmailRequest)
+      else if (request.content.isAddUserAddressRequest) sendRequest(request.getAddUserAddressRequest)
+      else if (request.content.isUpdateUserAddressRequest) sendRequest(request.getUpdateUserAddressRequest)
+      else if (request.content.isDeleteUserAddressRequest) sendRequest(request.getDeleteUserAddressRequest)
+      else {
+        log.info("invalid message, request.content is not defined")
+        reject(new InvalidMessageRejection("invalid message, request.content is not defined"))
       }
     }
   }
 
-  def handleRequest[T](req: T) = {
+  def sendRequest[T](req: T) = {
     log.info("handleRequest: " + req)
     val f: Future[Response] = async{
       implicit val timeout = Timeout(actorTimeout milliseconds)
@@ -172,57 +126,10 @@ class RouterActor() extends HttpServiceActor with akka.actor.ActorLogging {
   }
 
   val router: Route = {
-    path("login") {
-      post { //这里记得千万不能有 `ctx =>`，不然inner route的所有reject都会失效，原因现在也不清楚
-        deserialize { msg =>
-          extractRequest[Request.LoginRequest](msg).apply { req =>
-            handleRequest(req)
-          }
-        }
-      }//post
-    }~
-    path("signup") {
+    path("api" / "v1.0") {
       post {
-        deserialize { msg =>
-          extractRequest[Request.SignupRequest](msg).apply { req =>
-            handleRequest(req)
-          }
-        }
-      }//post
-    }~
-    path("auth") {
-      post {
-        deserialize { msg =>
-          extractRequest[Request.AuthenticationRequest](msg).apply { req =>
-            handleRequest(req)
-          }
-        }
-      }//post
-    }~
-    path("logout") {
-      post {
-        deserialize { msg =>
-          extractRequest[Request.LogoutRequest](msg).apply { req =>
-            handleRequest(req)
-          }
-        }
-      }//post
-    }~
-    path("user" / "info" / "query") {
-      post {
-        deserialize { msg =>
-          extractRequest[Request.QueryUserInfoRequest](msg).apply { req =>
-            handleRequest(req)
-          }
-        }
-      }
-    }~
-    path("user" / "info" / "update") {
-      post {
-        deserialize { msg =>
-          extractRequest[Request.UpdateUserInfoRequest](msg).apply { req =>
-            handleRequest(req)
-          }
+        deserialize { msg => 
+          handleRequest(msg)
         }
       }
     }
