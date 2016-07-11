@@ -110,7 +110,7 @@ class CaptainService() extends Actor with akka.actor.ActorLogging{
   } 
 
   // ===========begin main function=============
-  def getUserAddresses(id: String): Future[Seq[Response.QueryUserInfoResponse.AddressData]] = {
+  def getUserAddresses(id: String): Future[Seq[UserAddress]] = {
     async{
       log.debug("getUserAddresses")
       val session = client.get.getSession
@@ -125,7 +125,7 @@ class CaptainService() extends Actor with akka.actor.ActorLogging{
         val name = row.getString(recipientsNameColumn)
         val phonenum = row.getString(recipientsPhoneColumn)
         val address = row.getString(recipientsAddressColumn)
-        var addressData = new Response.QueryUserInfoResponse.AddressData()
+        var addressData = new UserAddress()
         if (id != null) addressData = addressData.withId(id)
         if (name != null) addressData = addressData.withRecipientsName(name)
         if (phonenum != null) addressData = addressData.withRecipientsPhone(phonenum)
@@ -146,16 +146,25 @@ class CaptainService() extends Actor with akka.actor.ActorLogging{
       val res = await(session.executeAsync(boundStatement).toScalaFuture)
       val row = res.all.asScala.toList.head
       val addresses = await(getUserAddresses(id))
+      var securityQuestion1: SecurityQuestionPair = null
+      var securityQuestion2: SecurityQuestionPair = null
+      var securityQuestion3: SecurityQuestionPair = null
+      if (row.getString(secQues1Column) != null && row.getString(secQues1AnsColumn) != null)
+        securityQuestion1 = new SecurityQuestionPair().withQuestion(row.getString(secQues1Column))
+                                                      .withAnswer(row.getString(secQues1AnsColumn))
+      if (row.getString(secQues2Column) != null && row.getString(secQues2AnsColumn) != null)
+        securityQuestion2= new SecurityQuestionPair().withQuestion(row.getString(secQues2Column))
+                                                      .withAnswer(row.getString(secQues2AnsColumn))
+      if (row.getString(secQues3Column) != null && row.getString(secQues3AnsColumn) != null)
+        securityQuestion3 = new SecurityQuestionPair().withQuestion(row.getString(secQues3Column))
+                                                      .withAnswer(row.getString(secQues3AnsColumn))
       new UserInfo(id = id, 
                    username = row.getString(usernameColumn),
                    email = row.getString(emailColumn),
                    phonenum = row.getString(phoneColumn),
-                   securityQuestion1 = row.getString(secQues1Column),
-                   securityQuestion2 = row.getString(secQues2Column),
-                   securityQuestion3 = row.getString(secQues3Column),
-                   securityQuestion1Ans = row.getString(secQues1AnsColumn),
-                   securityQuestion2Ans = row.getString(secQues2AnsColumn),
-                   securityQuestion3Ans = row.getString(secQues3AnsColumn),
+                   securityQuestion1 = securityQuestion1,
+                   securityQuestion2 = securityQuestion2,
+                   securityQuestion3 = securityQuestion3,
                    addresses = addresses)
     }
   }
@@ -546,16 +555,13 @@ class CaptainService() extends Actor with akka.actor.ActorLogging{
         }else {
           val user = await(getUserInfo(userID))
           var res = new Response.QueryUserInfoResponse()
-                                 .withUserId(user.id)
-                                 .withUsername(user.username)
+          if (user.id != null) res = res.withUserId(user.id)
+          if (user.username != null) res = res.withUsername(user.username)
           if (user.email != null) res = res.withEmail(user.email)
           if (user.phonenum != null) res = res.withPhonenum(user.phonenum)
           if (user.securityQuestion1 != null) res = res.withSecurityQuestion1(user.securityQuestion1)
           if (user.securityQuestion2 != null) res = res.withSecurityQuestion2(user.securityQuestion2)
           if (user.securityQuestion3 != null) res = res.withSecurityQuestion3(user.securityQuestion3)
-          if (user.securityQuestion1Ans != null) res = res.withSecurityQuestion1Ans(user.securityQuestion1Ans)
-          if (user.securityQuestion2Ans != null) res = res.withSecurityQuestion2Ans(user.securityQuestion2Ans)
-          if (user.securityQuestion3Ans != null) res = res.withSecurityQuestion3Ans(user.securityQuestion3Ans)
           if (user.addresses != null) res = res.withAddressArray(user.addresses)
 
           response.withResult(ResultCode.SUCCESS).withQueryUserInfoResponse(res)

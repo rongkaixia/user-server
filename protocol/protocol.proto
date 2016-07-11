@@ -34,6 +34,19 @@ enum AuthType{
   WEIBO = 0x00000003;
 }
 
+message UserAddress{
+  string id = 1;
+  string recipients_name = 2;
+  string recipients_phone = 3;
+  string recipients_address = 4;
+  string recipients_postcode = 5;
+}
+
+message SecurityQuestionPair{
+  string question = 1;
+  string answer = 2;
+}
+
 message Request{
   oneof content {
     SignupRequest signup_request = 1001;
@@ -77,6 +90,13 @@ message Request{
 
   message QueryUserInfoRequest{
     string token = 1;
+
+    bool query_user_id = 2;
+    bool query_username = 3;
+    bool query_email = 4;
+    bool query_phonenum = 5;
+    bool query_security_questions = 6;
+    bool query_addresses = 7;
   }
 
   message UpdateUsernameRequest{
@@ -105,14 +125,10 @@ message Request{
   }
 
   message UpdateSecQuestionRequest{
-    message QuestionPair{
-      string question = 1;
-      string answer = 2;
-    }
     string token = 1;
-    QuestionPair security_question1 = 2;
-    QuestionPair security_question2 = 3;
-    QuestionPair security_question3 = 4;
+    SecurityQuestionPair security_question1 = 2;
+    SecurityQuestionPair security_question2 = 3;
+    SecurityQuestionPair security_question3 = 4;
   }
 
   message AddUserAddressRequest{
@@ -209,25 +225,14 @@ message Response{
   }
 
   message QueryUserInfoResponse{
-    message AddressData{
-      string id = 1;
-      string recipients_name = 2;
-      string recipients_phone = 3;
-      string recipients_address = 4;
-      string recipients_postcode = 5;
-    }
-
     string user_id = 2;
     string username = 3;
     string email = 4;
     string phonenum = 5;
-    string security_question1 = 6;
-    string security_question2 = 7;
-    string security_question3 = 8;
-    string security_question1_ans = 9;
-    string security_question2_ans = 10;
-    string security_question3_ans = 11;
-    repeated AddressData addressArray = 20;
+    SecurityQuestionPair security_question1 = 6;
+    SecurityQuestionPair security_question2 = 7;
+    SecurityQuestionPair security_question3 = 8;
+    repeated UserAddress addressArray = 20;
   }
 
   message UpdateUsernameResponse{

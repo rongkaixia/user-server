@@ -1,18 +1,16 @@
 package com.echo.captain
 
 import java.util.UUID
-import com.echo.protocol.Response.QueryUserInfoResponse.AddressData
+import com.echo.protocol.UserAddress
+import com.echo.protocol.SecurityQuestionPair
 
 case class UserInfo(
-  id: String,
-  username: String,
-  email: String,
-  phonenum: String,
-  securityQuestion1: String,
-  securityQuestion2: String,
-  securityQuestion3: String,
-  securityQuestion1Ans: String,
-  securityQuestion2Ans: String,
-  securityQuestion3Ans: String,
-  addresses: Seq[AddressData]
+  id: String = null,
+  username: String = null,
+  email: String = null,
+  phonenum: String = null,
+  securityQuestion1: SecurityQuestionPair = null,
+  securityQuestion2: SecurityQuestionPair = null,
+  securityQuestion3: SecurityQuestionPair = null,
+  addresses: Seq[UserAddress] = null
 )
