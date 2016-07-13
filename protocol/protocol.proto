@@ -3,7 +3,7 @@ syntax = "proto3";
 package com.echo;
 
 // ./scalapbc-0.5.26/bin/scalapbc protocol/protocol.proto --scala_out=./src/main/scala/
-// ../protoc-3.0.0-beta-3-osx-x86_64/protoc --js_out=import_style=commonjs,binary:. com.echo.protocol.proto
+// ./lib/protoc-3.0.0-beta-3-osx-x86_64/protoc --js_out=import_style=commonjs,binary:. ./lib/protocol/protocol.proto
 enum MsgType{
   MSG_TYPE_EMPTY = 0x00000000; // due to the bug of scalapbc, do not use EMPTY in your code
 
@@ -54,11 +54,7 @@ message Request{
     AuthenticationRequest authentication_request = 1003;
     LogoutRequest logout_request = 1004;
     QueryUserInfoRequest query_user_info_request = 1005;
-    UpdateUsernameRequest update_username_request = 1006;
-    UpdatePhonenumRequest update_phonenum_request = 1007;
-    UpdateEmailRequest update_email_request = 1008;
-    UpdatePasswordRequest update_password_request = 1009;
-    UpdateSecQuestionRequest update_sec_question_request = 1010;
+    UpdateUserInfoRequest update_user_info_request = 1006;
 
     AddUserAddressRequest add_user_address_request = 1100;
     UpdateUserAddressRequest update_user_address_request = 1101;
@@ -99,36 +95,21 @@ message Request{
     bool query_addresses = 7;
   }
 
-  message UpdateUsernameRequest{
+  message UpdateUserInfoRequest{
     string token = 1;
-    string old_username = 2;
-    string new_username = 3;
-  }
+    repeated UpdateData data = 2;
 
-  message UpdatePasswordRequest{
-    string token = 1;
-    string old_password = 2;
-    string new_password = 3;
-  }
-
-
-  message UpdatePhonenumRequest{
-    string token = 1;
-    string old_phonenum = 2;
-    string new_phonenum = 3;
-  }
-
-  message UpdateEmailRequest{
-    string token = 1;
-    string old_email = 2;
-    string new_email = 3;
-  }
-
-  message UpdateSecQuestionRequest{
-    string token = 1;
-    SecurityQuestionPair security_question1 = 2;
-    SecurityQuestionPair security_question2 = 3;
-    SecurityQuestionPair security_question3 = 4;
+    message UpdateData{
+      oneof value{
+        string username = 1;
+        string password = 2;
+        string email = 3;
+        string phonenum = 4;
+        SecurityQuestionPair security_question1 = 5;
+        SecurityQuestionPair security_question2 = 6;
+        SecurityQuestionPair security_question3 = 7;
+      }
+    }
   }
 
   message AddUserAddressRequest{
@@ -194,11 +175,8 @@ message Response{
     AuthenticationResponse authentication_response = 1003;
     LogoutResponse logout_response = 1004;
     QueryUserInfoResponse query_user_info_response = 1005;
-    UpdateUsernameResponse update_username_response = 1006;
-    UpdatePhonenumResponse update_phonenum_response = 1007;
-    UpdateEmailResponse update_email_response = 1008;
-    UpdatePasswordResponse update_password_response = 1009;
-    UpdateSecQuestionResponse update_sec_question_response = 1010;
+    UpdateUserInfoResponse update_user_info_response = 1006;
+
     AddUserAddressResponse add_user_address_reponse = 1100;
     UpdateUserAddressResponse update_user_address_reponse = 1101;
     DeleteUserAddressResponse delete_user_address_reponse = 1102;
@@ -235,20 +213,7 @@ message Response{
     repeated UserAddress addressArray = 20;
   }
 
-  message UpdateUsernameResponse{
-  }
-
-  message UpdatePasswordResponse{
-  
-  }
-
-  message UpdatePhonenumResponse{
-  }
-
-  message UpdateEmailResponse{
-  }
-
-  message UpdateSecQuestionResponse{
+  message UpdateUserInfoResponse{
   }
 
   message AddUserAddressResponse{
