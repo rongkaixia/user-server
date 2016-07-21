@@ -101,7 +101,15 @@ class CaptainService() extends Actor with akka.actor.ActorLogging{
   def initilize(): Unit = {
   }
 
-  def addPrefixToToken(token: String, tp: LoginType): String = {
+
+  def generateToken(subject: String): String = {
+    Jwts.builder()
+    .setSubject(subject)
+    .signWith(SignatureAlgorithm.HS512, jwtSecretKey)
+    .compact()
+  }
+
+  def addPrefixToToken(token: String, tp: LoginType = null): String = {
     tp match{
       case LoginType.LOGIN_BY_WECHAT => "wechat_" + token
       case LoginType.LOGIN_BY_WEIBO => "weibo_" + token
@@ -235,7 +243,7 @@ class CaptainService() extends Actor with akka.actor.ActorLogging{
                   .withSignupResponse(new Response.SignupResponse())
         }else{
           // insert user_info table
-          val id = UUID.randomUUID().toString // using random uuid as id
+          val userID = UUID.randomUUID().toString // using random uuid as id
           val username = phonenum
           log.info("inserting new user into user_info table")
           val insertString = "INSERT INTO " + userInfoTable + "(" +
@@ -245,7 +253,7 @@ class CaptainService() extends Actor with akka.actor.ActorLogging{
           log.debug("insertString: " + insertString)
           val currentTime = Instant.now
           val statement = session.prepare(insertString)
-          val boundStatement = new BoundStatement(statement).setString(0, id)
+          val boundStatement = new BoundStatement(statement).setString(0, userID)
                                                             .setString(1, username)
                                                             .setString(2, phonenum)
                                                             .setString(3, password)
@@ -253,7 +261,16 @@ class CaptainService() extends Actor with akka.actor.ActorLogging{
                                                             .setTimestamp(5, java.util.Date.from(currentTime))
           val res = await(session.executeAsync(boundStatement).toScalaFuture)
           log.info("insert new user success")
+          log.info("generate Json Web Token with " + userID + "...")
+          val token = addPrefixToToken(generateToken(userID))
+
+          log.info("token: " + token)
+          await(setTokenExpires(token, AuthType.LOCAL, "", userID, username, tokenExpiresIn))
           val signupResponse = new Response.SignupResponse()
+                                           .withUserId(userID)
+                                           .withUsername(username)
+                                           .withToken(token)
+                                           .withExpiresIn(tokenExpiresIn)
           response.withResult(ResultCode.SUCCESS)
                   .withErrorDescription("OK")
                   .withSignupResponse(signupResponse)
@@ -401,10 +418,7 @@ class CaptainService() extends Actor with akka.actor.ActorLogging{
                     .withLoginResponse(new Response.LoginResponse())
           }else{
             log.info("generate Json Web Token with " + userID + "...")
-            val token = addPrefixToToken(Jwts.builder()
-                                             .setSubject(userID)
-                                             .signWith(SignatureAlgorithm.HS512, jwtSecretKey)
-                                             .compact(), loginType)
+            val token = addPrefixToToken(generateToken(userID), loginType)
 
             log.info("token: " + token)
             await(setTokenExpires(token, AuthType.LOCAL, "", userID, username, tokenExpiresIn))
