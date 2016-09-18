@@ -1,0 +1,1 @@
+db.getCollection("auth").createIndex( { "expireAt": 1 }, { expireAfterSeconds: 0 } )
