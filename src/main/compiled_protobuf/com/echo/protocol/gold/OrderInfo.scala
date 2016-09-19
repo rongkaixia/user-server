@@ -7,6 +7,40 @@ package com.echo.protocol.gold
 
 
 
+/** @param title
+  *  商品名字
+  * @param productId
+  *  商品ID
+  * @param num
+  *  商品数量
+  * @param payMethod
+  *  支付模式
+  * @param deliverMethod
+  *  送货模式
+  * @param recipientsName
+  *  收货人
+  * @param recipientsPhone
+  *  电话
+  * @param recipientsAddress
+  *  地址
+  * @param recipientsPostcode
+  *  邮编
+  * @param comment
+  *  备注
+  * @param price
+  *  repeated string coupon_id = 13;
+  *   商品原始单价
+  * @param realPrice
+  *   商品实际单价，促销等情况
+  * @param discount
+  *   折扣，值的是优惠多少钱，如-100.11，而不是多少折
+  * @param payAmt
+  *   应支付价格 = real_price * num
+  * @param realPayAmt
+  *   实际支付价格 = real_price * num + discount
+  * @param state
+  *   订单状态
+  */
 @SerialVersionUID(0L)
 final case class OrderInfo(
     orderId: String = "",
@@ -29,7 +63,8 @@ final case class OrderInfo(
     state: com.echo.protocol.gold.OrderState = com.echo.protocol.gold.OrderState.ORDER_STATE_EMPTY
     ) extends com.trueaccord.scalapb.GeneratedMessage with com.trueaccord.scalapb.Message[OrderInfo] with com.trueaccord.lenses.Updatable[OrderInfo] {
     @transient
-    lazy val serializedSize: Int = {
+    private[this] var __serializedSizeCachedValue: Int = 0
+    private[this] def __computeSerializedValue(): Int = {
       var __size = 0
       if (orderId != "") { __size += com.google.protobuf.CodedOutputStream.computeStringSize(1, orderId) }
       if (userId != "") { __size += com.google.protobuf.CodedOutputStream.computeStringSize(2, userId) }
@@ -51,117 +86,125 @@ final case class OrderInfo(
       if (state != com.echo.protocol.gold.OrderState.ORDER_STATE_EMPTY) { __size += com.google.protobuf.CodedOutputStream.computeEnumSize(30, state.value) }
       __size
     }
-    def writeTo(output: com.google.protobuf.CodedOutputStream): Unit = {
+    final override def serializedSize: Int = {
+      var read = __serializedSizeCachedValue
+      if (read == 0) {
+        read = __computeSerializedValue()
+        __serializedSizeCachedValue = read
+      }
+      read
+    }
+    def writeTo(`_output__`: com.google.protobuf.CodedOutputStream): Unit = {
       {
         val __v = orderId
         if (__v != "") {
-          output.writeString(1, __v)
+          _output__.writeString(1, __v)
         }
       };
       {
         val __v = userId
         if (__v != "") {
-          output.writeString(2, __v)
+          _output__.writeString(2, __v)
         }
       };
       {
         val __v = title
         if (__v != "") {
-          output.writeString(3, __v)
+          _output__.writeString(3, __v)
         }
       };
       {
         val __v = productId
         if (__v != "") {
-          output.writeString(4, __v)
+          _output__.writeString(4, __v)
         }
       };
       {
         val __v = num
         if (__v != 0) {
-          output.writeInt32(5, __v)
+          _output__.writeInt32(5, __v)
         }
       };
       {
         val __v = payMethod
         if (__v != com.echo.protocol.gold.PayMethod.PAY_METHOD_EMPTY) {
-          output.writeEnum(6, __v.value)
+          _output__.writeEnum(6, __v.value)
         }
       };
       {
         val __v = deliverMethod
         if (__v != com.echo.protocol.gold.DeliverMethod.DELIVER_METHOD_EMPTY) {
-          output.writeEnum(7, __v.value)
+          _output__.writeEnum(7, __v.value)
         }
       };
       {
         val __v = recipientsName
         if (__v != "") {
-          output.writeString(8, __v)
+          _output__.writeString(8, __v)
         }
       };
       {
         val __v = recipientsPhone
         if (__v != "") {
-          output.writeString(9, __v)
+          _output__.writeString(9, __v)
         }
       };
       {
         val __v = recipientsAddress
         if (__v != "") {
-          output.writeString(10, __v)
+          _output__.writeString(10, __v)
         }
       };
       {
         val __v = recipientsPostcode
         if (__v != "") {
-          output.writeString(11, __v)
+          _output__.writeString(11, __v)
         }
       };
       {
         val __v = comment
         if (__v != "") {
-          output.writeString(12, __v)
+          _output__.writeString(12, __v)
         }
       };
       {
         val __v = price
         if (__v != 0.0) {
-          output.writeDouble(20, __v)
+          _output__.writeDouble(20, __v)
         }
       };
       {
         val __v = realPrice
         if (__v != 0.0) {
-          output.writeDouble(21, __v)
+          _output__.writeDouble(21, __v)
         }
       };
       {
         val __v = discount
         if (__v != 0.0) {
-          output.writeDouble(22, __v)
+          _output__.writeDouble(22, __v)
         }
       };
       {
         val __v = payAmt
         if (__v != 0.0) {
-          output.writeDouble(23, __v)
+          _output__.writeDouble(23, __v)
         }
       };
       {
         val __v = realPayAmt
         if (__v != 0.0) {
-          output.writeDouble(24, __v)
+          _output__.writeDouble(24, __v)
         }
       };
       {
         val __v = state
         if (__v != com.echo.protocol.gold.OrderState.ORDER_STATE_EMPTY) {
-          output.writeEnum(30, __v.value)
+          _output__.writeEnum(30, __v.value)
         }
       };
     }
-    def mergeFrom(__input: com.google.protobuf.CodedInputStream): com.echo.protocol.gold.OrderInfo = {
+    def mergeFrom(`_input__`: com.google.protobuf.CodedInputStream): com.echo.protocol.gold.OrderInfo = {
       var __orderId = this.orderId
       var __userId = this.userId
       var __title = this.title
@@ -182,46 +225,46 @@ final case class OrderInfo(
       var __state = this.state
       var _done__ = false
       while (!_done__) {
-        val _tag__ = __input.readTag()
+        val _tag__ = _input__.readTag()
         _tag__ match {
           case 0 => _done__ = true
           case 10 =>
-            __orderId = __input.readString()
+            __orderId = _input__.readString()
           case 18 =>
-            __userId = __input.readString()
+            __userId = _input__.readString()
           case 26 =>
-            __title = __input.readString()
+            __title = _input__.readString()
           case 34 =>
-            __productId = __input.readString()
+            __productId = _input__.readString()
           case 40 =>
-            __num = __input.readInt32()
+            __num = _input__.readInt32()
           case 48 =>
-            __payMethod = com.echo.protocol.gold.PayMethod.fromValue(__input.readEnum())
+            __payMethod = com.echo.protocol.gold.PayMethod.fromValue(_input__.readEnum())
           case 56 =>
-            __deliverMethod = com.echo.protocol.gold.DeliverMethod.fromValue(__input.readEnum())
+            __deliverMethod = com.echo.protocol.gold.DeliverMethod.fromValue(_input__.readEnum())
           case 66 =>
-            __recipientsName = __input.readString()
+            __recipientsName = _input__.readString()
           case 74 =>
-            __recipientsPhone = __input.readString()
+            __recipientsPhone = _input__.readString()
           case 82 =>
-            __recipientsAddress = __input.readString()
+            __recipientsAddress = _input__.readString()
           case 90 =>
-            __recipientsPostcode = __input.readString()
+            __recipientsPostcode = _input__.readString()
           case 98 =>
-            __comment = __input.readString()
+            __comment = _input__.readString()
           case 161 =>
-            __price = __input.readDouble()
+            __price = _input__.readDouble()
           case 169 =>
-            __realPrice = __input.readDouble()
+            __realPrice = _input__.readDouble()
           case 177 =>
-            __discount = __input.readDouble()
+            __discount = _input__.readDouble()
           case 185 =>
-            __payAmt = __input.readDouble()
+            __payAmt = _input__.readDouble()
           case 193 =>
-            __realPayAmt = __input.readDouble()
+            __realPayAmt = _input__.readDouble()
           case 240 =>
-            __state = com.echo.protocol.gold.OrderState.fromValue(__input.readEnum())
-          case tag => __input.skipField(tag)
+            __state = com.echo.protocol.gold.OrderState.fromValue(_input__.readEnum())
+          case tag => _input__.skipField(tag)
         }
       }
       com.echo.protocol.gold.OrderInfo(
@@ -343,9 +386,9 @@ final case class OrderInfo(
     def companion = com.echo.protocol.gold.OrderInfo
 }
 
-object OrderInfo extends com.trueaccord.scalapb.GeneratedMessageCompanion[OrderInfo] {
-  implicit def messageCompanion: com.trueaccord.scalapb.GeneratedMessageCompanion[OrderInfo] = this
-  def fromFieldsMap(__fieldsMap: Map[com.google.protobuf.Descriptors.FieldDescriptor, scala.Any]): com.echo.protocol.gold.OrderInfo = {
+object OrderInfo extends com.trueaccord.scalapb.GeneratedMessageCompanion[com.echo.protocol.gold.OrderInfo] {
+  implicit def messageCompanion: com.trueaccord.scalapb.GeneratedMessageCompanion[com.echo.protocol.gold.OrderInfo] = this
+  def fromFieldsMap(__fieldsMap: scala.collection.immutable.Map[com.google.protobuf.Descriptors.FieldDescriptor, scala.Any]): com.echo.protocol.gold.OrderInfo = {
     require(__fieldsMap.keys.forall(_.getContainingType() == descriptor), "FieldDescriptor does not match message type.")
     val __fields = descriptor.getFields
     com.echo.protocol.gold.OrderInfo(
@@ -381,7 +424,7 @@ object OrderInfo extends com.trueaccord.scalapb.GeneratedMessageCompanion[OrderI
   }
   lazy val defaultInstance = com.echo.protocol.gold.OrderInfo(
   )
-  implicit class OrderInfoLens[UpperPB](_l: com.trueaccord.lenses.Lens[UpperPB, OrderInfo]) extends com.trueaccord.lenses.ObjectLens[UpperPB, OrderInfo](_l) {
+  implicit class OrderInfoLens[UpperPB](_l: com.trueaccord.lenses.Lens[UpperPB, com.echo.protocol.gold.OrderInfo]) extends com.trueaccord.lenses.ObjectLens[UpperPB, com.echo.protocol.gold.OrderInfo](_l) {
     def orderId: com.trueaccord.lenses.Lens[UpperPB, String] = field(_.orderId)((c_, f_) => c_.copy(orderId = f_))
     def userId: com.trueaccord.lenses.Lens[UpperPB, String] = field(_.userId)((c_, f_) => c_.copy(userId = f_))
     def title: com.trueaccord.lenses.Lens[UpperPB, String] = field(_.title)((c_, f_) => c_.copy(title = f_))

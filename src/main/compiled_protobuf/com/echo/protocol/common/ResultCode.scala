@@ -22,7 +22,6 @@ sealed trait ResultCode extends com.trueaccord.scalapb.GeneratedEnum {
   def isInvalidPassword: Boolean = false
   def isInvalidSessionToken: Boolean = false
   def isSessionTokenExpired: Boolean = false
-  def isIllegalArgument: Boolean = false
   def isUnrecognized: Boolean = false
   def companion: com.trueaccord.scalapb.GeneratedEnumCompanion[ResultCode] = ResultCode
 }
@@ -134,21 +133,13 @@ object ResultCode extends com.trueaccord.scalapb.GeneratedEnumCompanion[ResultCo
   }
   
   @SerialVersionUID(0L)
-  case object ILLEGAL_ARGUMENT extends ResultCode {
-    val value = 60001
-    val index = 13
-    val name = "ILLEGAL_ARGUMENT"
-    override def isIllegalArgument: Boolean = true
-  }
-  
-  @SerialVersionUID(0L)
   case class Unrecognized(value: Int) extends ResultCode {
     val name = "UNRECOGNIZED"
     val index = -1
     override def isUnrecognized: Boolean = true
   }
   
-  lazy val values = Seq(RESULT_CODE_EMPTY, SUCCESS, INTERNAL_SERVER_ERROR, INVALID_REQUEST_ARGUMENT, ORDER_NOT_EXISTED, INVALID_ORDER_STATE, INVALID_PHONENUM, INVALID_EMAIL, PHONENUM_ALREADY_EXISTED, EMAIL_ALREADY_EXISTED, INVALID_PASSWORD, INVALID_SESSION_TOKEN, SESSION_TOKEN_EXPIRED, ILLEGAL_ARGUMENT)
+  lazy val values = scala.collection.Seq(RESULT_CODE_EMPTY, SUCCESS, INTERNAL_SERVER_ERROR, INVALID_REQUEST_ARGUMENT, ORDER_NOT_EXISTED, INVALID_ORDER_STATE, INVALID_PHONENUM, INVALID_EMAIL, PHONENUM_ALREADY_EXISTED, EMAIL_ALREADY_EXISTED, INVALID_PASSWORD, INVALID_SESSION_TOKEN, SESSION_TOKEN_EXPIRED)
   def fromValue(value: Int): ResultCode = value match {
     case 0 => RESULT_CODE_EMPTY
     case 1 => SUCCESS
@@ -163,7 +154,6 @@ object ResultCode extends com.trueaccord.scalapb.GeneratedEnumCompanion[ResultCo
     case 40011 => INVALID_PASSWORD
     case 50001 => INVALID_SESSION_TOKEN
     case 50002 => SESSION_TOKEN_EXPIRED
-    case 60001 => ILLEGAL_ARGUMENT
     case __other => Unrecognized(__other)
   }
   def descriptor: com.google.protobuf.Descriptors.EnumDescriptor = CommonProto.descriptor.getEnumTypes.get(0)

@@ -16,47 +16,56 @@ final case class AuthResponse(
     username: String = ""
     ) extends com.trueaccord.scalapb.GeneratedMessage with com.trueaccord.scalapb.Message[AuthResponse] with com.trueaccord.lenses.Updatable[AuthResponse] {
     @transient
-    lazy val serializedSize: Int = {
+    private[this] var __serializedSizeCachedValue: Int = 0
+    private[this] def __computeSerializedValue(): Int = {
       var __size = 0
-      if (header.isDefined) { __size += 1 + com.google.protobuf.CodedOutputStream.computeRawVarint32Size(header.get.serializedSize) + header.get.serializedSize }
+      if (header.isDefined) { __size += 1 + com.google.protobuf.CodedOutputStream.computeUInt32SizeNoTag(header.get.serializedSize) + header.get.serializedSize }
       if (isExpired != false) { __size += com.google.protobuf.CodedOutputStream.computeBoolSize(2, isExpired) }
       if (expiresIn != 0) { __size += com.google.protobuf.CodedOutputStream.computeInt32Size(3, expiresIn) }
       if (userId != "") { __size += com.google.protobuf.CodedOutputStream.computeStringSize(4, userId) }
       if (username != "") { __size += com.google.protobuf.CodedOutputStream.computeStringSize(5, username) }
       __size
     }
-    def writeTo(output: com.google.protobuf.CodedOutputStream): Unit = {
-      header.foreach { __v => 
-        output.writeTag(1, 2)
-        output.writeRawVarint32(__v.serializedSize)
-        __v.writeTo(output)
+    final override def serializedSize: Int = {
+      var read = __serializedSizeCachedValue
+      if (read == 0) {
+        read = __computeSerializedValue()
+        __serializedSizeCachedValue = read
+      }
+      read
+    }
+    def writeTo(`_output__`: com.google.protobuf.CodedOutputStream): Unit = {
+      header.foreach { __v =>
+        _output__.writeTag(1, 2)
+        _output__.writeUInt32NoTag(__v.serializedSize)
+        __v.writeTo(_output__)
       };
       {
         val __v = isExpired
         if (__v != false) {
-          output.writeBool(2, __v)
+          _output__.writeBool(2, __v)
         }
       };
       {
         val __v = expiresIn
         if (__v != 0) {
-          output.writeInt32(3, __v)
+          _output__.writeInt32(3, __v)
         }
       };
       {
         val __v = userId
         if (__v != "") {
-          output.writeString(4, __v)
+          _output__.writeString(4, __v)
         }
       };
       {
         val __v = username
         if (__v != "") {
-          output.writeString(5, __v)
+          _output__.writeString(5, __v)
         }
       };
     }
-    def mergeFrom(__input: com.google.protobuf.CodedInputStream): com.echo.protocol.captain.AuthResponse = {
+    def mergeFrom(`_input__`: com.google.protobuf.CodedInputStream): com.echo.protocol.captain.AuthResponse = {
       var __header = this.header
       var __isExpired = this.isExpired
       var __expiresIn = this.expiresIn
@@ -64,20 +73,20 @@ final case class AuthResponse(
       var __username = this.username
       var _done__ = false
       while (!_done__) {
-        val _tag__ = __input.readTag()
+        val _tag__ = _input__.readTag()
         _tag__ match {
           case 0 => _done__ = true
           case 10 =>
-            __header = Some(com.trueaccord.scalapb.LiteParser.readMessage(__input, __header.getOrElse(com.echo.protocol.common.ResponseHeader.defaultInstance)))
+            __header = Some(com.trueaccord.scalapb.LiteParser.readMessage(_input__, __header.getOrElse(com.echo.protocol.common.ResponseHeader.defaultInstance)))
           case 16 =>
-            __isExpired = __input.readBool()
+            __isExpired = _input__.readBool()
           case 24 =>
-            __expiresIn = __input.readInt32()
+            __expiresIn = _input__.readInt32()
           case 34 =>
-            __userId = __input.readString()
+            __userId = _input__.readString()
           case 42 =>
-            __username = __input.readString()
-          case tag => __input.skipField(tag)
+            __username = _input__.readString()
+          case tag => _input__.skipField(tag)
         }
       }
       com.echo.protocol.captain.AuthResponse(
@@ -120,9 +129,9 @@ final case class AuthResponse(
     def companion = com.echo.protocol.captain.AuthResponse
 }
 
-object AuthResponse extends com.trueaccord.scalapb.GeneratedMessageCompanion[AuthResponse] {
-  implicit def messageCompanion: com.trueaccord.scalapb.GeneratedMessageCompanion[AuthResponse] = this
-  def fromFieldsMap(__fieldsMap: Map[com.google.protobuf.Descriptors.FieldDescriptor, scala.Any]): com.echo.protocol.captain.AuthResponse = {
+object AuthResponse extends com.trueaccord.scalapb.GeneratedMessageCompanion[com.echo.protocol.captain.AuthResponse] {
+  implicit def messageCompanion: com.trueaccord.scalapb.GeneratedMessageCompanion[com.echo.protocol.captain.AuthResponse] = this
+  def fromFieldsMap(__fieldsMap: scala.collection.immutable.Map[com.google.protobuf.Descriptors.FieldDescriptor, scala.Any]): com.echo.protocol.captain.AuthResponse = {
     require(__fieldsMap.keys.forall(_.getContainingType() == descriptor), "FieldDescriptor does not match message type.")
     val __fields = descriptor.getFields
     com.echo.protocol.captain.AuthResponse(
@@ -145,7 +154,7 @@ object AuthResponse extends com.trueaccord.scalapb.GeneratedMessageCompanion[Aut
   def enumCompanionForField(__field: com.google.protobuf.Descriptors.FieldDescriptor): com.trueaccord.scalapb.GeneratedEnumCompanion[_] = throw new MatchError(__field)
   lazy val defaultInstance = com.echo.protocol.captain.AuthResponse(
   )
-  implicit class AuthResponseLens[UpperPB](_l: com.trueaccord.lenses.Lens[UpperPB, AuthResponse]) extends com.trueaccord.lenses.ObjectLens[UpperPB, AuthResponse](_l) {
+  implicit class AuthResponseLens[UpperPB](_l: com.trueaccord.lenses.Lens[UpperPB, com.echo.protocol.captain.AuthResponse]) extends com.trueaccord.lenses.ObjectLens[UpperPB, com.echo.protocol.captain.AuthResponse](_l) {
     def header: com.trueaccord.lenses.Lens[UpperPB, com.echo.protocol.common.ResponseHeader] = field(_.getHeader)((c_, f_) => c_.copy(header = Some(f_)))
     def optionalHeader: com.trueaccord.lenses.Lens[UpperPB, scala.Option[com.echo.protocol.common.ResponseHeader]] = field(_.header)((c_, f_) => c_.copy(header = f_))
     def isExpired: com.trueaccord.lenses.Lens[UpperPB, Boolean] = field(_.isExpired)((c_, f_) => c_.copy(isExpired = f_))

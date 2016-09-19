@@ -13,39 +13,48 @@ final case class DeleteUserAddressRequest(
     addressId: String = ""
     ) extends com.trueaccord.scalapb.GeneratedMessage with com.trueaccord.scalapb.Message[DeleteUserAddressRequest] with com.trueaccord.lenses.Updatable[DeleteUserAddressRequest] {
     @transient
-    lazy val serializedSize: Int = {
+    private[this] var __serializedSizeCachedValue: Int = 0
+    private[this] def __computeSerializedValue(): Int = {
       var __size = 0
       if (token != "") { __size += com.google.protobuf.CodedOutputStream.computeStringSize(1, token) }
       if (addressId != "") { __size += com.google.protobuf.CodedOutputStream.computeStringSize(2, addressId) }
       __size
     }
-    def writeTo(output: com.google.protobuf.CodedOutputStream): Unit = {
+    final override def serializedSize: Int = {
+      var read = __serializedSizeCachedValue
+      if (read == 0) {
+        read = __computeSerializedValue()
+        __serializedSizeCachedValue = read
+      }
+      read
+    }
+    def writeTo(`_output__`: com.google.protobuf.CodedOutputStream): Unit = {
       {
         val __v = token
         if (__v != "") {
-          output.writeString(1, __v)
+          _output__.writeString(1, __v)
         }
       };
       {
         val __v = addressId
         if (__v != "") {
-          output.writeString(2, __v)
+          _output__.writeString(2, __v)
         }
       };
     }
-    def mergeFrom(__input: com.google.protobuf.CodedInputStream): com.echo.protocol.captain.DeleteUserAddressRequest = {
+    def mergeFrom(`_input__`: com.google.protobuf.CodedInputStream): com.echo.protocol.captain.DeleteUserAddressRequest = {
       var __token = this.token
       var __addressId = this.addressId
       var _done__ = false
       while (!_done__) {
-        val _tag__ = __input.readTag()
+        val _tag__ = _input__.readTag()
         _tag__ match {
           case 0 => _done__ = true
           case 10 =>
-            __token = __input.readString()
+            __token = _input__.readString()
           case 18 =>
-            __addressId = __input.readString()
-          case tag => __input.skipField(tag)
+            __addressId = _input__.readString()
+          case tag => _input__.skipField(tag)
         }
       }
       com.echo.protocol.captain.DeleteUserAddressRequest(
@@ -71,9 +80,9 @@ final case class DeleteUserAddressRequest(
     def companion = com.echo.protocol.captain.DeleteUserAddressRequest
 }
 
-object DeleteUserAddressRequest extends com.trueaccord.scalapb.GeneratedMessageCompanion[DeleteUserAddressRequest] {
-  implicit def messageCompanion: com.trueaccord.scalapb.GeneratedMessageCompanion[DeleteUserAddressRequest] = this
-  def fromFieldsMap(__fieldsMap: Map[com.google.protobuf.Descriptors.FieldDescriptor, scala.Any]): com.echo.protocol.captain.DeleteUserAddressRequest = {
+object DeleteUserAddressRequest extends com.trueaccord.scalapb.GeneratedMessageCompanion[com.echo.protocol.captain.DeleteUserAddressRequest] {
+  implicit def messageCompanion: com.trueaccord.scalapb.GeneratedMessageCompanion[com.echo.protocol.captain.DeleteUserAddressRequest] = this
+  def fromFieldsMap(__fieldsMap: scala.collection.immutable.Map[com.google.protobuf.Descriptors.FieldDescriptor, scala.Any]): com.echo.protocol.captain.DeleteUserAddressRequest = {
     require(__fieldsMap.keys.forall(_.getContainingType() == descriptor), "FieldDescriptor does not match message type.")
     val __fields = descriptor.getFields
     com.echo.protocol.captain.DeleteUserAddressRequest(
@@ -86,7 +95,7 @@ object DeleteUserAddressRequest extends com.trueaccord.scalapb.GeneratedMessageC
   def enumCompanionForField(__field: com.google.protobuf.Descriptors.FieldDescriptor): com.trueaccord.scalapb.GeneratedEnumCompanion[_] = throw new MatchError(__field)
   lazy val defaultInstance = com.echo.protocol.captain.DeleteUserAddressRequest(
   )
-  implicit class DeleteUserAddressRequestLens[UpperPB](_l: com.trueaccord.lenses.Lens[UpperPB, DeleteUserAddressRequest]) extends com.trueaccord.lenses.ObjectLens[UpperPB, DeleteUserAddressRequest](_l) {
+  implicit class DeleteUserAddressRequestLens[UpperPB](_l: com.trueaccord.lenses.Lens[UpperPB, com.echo.protocol.captain.DeleteUserAddressRequest]) extends com.trueaccord.lenses.ObjectLens[UpperPB, com.echo.protocol.captain.DeleteUserAddressRequest](_l) {
     def token: com.trueaccord.lenses.Lens[UpperPB, String] = field(_.token)((c_, f_) => c_.copy(token = f_))
     def addressId: com.trueaccord.lenses.Lens[UpperPB, String] = field(_.addressId)((c_, f_) => c_.copy(addressId = f_))
   }

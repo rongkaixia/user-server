@@ -10,7 +10,7 @@ package com.echo.protocol.gold
 object GoldProto {
   lazy val descriptor: com.google.protobuf.Descriptors.FileDescriptor = {
     val proto = com.google.protobuf.DescriptorProtos.FileDescriptorProto.parseFrom(
-      com.trueaccord.scalapb.Encoding.fromBase64(Seq(
+      com.trueaccord.scalapb.Encoding.fromBase64(scala.collection.Seq(
   """Cgpnb2xkLnByb3RvEhZjb20uZWNoby5wcm90b2NvbC5nb2xkGgxjb21tb24ucHJvdG8izAMKDE9yZGVyUmVxdWVzdBIXCgd1c
   2VyX2lkGAEgASgJUgZ1c2VySWQSFAoFdGl0bGUYAiABKAlSBXRpdGxlEh0KCnByb2R1Y3RfaWQYAyABKAlSCXByb2R1Y3RJZBIQC
   gNudW0YBCABKAVSA251bRJACgpwYXlfbWV0aG9kGAUgASgOMiEuY29tLmVjaG8ucHJvdG9jb2wuZ29sZC5QYXlNZXRob2RSCXBhe

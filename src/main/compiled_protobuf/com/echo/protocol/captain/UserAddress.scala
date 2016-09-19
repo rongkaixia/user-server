@@ -16,7 +16,8 @@ final case class UserAddress(
     recipientsPostcode: String = ""
     ) extends com.trueaccord.scalapb.GeneratedMessage with com.trueaccord.scalapb.Message[UserAddress] with com.trueaccord.lenses.Updatable[UserAddress] {
     @transient
-    lazy val serializedSize: Int = {
+    private[this] var __serializedSizeCachedValue: Int = 0
+    private[this] def __computeSerializedValue(): Int = {
       var __size = 0
       if (addressId != "") { __size += com.google.protobuf.CodedOutputStream.computeStringSize(1, addressId) }
       if (recipientsName != "") { __size += com.google.protobuf.CodedOutputStream.computeStringSize(2, recipientsName) }
@@ -25,39 +26,47 @@ final case class UserAddress(
       if (recipientsPostcode != "") { __size += com.google.protobuf.CodedOutputStream.computeStringSize(5, recipientsPostcode) }
       __size
     }
-    def writeTo(output: com.google.protobuf.CodedOutputStream): Unit = {
+    final override def serializedSize: Int = {
+      var read = __serializedSizeCachedValue
+      if (read == 0) {
+        read = __computeSerializedValue()
+        __serializedSizeCachedValue = read
+      }
+      read
+    }
+    def writeTo(`_output__`: com.google.protobuf.CodedOutputStream): Unit = {
       {
         val __v = addressId
         if (__v != "") {
-          output.writeString(1, __v)
+          _output__.writeString(1, __v)
         }
       };
       {
         val __v = recipientsName
         if (__v != "") {
-          output.writeString(2, __v)
+          _output__.writeString(2, __v)
         }
       };
       {
         val __v = recipientsPhone
         if (__v != "") {
-          output.writeString(3, __v)
+          _output__.writeString(3, __v)
         }
       };
       {
         val __v = recipientsAddress
         if (__v != "") {
-          output.writeString(4, __v)
+          _output__.writeString(4, __v)
         }
       };
       {
         val __v = recipientsPostcode
         if (__v != "") {
-          output.writeString(5, __v)
+          _output__.writeString(5, __v)
         }
       };
     }
-    def mergeFrom(__input: com.google.protobuf.CodedInputStream): com.echo.protocol.captain.UserAddress = {
+    def mergeFrom(`_input__`: com.google.protobuf.CodedInputStream): com.echo.protocol.captain.UserAddress = {
       var __addressId = this.addressId
       var __recipientsName = this.recipientsName
       var __recipientsPhone = this.recipientsPhone
@@ -65,20 +74,20 @@ final case class UserAddress(
       var __recipientsPostcode = this.recipientsPostcode
       var _done__ = false
       while (!_done__) {
-        val _tag__ = __input.readTag()
+        val _tag__ = _input__.readTag()
         _tag__ match {
           case 0 => _done__ = true
           case 10 =>
-            __addressId = __input.readString()
+            __addressId = _input__.readString()
           case 18 =>
-            __recipientsName = __input.readString()
+            __recipientsName = _input__.readString()
           case 26 =>
-            __recipientsPhone = __input.readString()
+            __recipientsPhone = _input__.readString()
           case 34 =>
-            __recipientsAddress = __input.readString()
+            __recipientsAddress = _input__.readString()
           case 42 =>
-            __recipientsPostcode = __input.readString()
-          case tag => __input.skipField(tag)
+            __recipientsPostcode = _input__.readString()
+          case tag => _input__.skipField(tag)
         }
       }
       com.echo.protocol.captain.UserAddress(
@@ -122,9 +131,9 @@ final case class UserAddress(
     def companion = com.echo.protocol.captain.UserAddress
 }
 
-object UserAddress extends com.trueaccord.scalapb.GeneratedMessageCompanion[UserAddress] {
-  implicit def messageCompanion: com.trueaccord.scalapb.GeneratedMessageCompanion[UserAddress] = this
-  def fromFieldsMap(__fieldsMap: Map[com.google.protobuf.Descriptors.FieldDescriptor, scala.Any]): com.echo.protocol.captain.UserAddress = {
+object UserAddress extends com.trueaccord.scalapb.GeneratedMessageCompanion[com.echo.protocol.captain.UserAddress] {
+  implicit def messageCompanion: com.trueaccord.scalapb.GeneratedMessageCompanion[com.echo.protocol.captain.UserAddress] = this
+  def fromFieldsMap(__fieldsMap: scala.collection.immutable.Map[com.google.protobuf.Descriptors.FieldDescriptor, scala.Any]): com.echo.protocol.captain.UserAddress = {
     require(__fieldsMap.keys.forall(_.getContainingType() == descriptor), "FieldDescriptor does not match message type.")
     val __fields = descriptor.getFields
     com.echo.protocol.captain.UserAddress(
@@ -140,7 +149,7 @@ object UserAddress extends com.trueaccord.scalapb.GeneratedMessageCompanion[User
   def enumCompanionForField(__field: com.google.protobuf.Descriptors.FieldDescriptor): com.trueaccord.scalapb.GeneratedEnumCompanion[_] = throw new MatchError(__field)
   lazy val defaultInstance = com.echo.protocol.captain.UserAddress(
   )
-  implicit class UserAddressLens[UpperPB](_l: com.trueaccord.lenses.Lens[UpperPB, UserAddress]) extends com.trueaccord.lenses.ObjectLens[UpperPB, UserAddress](_l) {
+  implicit class UserAddressLens[UpperPB](_l: com.trueaccord.lenses.Lens[UpperPB, com.echo.protocol.captain.UserAddress]) extends com.trueaccord.lenses.ObjectLens[UpperPB, com.echo.protocol.captain.UserAddress](_l) {
     def addressId: com.trueaccord.lenses.Lens[UpperPB, String] = field(_.addressId)((c_, f_) => c_.copy(addressId = f_))
     def recipientsName: com.trueaccord.lenses.Lens[UpperPB, String] = field(_.recipientsName)((c_, f_) => c_.copy(recipientsName = f_))
     def recipientsPhone: com.trueaccord.lenses.Lens[UpperPB, String] = field(_.recipientsPhone)((c_, f_) => c_.copy(recipientsPhone = f_))

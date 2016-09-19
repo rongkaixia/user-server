@@ -20,27 +20,33 @@ import com.echo.protocol.captain._
 import com.echo.protocol.common._
 import com.echo.captain.utils.Jwt
 
-trait AuthImpl extends AbstractCaptainService with LazyLogging{
+trait DeleteUserAddressImpl extends AbstractCaptainService with LazyLogging{
   /**
    * logout interface
    *
-   * @type  req AuthRequest
-   * @return AuthResponse
+   * @type  req DeleteUserAddressRequest
+   * @return DeleteUserAddressResponse
    */
-  override def auth(req: AuthRequest): Future[AuthResponse] = {
-    val replyPromise = Promise[AuthResponse]()
-    logger.debug(s"recieve logout request: ${req}")
+  override def deleteUserAddress(req: DeleteUserAddressRequest): Future[DeleteUserAddressResponse] = {
+    val replyPromise = Promise[DeleteUserAddressResponse]()
+    logger.debug(s"recieve DeleteUserAddress request: ${req}")
 
     val fut = async{
-      val userIdColumn = cfg.getString("echo.captain.mongo.auth.columns.user_id")
-      val usernameColumn = cfg.getString("echo.captain.mongo.auth.columns.username")
-      val expireAtColumn = cfg.getString("echo.captain.mongo.auth.columns.expire_at")
-      var res = AuthResponse()
+      var res = DeleteUserAddressResponse()
+      val dbName = cfg.getString("echo.captain.mongo.user.db")
+      val collectionName = cfg.getString("echo.captain.mongo.user.collection")
+      val userIdColumn = cfg.getString("echo.captain.mongo.user.columns.user_id")
+      val addressesColumn = cfg.getString("echo.captain.mongo.user.columns.addresses")
+      val addressIdColumn = cfg.getString("echo.captain.mongo.user.columns.address_id")
 
       // check request
       val token = req.token
+      val addressId = req.addressId
       if (token.isEmpty){
-        val header = ResponseHeader(ResultCode.SUCCESS, "ok")
+        val header = ResponseHeader(ResultCode.INVALID_SESSION_TOKEN, "INVALID_SESSION_TOKEN")
+        res = res.withHeader(header)
+      }else if(addressId.isEmpty){
+        val header = ResponseHeader(ResultCode.INVALID_REQUEST_ARGUMENT, "addressId MUST NOT be empty")
         res = res.withHeader(header)
       }else{
         logger.debug(s"checkAuth for token ${token}")
@@ -50,14 +56,15 @@ trait AuthImpl extends AbstractCaptainService with LazyLogging{
           res = res.withHeader(header)
         } else {
           val userId = resultMap(userIdColumn).asString.getValue
-          val username = resultMap(usernameColumn).asString.getValue
-          val expireAt = resultMap(expireAtColumn).asDateTime.getValue
-          val expireIn = (expireAt - java.time.Instant.now.toEpochMilli) / 1000
+
+          val database: MongoDatabase = mongo.getDatabase(dbName)
+          val collection = database.getCollection(collectionName)
+          val filterOp = equal(userIdColumn, userId)
+          val updateOp = pull(addressesColumn, equal(addressIdColumn,addressId))
+          await(collection.updateOne(filterOp, updateOp).toFuture)
+
           val header = ResponseHeader(ResultCode.SUCCESS, "ok")
           res = res.withHeader(header)
-                   .withUserId(userId)
-                   .withUsername(username)
-                   .withExpiresIn(expireIn.toInt)
         }
       }
 
@@ -68,9 +75,9 @@ trait AuthImpl extends AbstractCaptainService with LazyLogging{
     // exception, because await must not be used under a try/catch.
     fut.onFailure {
       case error: Throwable => 
-        logger.error(s"auth error: ${error}")
+        logger.error(s"DeleteUserAddress error: ${error}")
         val header = ResponseHeader(ResultCode.INTERNAL_SERVER_ERROR, error.toString)
-        replyPromise success AuthResponse().withHeader(header)
+        replyPromise success DeleteUserAddressResponse().withHeader(header)
     }
 
     // send response

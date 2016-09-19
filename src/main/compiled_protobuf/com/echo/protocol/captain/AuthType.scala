@@ -58,7 +58,7 @@ object AuthType extends com.trueaccord.scalapb.GeneratedEnumCompanion[AuthType] 
     override def isUnrecognized: Boolean = true
   }
   
-  lazy val values = Seq(AUTH_TYPE_EMPTY, LOCAL, WECHAT, WEIBO)
+  lazy val values = scala.collection.Seq(AUTH_TYPE_EMPTY, LOCAL, WECHAT, WEIBO)
   def fromValue(value: Int): AuthType = value match {
     case 0 => AUTH_TYPE_EMPTY
     case 1 => LOCAL

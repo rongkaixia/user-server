@@ -10,41 +10,50 @@ package com.echo.protocol.common
 @SerialVersionUID(0L)
 final case class KVField(
     key: String = "",
-    value: scala.Option[com.google.protobuf.Any] = None
+    value: scala.Option[com.google.protobuf.any.Any] = None
     ) extends com.trueaccord.scalapb.GeneratedMessage with com.trueaccord.scalapb.Message[KVField] with com.trueaccord.lenses.Updatable[KVField] {
     @transient
-    lazy val serializedSize: Int = {
+    private[this] var __serializedSizeCachedValue: Int = 0
+    private[this] def __computeSerializedValue(): Int = {
       var __size = 0
       if (key != "") { __size += com.google.protobuf.CodedOutputStream.computeStringSize(1, key) }
-      if (value.isDefined) { __size += 1 + com.google.protobuf.CodedOutputStream.computeRawVarint32Size(value.get.serializedSize) + value.get.serializedSize }
+      if (value.isDefined) { __size += 1 + com.google.protobuf.CodedOutputStream.computeUInt32SizeNoTag(value.get.serializedSize) + value.get.serializedSize }
       __size
     }
-    def writeTo(output: com.google.protobuf.CodedOutputStream): Unit = {
+    final override def serializedSize: Int = {
+      var read = __serializedSizeCachedValue
+      if (read == 0) {
+        read = __computeSerializedValue()
+        __serializedSizeCachedValue = read
+      }
+      read
+    }
+    def writeTo(`_output__`: com.google.protobuf.CodedOutputStream): Unit = {
       {
         val __v = key
         if (__v != "") {
-          output.writeString(1, __v)
+          _output__.writeString(1, __v)
         }
       };
-      value.foreach { __v => 
-        output.writeTag(2, 2)
-        output.writeRawVarint32(__v.serializedSize)
-        __v.writeTo(output)
+      value.foreach { __v =>
+        _output__.writeTag(2, 2)
+        _output__.writeUInt32NoTag(__v.serializedSize)
+        __v.writeTo(_output__)
       };
     }
-    def mergeFrom(__input: com.google.protobuf.CodedInputStream): com.echo.protocol.common.KVField = {
+    def mergeFrom(`_input__`: com.google.protobuf.CodedInputStream): com.echo.protocol.common.KVField = {
       var __key = this.key
       var __value = this.value
       var _done__ = false
       while (!_done__) {
-        val _tag__ = __input.readTag()
+        val _tag__ = _input__.readTag()
         _tag__ match {
           case 0 => _done__ = true
           case 10 =>
-            __key = __input.readString()
+            __key = _input__.readString()
           case 18 =>
-            __value = Some(com.trueaccord.scalapb.LiteParser.readMessage(__input, __value.getOrElse(com.google.protobuf.Any.defaultInstance)))
-          case tag => __input.skipField(tag)
+            __value = Some(com.trueaccord.scalapb.LiteParser.readMessage(_input__, __value.getOrElse(com.google.protobuf.any.Any.defaultInstance)))
+          case tag => _input__.skipField(tag)
         }
       }
       com.echo.protocol.common.KVField(
@@ -53,9 +62,9 @@ final case class KVField(
       )
     }
     def withKey(__v: String): KVField = copy(key = __v)
-    def getValue: com.google.protobuf.Any = value.getOrElse(com.google.protobuf.Any.defaultInstance)
+    def getValue: com.google.protobuf.any.Any = value.getOrElse(com.google.protobuf.any.Any.defaultInstance)
     def clearValue: KVField = copy(value = None)
-    def withValue(__v: com.google.protobuf.Any): KVField = copy(value = Some(__v))
+    def withValue(__v: com.google.protobuf.any.Any): KVField = copy(value = Some(__v))
     def getField(__field: com.google.protobuf.Descriptors.FieldDescriptor): scala.Any = {
       __field.getNumber match {
         case 1 => {
@@ -69,14 +78,14 @@ final case class KVField(
     def companion = com.echo.protocol.common.KVField
 }
 
-object KVField extends com.trueaccord.scalapb.GeneratedMessageCompanion[KVField] {
-  implicit def messageCompanion: com.trueaccord.scalapb.GeneratedMessageCompanion[KVField] = this
-  def fromFieldsMap(__fieldsMap: Map[com.google.protobuf.Descriptors.FieldDescriptor, scala.Any]): com.echo.protocol.common.KVField = {
+object KVField extends com.trueaccord.scalapb.GeneratedMessageCompanion[com.echo.protocol.common.KVField] {
+  implicit def messageCompanion: com.trueaccord.scalapb.GeneratedMessageCompanion[com.echo.protocol.common.KVField] = this
+  def fromFieldsMap(__fieldsMap: scala.collection.immutable.Map[com.google.protobuf.Descriptors.FieldDescriptor, scala.Any]): com.echo.protocol.common.KVField = {
     require(__fieldsMap.keys.forall(_.getContainingType() == descriptor), "FieldDescriptor does not match message type.")
     val __fields = descriptor.getFields
     com.echo.protocol.common.KVField(
       __fieldsMap.getOrElse(__fields.get(0), "").asInstanceOf[String],
-      __fieldsMap.get(__fields.get(1)).asInstanceOf[scala.Option[com.google.protobuf.Any]]
+      __fieldsMap.get(__fields.get(1)).asInstanceOf[scala.Option[com.google.protobuf.any.Any]]
     )
   }
   def descriptor: com.google.protobuf.Descriptors.Descriptor = CommonProto.descriptor.getMessageTypes.get(1)
@@ -84,17 +93,17 @@ object KVField extends com.trueaccord.scalapb.GeneratedMessageCompanion[KVField]
     require(__field.getContainingType() == descriptor, "FieldDescriptor does not match message type.")
     var __out: com.trueaccord.scalapb.GeneratedMessageCompanion[_] = null
     __field.getNumber match {
-      case 2 => __out = com.google.protobuf.Any
+      case 2 => __out = com.google.protobuf.any.Any
     }
   __out
   }
   def enumCompanionForField(__field: com.google.protobuf.Descriptors.FieldDescriptor): com.trueaccord.scalapb.GeneratedEnumCompanion[_] = throw new MatchError(__field)
   lazy val defaultInstance = com.echo.protocol.common.KVField(
   )
-  implicit class KVFieldLens[UpperPB](_l: com.trueaccord.lenses.Lens[UpperPB, KVField]) extends com.trueaccord.lenses.ObjectLens[UpperPB, KVField](_l) {
+  implicit class KVFieldLens[UpperPB](_l: com.trueaccord.lenses.Lens[UpperPB, com.echo.protocol.common.KVField]) extends com.trueaccord.lenses.ObjectLens[UpperPB, com.echo.protocol.common.KVField](_l) {
     def key: com.trueaccord.lenses.Lens[UpperPB, String] = field(_.key)((c_, f_) => c_.copy(key = f_))
-    def value: com.trueaccord.lenses.Lens[UpperPB, com.google.protobuf.Any] = field(_.getValue)((c_, f_) => c_.copy(value = Some(f_)))
-    def optionalValue: com.trueaccord.lenses.Lens[UpperPB, scala.Option[com.google.protobuf.Any]] = field(_.value)((c_, f_) => c_.copy(value = f_))
+    def value: com.trueaccord.lenses.Lens[UpperPB, com.google.protobuf.any.Any] = field(_.getValue)((c_, f_) => c_.copy(value = Some(f_)))
+    def optionalValue: com.trueaccord.lenses.Lens[UpperPB, scala.Option[com.google.protobuf.any.Any]] = field(_.value)((c_, f_) => c_.copy(value = f_))
   }
   final val KEY_FIELD_NUMBER = 1
   final val VALUE_FIELD_NUMBER = 2

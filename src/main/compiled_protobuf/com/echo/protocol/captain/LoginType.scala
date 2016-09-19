@@ -67,7 +67,7 @@ object LoginType extends com.trueaccord.scalapb.GeneratedEnumCompanion[LoginType
     override def isUnrecognized: Boolean = true
   }
   
-  lazy val values = Seq(LOGIN_TYPE_EMPTY, LOGIN_BY_PHONENUM, LOGIN_BY_EMAIL, LOGIN_BY_WECHAT, LOGIN_BY_WEIBO)
+  lazy val values = scala.collection.Seq(LOGIN_TYPE_EMPTY, LOGIN_BY_PHONENUM, LOGIN_BY_EMAIL, LOGIN_BY_WECHAT, LOGIN_BY_WEIBO)
   def fromValue(value: Int): LoginType = value match {
     case 0 => LOGIN_TYPE_EMPTY
     case 1 => LOGIN_BY_PHONENUM

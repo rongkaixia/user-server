@@ -7,34 +7,46 @@ package com.echo.protocol.captain
 
 
 
+/** @param token
+  *   AuthType auth_name = 2;
+  */
 @SerialVersionUID(0L)
 final case class LogoutRequest(
     token: String = ""
     ) extends com.trueaccord.scalapb.GeneratedMessage with com.trueaccord.scalapb.Message[LogoutRequest] with com.trueaccord.lenses.Updatable[LogoutRequest] {
     @transient
-    lazy val serializedSize: Int = {
+    private[this] var __serializedSizeCachedValue: Int = 0
+    private[this] def __computeSerializedValue(): Int = {
       var __size = 0
       if (token != "") { __size += com.google.protobuf.CodedOutputStream.computeStringSize(1, token) }
       __size
     }
-    def writeTo(output: com.google.protobuf.CodedOutputStream): Unit = {
+    final override def serializedSize: Int = {
+      var read = __serializedSizeCachedValue
+      if (read == 0) {
+        read = __computeSerializedValue()
+        __serializedSizeCachedValue = read
+      }
+      read
+    }
+    def writeTo(`_output__`: com.google.protobuf.CodedOutputStream): Unit = {
       {
         val __v = token
         if (__v != "") {
-          output.writeString(1, __v)
+          _output__.writeString(1, __v)
         }
       };
     }
-    def mergeFrom(__input: com.google.protobuf.CodedInputStream): com.echo.protocol.captain.LogoutRequest = {
+    def mergeFrom(`_input__`: com.google.protobuf.CodedInputStream): com.echo.protocol.captain.LogoutRequest = {
       var __token = this.token
       var _done__ = false
       while (!_done__) {
-        val _tag__ = __input.readTag()
+        val _tag__ = _input__.readTag()
         _tag__ match {
           case 0 => _done__ = true
           case 10 =>
-            __token = __input.readString()
-          case tag => __input.skipField(tag)
+            __token = _input__.readString()
+          case tag => _input__.skipField(tag)
         }
       }
       com.echo.protocol.captain.LogoutRequest(
@@ -54,9 +66,9 @@ final case class LogoutRequest(
     def companion = com.echo.protocol.captain.LogoutRequest
 }
 
-object LogoutRequest extends com.trueaccord.scalapb.GeneratedMessageCompanion[LogoutRequest] {
-  implicit def messageCompanion: com.trueaccord.scalapb.GeneratedMessageCompanion[LogoutRequest] = this
-  def fromFieldsMap(__fieldsMap: Map[com.google.protobuf.Descriptors.FieldDescriptor, scala.Any]): com.echo.protocol.captain.LogoutRequest = {
+object LogoutRequest extends com.trueaccord.scalapb.GeneratedMessageCompanion[com.echo.protocol.captain.LogoutRequest] {
+  implicit def messageCompanion: com.trueaccord.scalapb.GeneratedMessageCompanion[com.echo.protocol.captain.LogoutRequest] = this
+  def fromFieldsMap(__fieldsMap: scala.collection.immutable.Map[com.google.protobuf.Descriptors.FieldDescriptor, scala.Any]): com.echo.protocol.captain.LogoutRequest = {
     require(__fieldsMap.keys.forall(_.getContainingType() == descriptor), "FieldDescriptor does not match message type.")
     val __fields = descriptor.getFields
     com.echo.protocol.captain.LogoutRequest(
@@ -68,7 +80,7 @@ object LogoutRequest extends com.trueaccord.scalapb.GeneratedMessageCompanion[Lo
   def enumCompanionForField(__field: com.google.protobuf.Descriptors.FieldDescriptor): com.trueaccord.scalapb.GeneratedEnumCompanion[_] = throw new MatchError(__field)
   lazy val defaultInstance = com.echo.protocol.captain.LogoutRequest(
   )
-  implicit class LogoutRequestLens[UpperPB](_l: com.trueaccord.lenses.Lens[UpperPB, LogoutRequest]) extends com.trueaccord.lenses.ObjectLens[UpperPB, LogoutRequest](_l) {
+  implicit class LogoutRequestLens[UpperPB](_l: com.trueaccord.lenses.Lens[UpperPB, com.echo.protocol.captain.LogoutRequest]) extends com.trueaccord.lenses.ObjectLens[UpperPB, com.echo.protocol.captain.LogoutRequest](_l) {
     def token: com.trueaccord.lenses.Lens[UpperPB, String] = field(_.token)((c_, f_) => c_.copy(token = f_))
   }
   final val TOKEN_FIELD_NUMBER = 1

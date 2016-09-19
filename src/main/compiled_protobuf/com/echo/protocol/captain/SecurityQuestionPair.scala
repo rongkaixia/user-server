@@ -13,39 +13,48 @@ final case class SecurityQuestionPair(
     answer: String = ""
     ) extends com.trueaccord.scalapb.GeneratedMessage with com.trueaccord.scalapb.Message[SecurityQuestionPair] with com.trueaccord.lenses.Updatable[SecurityQuestionPair] {
     @transient
-    lazy val serializedSize: Int = {
+    private[this] var __serializedSizeCachedValue: Int = 0
+    private[this] def __computeSerializedValue(): Int = {
       var __size = 0
       if (question != "") { __size += com.google.protobuf.CodedOutputStream.computeStringSize(1, question) }
       if (answer != "") { __size += com.google.protobuf.CodedOutputStream.computeStringSize(2, answer) }
       __size
     }
-    def writeTo(output: com.google.protobuf.CodedOutputStream): Unit = {
+    final override def serializedSize: Int = {
+      var read = __serializedSizeCachedValue
+      if (read == 0) {
+        read = __computeSerializedValue()
+        __serializedSizeCachedValue = read
+      }
+      read
+    }
+    def writeTo(`_output__`: com.google.protobuf.CodedOutputStream): Unit = {
       {
         val __v = question
         if (__v != "") {
-          output.writeString(1, __v)
+          _output__.writeString(1, __v)
         }
       };
       {
         val __v = answer
         if (__v != "") {
-          output.writeString(2, __v)
+          _output__.writeString(2, __v)
         }
       };
     }
-    def mergeFrom(__input: com.google.protobuf.CodedInputStream): com.echo.protocol.captain.SecurityQuestionPair = {
+    def mergeFrom(`_input__`: com.google.protobuf.CodedInputStream): com.echo.protocol.captain.SecurityQuestionPair = {
       var __question = this.question
       var __answer = this.answer
       var _done__ = false
       while (!_done__) {
-        val _tag__ = __input.readTag()
+        val _tag__ = _input__.readTag()
         _tag__ match {
           case 0 => _done__ = true
           case 10 =>
-            __question = __input.readString()
+            __question = _input__.readString()
           case 18 =>
-            __answer = __input.readString()
-          case tag => __input.skipField(tag)
+            __answer = _input__.readString()
+          case tag => _input__.skipField(tag)
         }
       }
       com.echo.protocol.captain.SecurityQuestionPair(
@@ -71,9 +80,9 @@ final case class SecurityQuestionPair(
     def companion = com.echo.protocol.captain.SecurityQuestionPair
 }
 
-object SecurityQuestionPair extends com.trueaccord.scalapb.GeneratedMessageCompanion[SecurityQuestionPair] {
-  implicit def messageCompanion: com.trueaccord.scalapb.GeneratedMessageCompanion[SecurityQuestionPair] = this
-  def fromFieldsMap(__fieldsMap: Map[com.google.protobuf.Descriptors.FieldDescriptor, scala.Any]): com.echo.protocol.captain.SecurityQuestionPair = {
+object SecurityQuestionPair extends com.trueaccord.scalapb.GeneratedMessageCompanion[com.echo.protocol.captain.SecurityQuestionPair] {
+  implicit def messageCompanion: com.trueaccord.scalapb.GeneratedMessageCompanion[com.echo.protocol.captain.SecurityQuestionPair] = this
+  def fromFieldsMap(__fieldsMap: scala.collection.immutable.Map[com.google.protobuf.Descriptors.FieldDescriptor, scala.Any]): com.echo.protocol.captain.SecurityQuestionPair = {
     require(__fieldsMap.keys.forall(_.getContainingType() == descriptor), "FieldDescriptor does not match message type.")
     val __fields = descriptor.getFields
     com.echo.protocol.captain.SecurityQuestionPair(
@@ -86,7 +95,7 @@ object SecurityQuestionPair extends com.trueaccord.scalapb.GeneratedMessageCompa
   def enumCompanionForField(__field: com.google.protobuf.Descriptors.FieldDescriptor): com.trueaccord.scalapb.GeneratedEnumCompanion[_] = throw new MatchError(__field)
   lazy val defaultInstance = com.echo.protocol.captain.SecurityQuestionPair(
   )
-  implicit class SecurityQuestionPairLens[UpperPB](_l: com.trueaccord.lenses.Lens[UpperPB, SecurityQuestionPair]) extends com.trueaccord.lenses.ObjectLens[UpperPB, SecurityQuestionPair](_l) {
+  implicit class SecurityQuestionPairLens[UpperPB](_l: com.trueaccord.lenses.Lens[UpperPB, com.echo.protocol.captain.SecurityQuestionPair]) extends com.trueaccord.lenses.ObjectLens[UpperPB, com.echo.protocol.captain.SecurityQuestionPair](_l) {
     def question: com.trueaccord.lenses.Lens[UpperPB, String] = field(_.question)((c_, f_) => c_.copy(question = f_))
     def answer: com.trueaccord.lenses.Lens[UpperPB, String] = field(_.answer)((c_, f_) => c_.copy(answer = f_))
   }

@@ -49,7 +49,7 @@ object PayMethod extends com.trueaccord.scalapb.GeneratedEnumCompanion[PayMethod
     override def isUnrecognized: Boolean = true
   }
   
-  lazy val values = Seq(PAY_METHOD_EMPTY, ONLINE, COD)
+  lazy val values = scala.collection.Seq(PAY_METHOD_EMPTY, ONLINE, COD)
   def fromValue(value: Int): PayMethod = value match {
     case 0 => PAY_METHOD_EMPTY
     case 1 => ONLINE

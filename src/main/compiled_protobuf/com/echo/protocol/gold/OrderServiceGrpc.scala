@@ -1,7 +1,6 @@
 package com.echo.protocol.gold
 
 object OrderServiceGrpc {
-
   val METHOD_QUERY_ORDER: _root_.io.grpc.MethodDescriptor[com.echo.protocol.gold.QueryOrderRequest, com.echo.protocol.gold.QueryOrderResponse] =
     _root_.io.grpc.MethodDescriptor.create(
       _root_.io.grpc.MethodDescriptor.MethodType.UNARY,
@@ -37,30 +36,27 @@ object OrderServiceGrpc {
       new com.trueaccord.scalapb.grpc.Marshaller(com.echo.protocol.gold.DeliverConfirmRequest),
       new com.trueaccord.scalapb.grpc.Marshaller(com.echo.protocol.gold.DeliverConfirmResponse))
   
-  trait OrderService {
+  trait OrderService extends _root_.com.trueaccord.scalapb.grpc.AbstractService {
+    override def serviceCompanion = OrderService
     def queryOrder(request: com.echo.protocol.gold.QueryOrderRequest): scala.concurrent.Future[com.echo.protocol.gold.QueryOrderResponse]
-
     def order(request: com.echo.protocol.gold.OrderRequest): scala.concurrent.Future[com.echo.protocol.gold.OrderResponse]
-
     def notify(request: com.echo.protocol.gold.NotifyRequest): scala.concurrent.Future[com.echo.protocol.gold.NotifyResponse]
-
     def deliver(request: com.echo.protocol.gold.DeliverRequest): scala.concurrent.Future[com.echo.protocol.gold.DeliverResponse]
-
     def deliverConfirm(request: com.echo.protocol.gold.DeliverConfirmRequest): scala.concurrent.Future[com.echo.protocol.gold.DeliverConfirmResponse]
-
+  }
+  
+  object OrderService extends _root_.com.trueaccord.scalapb.grpc.ServiceCompanion[OrderService] {
+    implicit def serviceCompanion: _root_.com.trueaccord.scalapb.grpc.ServiceCompanion[OrderService] = this
+    def descriptor: _root_.com.google.protobuf.Descriptors.ServiceDescriptor = com.echo.protocol.gold.GoldProto.descriptor.getServices().get(0)
   }
   
   trait OrderServiceBlockingClient {
+    def serviceCompanion = OrderService
     def queryOrder(request: com.echo.protocol.gold.QueryOrderRequest): com.echo.protocol.gold.QueryOrderResponse
-
     def order(request: com.echo.protocol.gold.OrderRequest): com.echo.protocol.gold.OrderResponse
-
     def notify(request: com.echo.protocol.gold.NotifyRequest): com.echo.protocol.gold.NotifyResponse
-
     def deliver(request: com.echo.protocol.gold.DeliverRequest): com.echo.protocol.gold.DeliverResponse
-
     def deliverConfirm(request: com.echo.protocol.gold.DeliverConfirmRequest): com.echo.protocol.gold.DeliverConfirmResponse
-
   }
   
   class OrderServiceBlockingStub(channel: _root_.io.grpc.Channel, options: _root_.io.grpc.CallOptions = _root_.io.grpc.CallOptions.DEFAULT) extends _root_.io.grpc.stub.AbstractStub[OrderServiceBlockingStub](channel, options) with OrderServiceBlockingClient {
@@ -153,4 +149,8 @@ object OrderServiceGrpc {
   def blockingStub(channel: _root_.io.grpc.Channel): OrderServiceBlockingStub = new OrderServiceBlockingStub(channel)
   
   def stub(channel: _root_.io.grpc.Channel): OrderServiceStub = new OrderServiceStub(channel)
+  
+  @deprecated("Use OrderServiceGrpc.OrderService.descriptor", since="ScalaPB 0.5.40")
+  def descriptor: _root_.com.google.protobuf.Descriptors.ServiceDescriptor = com.echo.protocol.gold.GoldProto.descriptor.getServices().get(0)
+  
 }

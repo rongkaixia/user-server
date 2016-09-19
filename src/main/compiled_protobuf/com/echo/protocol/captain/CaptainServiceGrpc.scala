@@ -1,7 +1,6 @@
 package com.echo.protocol.captain
 
 object CaptainServiceGrpc {
-
   val METHOD_SIGNUP: _root_.io.grpc.MethodDescriptor[com.echo.protocol.captain.SignupRequest, com.echo.protocol.captain.SignupResponse] =
     _root_.io.grpc.MethodDescriptor.create(
       _root_.io.grpc.MethodDescriptor.MethodType.UNARY,
@@ -30,26 +29,70 @@ object CaptainServiceGrpc {
       new com.trueaccord.scalapb.grpc.Marshaller(com.echo.protocol.captain.AuthRequest),
       new com.trueaccord.scalapb.grpc.Marshaller(com.echo.protocol.captain.AuthResponse))
   
-  trait CaptainService {
+  val METHOD_QUERY_USER_INFO: _root_.io.grpc.MethodDescriptor[com.echo.protocol.captain.QueryUserInfoRequest, com.echo.protocol.captain.QueryUserInfoResponse] =
+    _root_.io.grpc.MethodDescriptor.create(
+      _root_.io.grpc.MethodDescriptor.MethodType.UNARY,
+      _root_.io.grpc.MethodDescriptor.generateFullMethodName("com.echo.protocol.captain.CaptainService", "QueryUserInfo"),
+      new com.trueaccord.scalapb.grpc.Marshaller(com.echo.protocol.captain.QueryUserInfoRequest),
+      new com.trueaccord.scalapb.grpc.Marshaller(com.echo.protocol.captain.QueryUserInfoResponse))
+  
+  val METHOD_UPDATE_USER_INFO: _root_.io.grpc.MethodDescriptor[com.echo.protocol.captain.UpdateUserInfoRequest, com.echo.protocol.captain.UpdateUserInfoResponse] =
+    _root_.io.grpc.MethodDescriptor.create(
+      _root_.io.grpc.MethodDescriptor.MethodType.UNARY,
+      _root_.io.grpc.MethodDescriptor.generateFullMethodName("com.echo.protocol.captain.CaptainService", "UpdateUserInfo"),
+      new com.trueaccord.scalapb.grpc.Marshaller(com.echo.protocol.captain.UpdateUserInfoRequest),
+      new com.trueaccord.scalapb.grpc.Marshaller(com.echo.protocol.captain.UpdateUserInfoResponse))
+  
+  val METHOD_ADD_USER_ADDRESS: _root_.io.grpc.MethodDescriptor[com.echo.protocol.captain.AddUserAddressRequest, com.echo.protocol.captain.AddUserAddressResponse] =
+    _root_.io.grpc.MethodDescriptor.create(
+      _root_.io.grpc.MethodDescriptor.MethodType.UNARY,
+      _root_.io.grpc.MethodDescriptor.generateFullMethodName("com.echo.protocol.captain.CaptainService", "AddUserAddress"),
+      new com.trueaccord.scalapb.grpc.Marshaller(com.echo.protocol.captain.AddUserAddressRequest),
+      new com.trueaccord.scalapb.grpc.Marshaller(com.echo.protocol.captain.AddUserAddressResponse))
+  
+  val METHOD_UPDATE_USER_ADDRESS: _root_.io.grpc.MethodDescriptor[com.echo.protocol.captain.UpdateUserAddressRequest, com.echo.protocol.captain.UpdateUserAddressResponse] =
+    _root_.io.grpc.MethodDescriptor.create(
+      _root_.io.grpc.MethodDescriptor.MethodType.UNARY,
+      _root_.io.grpc.MethodDescriptor.generateFullMethodName("com.echo.protocol.captain.CaptainService", "UpdateUserAddress"),
+      new com.trueaccord.scalapb.grpc.Marshaller(com.echo.protocol.captain.UpdateUserAddressRequest),
+      new com.trueaccord.scalapb.grpc.Marshaller(com.echo.protocol.captain.UpdateUserAddressResponse))
+  
+  val METHOD_DELETE_USER_ADDRESS: _root_.io.grpc.MethodDescriptor[com.echo.protocol.captain.DeleteUserAddressRequest, com.echo.protocol.captain.DeleteUserAddressResponse] =
+    _root_.io.grpc.MethodDescriptor.create(
+      _root_.io.grpc.MethodDescriptor.MethodType.UNARY,
+      _root_.io.grpc.MethodDescriptor.generateFullMethodName("com.echo.protocol.captain.CaptainService", "DeleteUserAddress"),
+      new com.trueaccord.scalapb.grpc.Marshaller(com.echo.protocol.captain.DeleteUserAddressRequest),
+      new com.trueaccord.scalapb.grpc.Marshaller(com.echo.protocol.captain.DeleteUserAddressResponse))
+  
+  trait CaptainService extends _root_.com.trueaccord.scalapb.grpc.AbstractService {
+    override def serviceCompanion = CaptainService
     def signup(request: com.echo.protocol.captain.SignupRequest): scala.concurrent.Future[com.echo.protocol.captain.SignupResponse]
-
     def login(request: com.echo.protocol.captain.LoginRequest): scala.concurrent.Future[com.echo.protocol.captain.LoginResponse]
-
     def logout(request: com.echo.protocol.captain.LogoutRequest): scala.concurrent.Future[com.echo.protocol.captain.LogoutResponse]
-
     def auth(request: com.echo.protocol.captain.AuthRequest): scala.concurrent.Future[com.echo.protocol.captain.AuthResponse]
-
+    def queryUserInfo(request: com.echo.protocol.captain.QueryUserInfoRequest): scala.concurrent.Future[com.echo.protocol.captain.QueryUserInfoResponse]
+    def updateUserInfo(request: com.echo.protocol.captain.UpdateUserInfoRequest): scala.concurrent.Future[com.echo.protocol.captain.UpdateUserInfoResponse]
+    def addUserAddress(request: com.echo.protocol.captain.AddUserAddressRequest): scala.concurrent.Future[com.echo.protocol.captain.AddUserAddressResponse]
+    def updateUserAddress(request: com.echo.protocol.captain.UpdateUserAddressRequest): scala.concurrent.Future[com.echo.protocol.captain.UpdateUserAddressResponse]
+    def deleteUserAddress(request: com.echo.protocol.captain.DeleteUserAddressRequest): scala.concurrent.Future[com.echo.protocol.captain.DeleteUserAddressResponse]
+  }
+  
+  object CaptainService extends _root_.com.trueaccord.scalapb.grpc.ServiceCompanion[CaptainService] {
+    implicit def serviceCompanion: _root_.com.trueaccord.scalapb.grpc.ServiceCompanion[CaptainService] = this
+    def descriptor: _root_.com.google.protobuf.Descriptors.ServiceDescriptor = com.echo.protocol.captain.CaptainProto.descriptor.getServices().get(0)
   }
   
   trait CaptainServiceBlockingClient {
+    def serviceCompanion = CaptainService
     def signup(request: com.echo.protocol.captain.SignupRequest): com.echo.protocol.captain.SignupResponse
-
     def login(request: com.echo.protocol.captain.LoginRequest): com.echo.protocol.captain.LoginResponse
-
     def logout(request: com.echo.protocol.captain.LogoutRequest): com.echo.protocol.captain.LogoutResponse
-
     def auth(request: com.echo.protocol.captain.AuthRequest): com.echo.protocol.captain.AuthResponse
-
+    def queryUserInfo(request: com.echo.protocol.captain.QueryUserInfoRequest): com.echo.protocol.captain.QueryUserInfoResponse
+    def updateUserInfo(request: com.echo.protocol.captain.UpdateUserInfoRequest): com.echo.protocol.captain.UpdateUserInfoResponse
+    def addUserAddress(request: com.echo.protocol.captain.AddUserAddressRequest): com.echo.protocol.captain.AddUserAddressResponse
+    def updateUserAddress(request: com.echo.protocol.captain.UpdateUserAddressRequest): com.echo.protocol.captain.UpdateUserAddressResponse
+    def deleteUserAddress(request: com.echo.protocol.captain.DeleteUserAddressRequest): com.echo.protocol.captain.DeleteUserAddressResponse
   }
   
   class CaptainServiceBlockingStub(channel: _root_.io.grpc.Channel, options: _root_.io.grpc.CallOptions = _root_.io.grpc.CallOptions.DEFAULT) extends _root_.io.grpc.stub.AbstractStub[CaptainServiceBlockingStub](channel, options) with CaptainServiceBlockingClient {
@@ -67,6 +110,26 @@ object CaptainServiceGrpc {
     
     override def auth(request: com.echo.protocol.captain.AuthRequest): com.echo.protocol.captain.AuthResponse = {
       _root_.io.grpc.stub.ClientCalls.blockingUnaryCall(channel.newCall(METHOD_AUTH, options), request)
+    }
+    
+    override def queryUserInfo(request: com.echo.protocol.captain.QueryUserInfoRequest): com.echo.protocol.captain.QueryUserInfoResponse = {
+      _root_.io.grpc.stub.ClientCalls.blockingUnaryCall(channel.newCall(METHOD_QUERY_USER_INFO, options), request)
+    }
+    
+    override def updateUserInfo(request: com.echo.protocol.captain.UpdateUserInfoRequest): com.echo.protocol.captain.UpdateUserInfoResponse = {
+      _root_.io.grpc.stub.ClientCalls.blockingUnaryCall(channel.newCall(METHOD_UPDATE_USER_INFO, options), request)
+    }
+    
+    override def addUserAddress(request: com.echo.protocol.captain.AddUserAddressRequest): com.echo.protocol.captain.AddUserAddressResponse = {
+      _root_.io.grpc.stub.ClientCalls.blockingUnaryCall(channel.newCall(METHOD_ADD_USER_ADDRESS, options), request)
+    }
+    
+    override def updateUserAddress(request: com.echo.protocol.captain.UpdateUserAddressRequest): com.echo.protocol.captain.UpdateUserAddressResponse = {
+      _root_.io.grpc.stub.ClientCalls.blockingUnaryCall(channel.newCall(METHOD_UPDATE_USER_ADDRESS, options), request)
+    }
+    
+    override def deleteUserAddress(request: com.echo.protocol.captain.DeleteUserAddressRequest): com.echo.protocol.captain.DeleteUserAddressResponse = {
+      _root_.io.grpc.stub.ClientCalls.blockingUnaryCall(channel.newCall(METHOD_DELETE_USER_ADDRESS, options), request)
     }
     
     override def build(channel: _root_.io.grpc.Channel, options: _root_.io.grpc.CallOptions): CaptainServiceBlockingStub = new CaptainServiceBlockingStub(channel, options)
@@ -87,6 +150,26 @@ object CaptainServiceGrpc {
     
     override def auth(request: com.echo.protocol.captain.AuthRequest): scala.concurrent.Future[com.echo.protocol.captain.AuthResponse] = {
       com.trueaccord.scalapb.grpc.Grpc.guavaFuture2ScalaFuture(_root_.io.grpc.stub.ClientCalls.futureUnaryCall(channel.newCall(METHOD_AUTH, options), request))
+    }
+    
+    override def queryUserInfo(request: com.echo.protocol.captain.QueryUserInfoRequest): scala.concurrent.Future[com.echo.protocol.captain.QueryUserInfoResponse] = {
+      com.trueaccord.scalapb.grpc.Grpc.guavaFuture2ScalaFuture(_root_.io.grpc.stub.ClientCalls.futureUnaryCall(channel.newCall(METHOD_QUERY_USER_INFO, options), request))
+    }
+    
+    override def updateUserInfo(request: com.echo.protocol.captain.UpdateUserInfoRequest): scala.concurrent.Future[com.echo.protocol.captain.UpdateUserInfoResponse] = {
+      com.trueaccord.scalapb.grpc.Grpc.guavaFuture2ScalaFuture(_root_.io.grpc.stub.ClientCalls.futureUnaryCall(channel.newCall(METHOD_UPDATE_USER_INFO, options), request))
+    }
+    
+    override def addUserAddress(request: com.echo.protocol.captain.AddUserAddressRequest): scala.concurrent.Future[com.echo.protocol.captain.AddUserAddressResponse] = {
+      com.trueaccord.scalapb.grpc.Grpc.guavaFuture2ScalaFuture(_root_.io.grpc.stub.ClientCalls.futureUnaryCall(channel.newCall(METHOD_ADD_USER_ADDRESS, options), request))
+    }
+    
+    override def updateUserAddress(request: com.echo.protocol.captain.UpdateUserAddressRequest): scala.concurrent.Future[com.echo.protocol.captain.UpdateUserAddressResponse] = {
+      com.trueaccord.scalapb.grpc.Grpc.guavaFuture2ScalaFuture(_root_.io.grpc.stub.ClientCalls.futureUnaryCall(channel.newCall(METHOD_UPDATE_USER_ADDRESS, options), request))
+    }
+    
+    override def deleteUserAddress(request: com.echo.protocol.captain.DeleteUserAddressRequest): scala.concurrent.Future[com.echo.protocol.captain.DeleteUserAddressResponse] = {
+      com.trueaccord.scalapb.grpc.Grpc.guavaFuture2ScalaFuture(_root_.io.grpc.stub.ClientCalls.futureUnaryCall(channel.newCall(METHOD_DELETE_USER_ADDRESS, options), request))
     }
     
     override def build(channel: _root_.io.grpc.Channel, options: _root_.io.grpc.CallOptions): CaptainServiceStub = new CaptainServiceStub(channel, options)
@@ -122,9 +205,48 @@ object CaptainServiceGrpc {
           serviceImpl.auth(request).onComplete(com.trueaccord.scalapb.grpc.Grpc.completeObserver(observer))(
             executionContext)
       }))
+    .addMethod(
+      METHOD_QUERY_USER_INFO,
+      _root_.io.grpc.stub.ServerCalls.asyncUnaryCall(new _root_.io.grpc.stub.ServerCalls.UnaryMethod[com.echo.protocol.captain.QueryUserInfoRequest, com.echo.protocol.captain.QueryUserInfoResponse] {
+        override def invoke(request: com.echo.protocol.captain.QueryUserInfoRequest, observer: _root_.io.grpc.stub.StreamObserver[com.echo.protocol.captain.QueryUserInfoResponse]): Unit =
+          serviceImpl.queryUserInfo(request).onComplete(com.trueaccord.scalapb.grpc.Grpc.completeObserver(observer))(
+            executionContext)
+      }))
+    .addMethod(
+      METHOD_UPDATE_USER_INFO,
+      _root_.io.grpc.stub.ServerCalls.asyncUnaryCall(new _root_.io.grpc.stub.ServerCalls.UnaryMethod[com.echo.protocol.captain.UpdateUserInfoRequest, com.echo.protocol.captain.UpdateUserInfoResponse] {
+        override def invoke(request: com.echo.protocol.captain.UpdateUserInfoRequest, observer: _root_.io.grpc.stub.StreamObserver[com.echo.protocol.captain.UpdateUserInfoResponse]): Unit =
+          serviceImpl.updateUserInfo(request).onComplete(com.trueaccord.scalapb.grpc.Grpc.completeObserver(observer))(
+            executionContext)
+      }))
+    .addMethod(
+      METHOD_ADD_USER_ADDRESS,
+      _root_.io.grpc.stub.ServerCalls.asyncUnaryCall(new _root_.io.grpc.stub.ServerCalls.UnaryMethod[com.echo.protocol.captain.AddUserAddressRequest, com.echo.protocol.captain.AddUserAddressResponse] {
+        override def invoke(request: com.echo.protocol.captain.AddUserAddressRequest, observer: _root_.io.grpc.stub.StreamObserver[com.echo.protocol.captain.AddUserAddressResponse]): Unit =
+          serviceImpl.addUserAddress(request).onComplete(com.trueaccord.scalapb.grpc.Grpc.completeObserver(observer))(
+            executionContext)
+      }))
+    .addMethod(
+      METHOD_UPDATE_USER_ADDRESS,
+      _root_.io.grpc.stub.ServerCalls.asyncUnaryCall(new _root_.io.grpc.stub.ServerCalls.UnaryMethod[com.echo.protocol.captain.UpdateUserAddressRequest, com.echo.protocol.captain.UpdateUserAddressResponse] {
+        override def invoke(request: com.echo.protocol.captain.UpdateUserAddressRequest, observer: _root_.io.grpc.stub.StreamObserver[com.echo.protocol.captain.UpdateUserAddressResponse]): Unit =
+          serviceImpl.updateUserAddress(request).onComplete(com.trueaccord.scalapb.grpc.Grpc.completeObserver(observer))(
+            executionContext)
+      }))
+    .addMethod(
+      METHOD_DELETE_USER_ADDRESS,
+      _root_.io.grpc.stub.ServerCalls.asyncUnaryCall(new _root_.io.grpc.stub.ServerCalls.UnaryMethod[com.echo.protocol.captain.DeleteUserAddressRequest, com.echo.protocol.captain.DeleteUserAddressResponse] {
+        override def invoke(request: com.echo.protocol.captain.DeleteUserAddressRequest, observer: _root_.io.grpc.stub.StreamObserver[com.echo.protocol.captain.DeleteUserAddressResponse]): Unit =
+          serviceImpl.deleteUserAddress(request).onComplete(com.trueaccord.scalapb.grpc.Grpc.completeObserver(observer))(
+            executionContext)
+      }))
     .build()
   
   def blockingStub(channel: _root_.io.grpc.Channel): CaptainServiceBlockingStub = new CaptainServiceBlockingStub(channel)
   
   def stub(channel: _root_.io.grpc.Channel): CaptainServiceStub = new CaptainServiceStub(channel)
+  
+  @deprecated("Use CaptainServiceGrpc.CaptainService.descriptor", since="ScalaPB 0.5.40")
+  def descriptor: _root_.com.google.protobuf.Descriptors.ServiceDescriptor = com.echo.protocol.captain.CaptainProto.descriptor.getServices().get(0)
+  
 }

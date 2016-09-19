@@ -69,7 +69,7 @@ trait LogoutImpl extends AbstractCaptainService with LazyLogging{
     // exception, because await must not be used under a try/catch.
     fut.onFailure {
       case error: Throwable => 
-        logger.error(s"signup error: ${error}")
+        logger.error(s"logout error: ${error}")
         val header = ResponseHeader(ResultCode.INTERNAL_SERVER_ERROR, error.toString)
         replyPromise success LogoutResponse().withHeader(header)
     }

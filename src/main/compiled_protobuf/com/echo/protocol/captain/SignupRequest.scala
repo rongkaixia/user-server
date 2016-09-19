@@ -13,39 +13,48 @@ final case class SignupRequest(
     password: String = ""
     ) extends com.trueaccord.scalapb.GeneratedMessage with com.trueaccord.scalapb.Message[SignupRequest] with com.trueaccord.lenses.Updatable[SignupRequest] {
     @transient
-    lazy val serializedSize: Int = {
+    private[this] var __serializedSizeCachedValue: Int = 0
+    private[this] def __computeSerializedValue(): Int = {
       var __size = 0
       if (phonenum != "") { __size += com.google.protobuf.CodedOutputStream.computeStringSize(1, phonenum) }
       if (password != "") { __size += com.google.protobuf.CodedOutputStream.computeStringSize(2, password) }
       __size
     }
-    def writeTo(output: com.google.protobuf.CodedOutputStream): Unit = {
+    final override def serializedSize: Int = {
+      var read = __serializedSizeCachedValue
+      if (read == 0) {
+        read = __computeSerializedValue()
+        __serializedSizeCachedValue = read
+      }
+      read
+    }
+    def writeTo(`_output__`: com.google.protobuf.CodedOutputStream): Unit = {
       {
         val __v = phonenum
         if (__v != "") {
-          output.writeString(1, __v)
+          _output__.writeString(1, __v)
         }
       };
       {
         val __v = password
         if (__v != "") {
-          output.writeString(2, __v)
+          _output__.writeString(2, __v)
         }
       };
     }
-    def mergeFrom(__input: com.google.protobuf.CodedInputStream): com.echo.protocol.captain.SignupRequest = {
+    def mergeFrom(`_input__`: com.google.protobuf.CodedInputStream): com.echo.protocol.captain.SignupRequest = {
       var __phonenum = this.phonenum
       var __password = this.password
       var _done__ = false
       while (!_done__) {
-        val _tag__ = __input.readTag()
+        val _tag__ = _input__.readTag()
         _tag__ match {
           case 0 => _done__ = true
           case 10 =>
-            __phonenum = __input.readString()
+            __phonenum = _input__.readString()
           case 18 =>
-            __password = __input.readString()
-          case tag => __input.skipField(tag)
+            __password = _input__.readString()
+          case tag => _input__.skipField(tag)
         }
       }
       com.echo.protocol.captain.SignupRequest(
@@ -71,9 +80,9 @@ final case class SignupRequest(
     def companion = com.echo.protocol.captain.SignupRequest
 }
 
-object SignupRequest extends com.trueaccord.scalapb.GeneratedMessageCompanion[SignupRequest] {
-  implicit def messageCompanion: com.trueaccord.scalapb.GeneratedMessageCompanion[SignupRequest] = this
-  def fromFieldsMap(__fieldsMap: Map[com.google.protobuf.Descriptors.FieldDescriptor, scala.Any]): com.echo.protocol.captain.SignupRequest = {
+object SignupRequest extends com.trueaccord.scalapb.GeneratedMessageCompanion[com.echo.protocol.captain.SignupRequest] {
+  implicit def messageCompanion: com.trueaccord.scalapb.GeneratedMessageCompanion[com.echo.protocol.captain.SignupRequest] = this
+  def fromFieldsMap(__fieldsMap: scala.collection.immutable.Map[com.google.protobuf.Descriptors.FieldDescriptor, scala.Any]): com.echo.protocol.captain.SignupRequest = {
     require(__fieldsMap.keys.forall(_.getContainingType() == descriptor), "FieldDescriptor does not match message type.")
     val __fields = descriptor.getFields
     com.echo.protocol.captain.SignupRequest(
@@ -86,7 +95,7 @@ object SignupRequest extends com.trueaccord.scalapb.GeneratedMessageCompanion[Si
   def enumCompanionForField(__field: com.google.protobuf.Descriptors.FieldDescriptor): com.trueaccord.scalapb.GeneratedEnumCompanion[_] = throw new MatchError(__field)
   lazy val defaultInstance = com.echo.protocol.captain.SignupRequest(
   )
-  implicit class SignupRequestLens[UpperPB](_l: com.trueaccord.lenses.Lens[UpperPB, SignupRequest]) extends com.trueaccord.lenses.ObjectLens[UpperPB, SignupRequest](_l) {
+  implicit class SignupRequestLens[UpperPB](_l: com.trueaccord.lenses.Lens[UpperPB, com.echo.protocol.captain.SignupRequest]) extends com.trueaccord.lenses.ObjectLens[UpperPB, com.echo.protocol.captain.SignupRequest](_l) {
     def phonenum: com.trueaccord.lenses.Lens[UpperPB, String] = field(_.phonenum)((c_, f_) => c_.copy(phonenum = f_))
     def password: com.trueaccord.lenses.Lens[UpperPB, String] = field(_.password)((c_, f_) => c_.copy(password = f_))
   }

@@ -12,5 +12,6 @@ scalaSource in PB.protobufConfig := file("./src/main/compiled_protobuf/")
 
 libraryDependencies ++= Seq(
     "io.grpc" % "grpc-all" % "0.15.0",
+     "com.trueaccord.scalapb" %% "scalapb-runtime" % (PB.scalapbVersion in PB.protobufConfig).value % PB.protobufConfig,
     "com.trueaccord.scalapb" %% "scalapb-runtime-grpc" % (PB.scalapbVersion in PB.protobufConfig).value
 )

@@ -13,39 +13,48 @@ final case class ResponseHeader(
     resultDescription: String = ""
     ) extends com.trueaccord.scalapb.GeneratedMessage with com.trueaccord.scalapb.Message[ResponseHeader] with com.trueaccord.lenses.Updatable[ResponseHeader] {
     @transient
-    lazy val serializedSize: Int = {
+    private[this] var __serializedSizeCachedValue: Int = 0
+    private[this] def __computeSerializedValue(): Int = {
       var __size = 0
       if (result != com.echo.protocol.common.ResultCode.RESULT_CODE_EMPTY) { __size += com.google.protobuf.CodedOutputStream.computeEnumSize(1, result.value) }
       if (resultDescription != "") { __size += com.google.protobuf.CodedOutputStream.computeStringSize(2, resultDescription) }
       __size
     }
-    def writeTo(output: com.google.protobuf.CodedOutputStream): Unit = {
+    final override def serializedSize: Int = {
+      var read = __serializedSizeCachedValue
+      if (read == 0) {
+        read = __computeSerializedValue()
+        __serializedSizeCachedValue = read
+      }
+      read
+    }
+    def writeTo(`_output__`: com.google.protobuf.CodedOutputStream): Unit = {
       {
         val __v = result
         if (__v != com.echo.protocol.common.ResultCode.RESULT_CODE_EMPTY) {
-          output.writeEnum(1, __v.value)
+          _output__.writeEnum(1, __v.value)
         }
       };
       {
         val __v = resultDescription
         if (__v != "") {
-          output.writeString(2, __v)
+          _output__.writeString(2, __v)
         }
       };
     }
-    def mergeFrom(__input: com.google.protobuf.CodedInputStream): com.echo.protocol.common.ResponseHeader = {
+    def mergeFrom(`_input__`: com.google.protobuf.CodedInputStream): com.echo.protocol.common.ResponseHeader = {
       var __result = this.result
       var __resultDescription = this.resultDescription
       var _done__ = false
       while (!_done__) {
-        val _tag__ = __input.readTag()
+        val _tag__ = _input__.readTag()
         _tag__ match {
           case 0 => _done__ = true
           case 8 =>
-            __result = com.echo.protocol.common.ResultCode.fromValue(__input.readEnum())
+            __result = com.echo.protocol.common.ResultCode.fromValue(_input__.readEnum())
           case 18 =>
-            __resultDescription = __input.readString()
-          case tag => __input.skipField(tag)
+            __resultDescription = _input__.readString()
+          case tag => _input__.skipField(tag)
         }
       }
       com.echo.protocol.common.ResponseHeader(
@@ -71,9 +80,9 @@ final case class ResponseHeader(
     def companion = com.echo.protocol.common.ResponseHeader
 }
 
-object ResponseHeader extends com.trueaccord.scalapb.GeneratedMessageCompanion[ResponseHeader] {
-  implicit def messageCompanion: com.trueaccord.scalapb.GeneratedMessageCompanion[ResponseHeader] = this
-  def fromFieldsMap(__fieldsMap: Map[com.google.protobuf.Descriptors.FieldDescriptor, scala.Any]): com.echo.protocol.common.ResponseHeader = {
+object ResponseHeader extends com.trueaccord.scalapb.GeneratedMessageCompanion[com.echo.protocol.common.ResponseHeader] {
+  implicit def messageCompanion: com.trueaccord.scalapb.GeneratedMessageCompanion[com.echo.protocol.common.ResponseHeader] = this
+  def fromFieldsMap(__fieldsMap: scala.collection.immutable.Map[com.google.protobuf.Descriptors.FieldDescriptor, scala.Any]): com.echo.protocol.common.ResponseHeader = {
     require(__fieldsMap.keys.forall(_.getContainingType() == descriptor), "FieldDescriptor does not match message type.")
     val __fields = descriptor.getFields
     com.echo.protocol.common.ResponseHeader(
@@ -91,7 +100,7 @@ object ResponseHeader extends com.trueaccord.scalapb.GeneratedMessageCompanion[R
   }
   lazy val defaultInstance = com.echo.protocol.common.ResponseHeader(
   )
-  implicit class ResponseHeaderLens[UpperPB](_l: com.trueaccord.lenses.Lens[UpperPB, ResponseHeader]) extends com.trueaccord.lenses.ObjectLens[UpperPB, ResponseHeader](_l) {
+  implicit class ResponseHeaderLens[UpperPB](_l: com.trueaccord.lenses.Lens[UpperPB, com.echo.protocol.common.ResponseHeader]) extends com.trueaccord.lenses.ObjectLens[UpperPB, com.echo.protocol.common.ResponseHeader](_l) {
     def result: com.trueaccord.lenses.Lens[UpperPB, com.echo.protocol.common.ResultCode] = field(_.result)((c_, f_) => c_.copy(result = f_))
     def resultDescription: com.trueaccord.lenses.Lens[UpperPB, String] = field(_.resultDescription)((c_, f_) => c_.copy(resultDescription = f_))
   }

@@ -16,68 +16,77 @@ final case class UserInfo(
     securityQuestion1: scala.Option[com.echo.protocol.captain.SecurityQuestionPair] = None,
     securityQuestion2: scala.Option[com.echo.protocol.captain.SecurityQuestionPair] = None,
     securityQuestion3: scala.Option[com.echo.protocol.captain.SecurityQuestionPair] = None,
-    addresses: Seq[com.echo.protocol.captain.UserAddress] = Nil
+    addresses: scala.collection.Seq[com.echo.protocol.captain.UserAddress] = Nil
     ) extends com.trueaccord.scalapb.GeneratedMessage with com.trueaccord.scalapb.Message[UserInfo] with com.trueaccord.lenses.Updatable[UserInfo] {
     @transient
-    lazy val serializedSize: Int = {
+    private[this] var __serializedSizeCachedValue: Int = 0
+    private[this] def __computeSerializedValue(): Int = {
       var __size = 0
       if (userId != "") { __size += com.google.protobuf.CodedOutputStream.computeStringSize(1, userId) }
       if (username != "") { __size += com.google.protobuf.CodedOutputStream.computeStringSize(2, username) }
       if (email != "") { __size += com.google.protobuf.CodedOutputStream.computeStringSize(3, email) }
       if (phonenum != "") { __size += com.google.protobuf.CodedOutputStream.computeStringSize(4, phonenum) }
-      if (securityQuestion1.isDefined) { __size += 1 + com.google.protobuf.CodedOutputStream.computeRawVarint32Size(securityQuestion1.get.serializedSize) + securityQuestion1.get.serializedSize }
-      if (securityQuestion2.isDefined) { __size += 1 + com.google.protobuf.CodedOutputStream.computeRawVarint32Size(securityQuestion2.get.serializedSize) + securityQuestion2.get.serializedSize }
-      if (securityQuestion3.isDefined) { __size += 1 + com.google.protobuf.CodedOutputStream.computeRawVarint32Size(securityQuestion3.get.serializedSize) + securityQuestion3.get.serializedSize }
-      addresses.foreach(addresses => __size += 1 + com.google.protobuf.CodedOutputStream.computeRawVarint32Size(addresses.serializedSize) + addresses.serializedSize)
+      if (securityQuestion1.isDefined) { __size += 1 + com.google.protobuf.CodedOutputStream.computeUInt32SizeNoTag(securityQuestion1.get.serializedSize) + securityQuestion1.get.serializedSize }
+      if (securityQuestion2.isDefined) { __size += 1 + com.google.protobuf.CodedOutputStream.computeUInt32SizeNoTag(securityQuestion2.get.serializedSize) + securityQuestion2.get.serializedSize }
+      if (securityQuestion3.isDefined) { __size += 1 + com.google.protobuf.CodedOutputStream.computeUInt32SizeNoTag(securityQuestion3.get.serializedSize) + securityQuestion3.get.serializedSize }
+      addresses.foreach(addresses => __size += 1 + com.google.protobuf.CodedOutputStream.computeUInt32SizeNoTag(addresses.serializedSize) + addresses.serializedSize)
       __size
     }
-    def writeTo(output: com.google.protobuf.CodedOutputStream): Unit = {
+    final override def serializedSize: Int = {
+      var read = __serializedSizeCachedValue
+      if (read == 0) {
+        read = __computeSerializedValue()
+        __serializedSizeCachedValue = read
+      }
+      read
+    }
+    def writeTo(`_output__`: com.google.protobuf.CodedOutputStream): Unit = {
       {
         val __v = userId
         if (__v != "") {
-          output.writeString(1, __v)
+          _output__.writeString(1, __v)
         }
       };
       {
         val __v = username
         if (__v != "") {
-          output.writeString(2, __v)
+          _output__.writeString(2, __v)
         }
       };
       {
         val __v = email
         if (__v != "") {
-          output.writeString(3, __v)
+          _output__.writeString(3, __v)
         }
       };
       {
         val __v = phonenum
         if (__v != "") {
-          output.writeString(4, __v)
+          _output__.writeString(4, __v)
         }
       };
-      securityQuestion1.foreach { __v => 
-        output.writeTag(5, 2)
-        output.writeRawVarint32(__v.serializedSize)
-        __v.writeTo(output)
+      securityQuestion1.foreach { __v =>
+        _output__.writeTag(5, 2)
+        _output__.writeUInt32NoTag(__v.serializedSize)
+        __v.writeTo(_output__)
       };
-      securityQuestion2.foreach { __v => 
-        output.writeTag(6, 2)
-        output.writeRawVarint32(__v.serializedSize)
-        __v.writeTo(output)
+      securityQuestion2.foreach { __v =>
+        _output__.writeTag(6, 2)
+        _output__.writeUInt32NoTag(__v.serializedSize)
+        __v.writeTo(_output__)
       };
-      securityQuestion3.foreach { __v => 
-        output.writeTag(7, 2)
-        output.writeRawVarint32(__v.serializedSize)
-        __v.writeTo(output)
+      securityQuestion3.foreach { __v =>
+        _output__.writeTag(7, 2)
+        _output__.writeUInt32NoTag(__v.serializedSize)
+        __v.writeTo(_output__)
       };
-      addresses.foreach { __v => 
-        output.writeTag(8, 2)
-        output.writeRawVarint32(__v.serializedSize)
-        __v.writeTo(output)
+      addresses.foreach { __v =>
+        _output__.writeTag(8, 2)
+        _output__.writeUInt32NoTag(__v.serializedSize)
+        __v.writeTo(_output__)
       };
     }
-    def mergeFrom(__input: com.google.protobuf.CodedInputStream): com.echo.protocol.captain.UserInfo = {
+    def mergeFrom(`_input__`: com.google.protobuf.CodedInputStream): com.echo.protocol.captain.UserInfo = {
       var __userId = this.userId
       var __username = this.username
       var __email = this.email
@@ -88,26 +97,26 @@ final case class UserInfo(
       val __addresses = (scala.collection.immutable.Vector.newBuilder[com.echo.protocol.captain.UserAddress] ++= this.addresses)
       var _done__ = false
       while (!_done__) {
-        val _tag__ = __input.readTag()
+        val _tag__ = _input__.readTag()
         _tag__ match {
           case 0 => _done__ = true
           case 10 =>
-            __userId = __input.readString()
+            __userId = _input__.readString()
           case 18 =>
-            __username = __input.readString()
+            __username = _input__.readString()
           case 26 =>
-            __email = __input.readString()
+            __email = _input__.readString()
           case 34 =>
-            __phonenum = __input.readString()
+            __phonenum = _input__.readString()
           case 42 =>
-            __securityQuestion1 = Some(com.trueaccord.scalapb.LiteParser.readMessage(__input, __securityQuestion1.getOrElse(com.echo.protocol.captain.SecurityQuestionPair.defaultInstance)))
+            __securityQuestion1 = Some(com.trueaccord.scalapb.LiteParser.readMessage(_input__, __securityQuestion1.getOrElse(com.echo.protocol.captain.SecurityQuestionPair.defaultInstance)))
           case 50 =>
-            __securityQuestion2 = Some(com.trueaccord.scalapb.LiteParser.readMessage(__input, __securityQuestion2.getOrElse(com.echo.protocol.captain.SecurityQuestionPair.defaultInstance)))
+            __securityQuestion2 = Some(com.trueaccord.scalapb.LiteParser.readMessage(_input__, __securityQuestion2.getOrElse(com.echo.protocol.captain.SecurityQuestionPair.defaultInstance)))
           case 58 =>
-            __securityQuestion3 = Some(com.trueaccord.scalapb.LiteParser.readMessage(__input, __securityQuestion3.getOrElse(com.echo.protocol.captain.SecurityQuestionPair.defaultInstance)))
+            __securityQuestion3 = Some(com.trueaccord.scalapb.LiteParser.readMessage(_input__, __securityQuestion3.getOrElse(com.echo.protocol.captain.SecurityQuestionPair.defaultInstance)))
           case 66 =>
-            __addresses += com.trueaccord.scalapb.LiteParser.readMessage(__input, com.echo.protocol.captain.UserAddress.defaultInstance)
-          case tag => __input.skipField(tag)
+            __addresses += com.trueaccord.scalapb.LiteParser.readMessage(_input__, com.echo.protocol.captain.UserAddress.defaultInstance)
+          case tag => _input__.skipField(tag)
         }
       }
       com.echo.protocol.captain.UserInfo(
@@ -134,10 +143,10 @@ final case class UserInfo(
     def getSecurityQuestion3: com.echo.protocol.captain.SecurityQuestionPair = securityQuestion3.getOrElse(com.echo.protocol.captain.SecurityQuestionPair.defaultInstance)
     def clearSecurityQuestion3: UserInfo = copy(securityQuestion3 = None)
     def withSecurityQuestion3(__v: com.echo.protocol.captain.SecurityQuestionPair): UserInfo = copy(securityQuestion3 = Some(__v))
-    def clearAddresses = copy(addresses = Seq.empty)
+    def clearAddresses = copy(addresses = scala.collection.Seq.empty)
     def addAddresses(__vs: com.echo.protocol.captain.UserAddress*): UserInfo = addAllAddresses(__vs)
     def addAllAddresses(__vs: TraversableOnce[com.echo.protocol.captain.UserAddress]): UserInfo = copy(addresses = addresses ++ __vs)
-    def withAddresses(__v: Seq[com.echo.protocol.captain.UserAddress]): UserInfo = copy(addresses = __v)
+    def withAddresses(__v: scala.collection.Seq[com.echo.protocol.captain.UserAddress]): UserInfo = copy(addresses = __v)
     def getField(__field: com.google.protobuf.Descriptors.FieldDescriptor): scala.Any = {
       __field.getNumber match {
         case 1 => {
@@ -166,9 +175,9 @@ final case class UserInfo(
     def companion = com.echo.protocol.captain.UserInfo
 }
 
-object UserInfo extends com.trueaccord.scalapb.GeneratedMessageCompanion[UserInfo] {
-  implicit def messageCompanion: com.trueaccord.scalapb.GeneratedMessageCompanion[UserInfo] = this
-  def fromFieldsMap(__fieldsMap: Map[com.google.protobuf.Descriptors.FieldDescriptor, scala.Any]): com.echo.protocol.captain.UserInfo = {
+object UserInfo extends com.trueaccord.scalapb.GeneratedMessageCompanion[com.echo.protocol.captain.UserInfo] {
+  implicit def messageCompanion: com.trueaccord.scalapb.GeneratedMessageCompanion[com.echo.protocol.captain.UserInfo] = this
+  def fromFieldsMap(__fieldsMap: scala.collection.immutable.Map[com.google.protobuf.Descriptors.FieldDescriptor, scala.Any]): com.echo.protocol.captain.UserInfo = {
     require(__fieldsMap.keys.forall(_.getContainingType() == descriptor), "FieldDescriptor does not match message type.")
     val __fields = descriptor.getFields
     com.echo.protocol.captain.UserInfo(
@@ -179,7 +188,7 @@ object UserInfo extends com.trueaccord.scalapb.GeneratedMessageCompanion[UserInf
       __fieldsMap.get(__fields.get(4)).asInstanceOf[scala.Option[com.echo.protocol.captain.SecurityQuestionPair]],
       __fieldsMap.get(__fields.get(5)).asInstanceOf[scala.Option[com.echo.protocol.captain.SecurityQuestionPair]],
       __fieldsMap.get(__fields.get(6)).asInstanceOf[scala.Option[com.echo.protocol.captain.SecurityQuestionPair]],
-      __fieldsMap.getOrElse(__fields.get(7), Nil).asInstanceOf[Seq[com.echo.protocol.captain.UserAddress]]
+      __fieldsMap.getOrElse(__fields.get(7), Nil).asInstanceOf[scala.collection.Seq[com.echo.protocol.captain.UserAddress]]
     )
   }
   def descriptor: com.google.protobuf.Descriptors.Descriptor = CaptainProto.descriptor.getMessageTypes.get(2)
@@ -197,7 +206,7 @@ object UserInfo extends com.trueaccord.scalapb.GeneratedMessageCompanion[UserInf
   def enumCompanionForField(__field: com.google.protobuf.Descriptors.FieldDescriptor): com.trueaccord.scalapb.GeneratedEnumCompanion[_] = throw new MatchError(__field)
   lazy val defaultInstance = com.echo.protocol.captain.UserInfo(
   )
-  implicit class UserInfoLens[UpperPB](_l: com.trueaccord.lenses.Lens[UpperPB, UserInfo]) extends com.trueaccord.lenses.ObjectLens[UpperPB, UserInfo](_l) {
+  implicit class UserInfoLens[UpperPB](_l: com.trueaccord.lenses.Lens[UpperPB, com.echo.protocol.captain.UserInfo]) extends com.trueaccord.lenses.ObjectLens[UpperPB, com.echo.protocol.captain.UserInfo](_l) {
     def userId: com.trueaccord.lenses.Lens[UpperPB, String] = field(_.userId)((c_, f_) => c_.copy(userId = f_))
     def username: com.trueaccord.lenses.Lens[UpperPB, String] = field(_.username)((c_, f_) => c_.copy(username = f_))
     def email: com.trueaccord.lenses.Lens[UpperPB, String] = field(_.email)((c_, f_) => c_.copy(email = f_))
@@ -208,7 +217,7 @@ object UserInfo extends com.trueaccord.scalapb.GeneratedMessageCompanion[UserInf
     def optionalSecurityQuestion2: com.trueaccord.lenses.Lens[UpperPB, scala.Option[com.echo.protocol.captain.SecurityQuestionPair]] = field(_.securityQuestion2)((c_, f_) => c_.copy(securityQuestion2 = f_))
     def securityQuestion3: com.trueaccord.lenses.Lens[UpperPB, com.echo.protocol.captain.SecurityQuestionPair] = field(_.getSecurityQuestion3)((c_, f_) => c_.copy(securityQuestion3 = Some(f_)))
     def optionalSecurityQuestion3: com.trueaccord.lenses.Lens[UpperPB, scala.Option[com.echo.protocol.captain.SecurityQuestionPair]] = field(_.securityQuestion3)((c_, f_) => c_.copy(securityQuestion3 = f_))
-    def addresses: com.trueaccord.lenses.Lens[UpperPB, Seq[com.echo.protocol.captain.UserAddress]] = field(_.addresses)((c_, f_) => c_.copy(addresses = f_))
+    def addresses: com.trueaccord.lenses.Lens[UpperPB, scala.collection.Seq[com.echo.protocol.captain.UserAddress]] = field(_.addresses)((c_, f_) => c_.copy(addresses = f_))
   }
   final val USER_ID_FIELD_NUMBER = 1
   final val USERNAME_FIELD_NUMBER = 2

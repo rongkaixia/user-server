@@ -49,7 +49,7 @@ object DeliverMethod extends com.trueaccord.scalapb.GeneratedEnumCompanion[Deliv
     override def isUnrecognized: Boolean = true
   }
   
-  lazy val values = Seq(DELIVER_METHOD_EMPTY, EXPRESS, DTD)
+  lazy val values = scala.collection.Seq(DELIVER_METHOD_EMPTY, EXPRESS, DTD)
   def fromValue(value: Int): DeliverMethod = value match {
     case 0 => DELIVER_METHOD_EMPTY
     case 1 => EXPRESS

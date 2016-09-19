@@ -27,7 +27,7 @@ object CaptainServiceException {
     else null
   }
 
-  class OrderNotExist(id: String) extends CaptainServiceException(s"order not existed for orderId[${id}]")
+  class UserNotExist(id: String) extends CaptainServiceException(s"user not existed for userId[${id}]")
 }
 
 
@@ -125,7 +125,12 @@ class CaptainService()
   extends SignupImpl
   with LoginImpl
   with LogoutImpl
-  with AuthImpl{
+  with AuthImpl
+  with AddUserAddressImpl
+  with DeleteUserAddressImpl
+  with UpdateUserAddressImpl
+  with QueryUserInfoImpl
+  with UpdateUserInfoImpl{
 
   // execution context
   val ec = ExecutionContext.Implicits.global

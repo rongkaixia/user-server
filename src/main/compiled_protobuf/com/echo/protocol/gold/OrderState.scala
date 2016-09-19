@@ -103,7 +103,7 @@ object OrderState extends com.trueaccord.scalapb.GeneratedEnumCompanion[OrderSta
     override def isUnrecognized: Boolean = true
   }
   
-  lazy val values = Seq(ORDER_STATE_EMPTY, UNPAY, PAY_SUCCESS, PAY_ERROR, DELIVER, DELIVER_CONFIRM, REFUND, REFUND_CONFIRM, CANCELLED)
+  lazy val values = scala.collection.Seq(ORDER_STATE_EMPTY, UNPAY, PAY_SUCCESS, PAY_ERROR, DELIVER, DELIVER_CONFIRM, REFUND, REFUND_CONFIRM, CANCELLED)
   def fromValue(value: Int): OrderState = value match {
     case 0 => ORDER_STATE_EMPTY
     case 1 => UNPAY
