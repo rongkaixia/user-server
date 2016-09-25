@@ -26,6 +26,7 @@ trait UpdateUserInfoImpl extends AbstractCaptainService with LazyLogging{
                           username: Option[String],
                           email: Option[String],
                           phonenum: Option[String],
+                          password: Option[String],
                           securityQuestion1: Option[SecurityQuestionPair],
                           securityQuestion2: Option[SecurityQuestionPair],
                           securityQuestion3: Option[SecurityQuestionPair]): Future[Unit] = {
@@ -36,6 +37,7 @@ trait UpdateUserInfoImpl extends AbstractCaptainService with LazyLogging{
       val usernameColumn = cfg.getString("echo.captain.mongo.user.columns.username")
       val emailColumn = cfg.getString("echo.captain.mongo.user.columns.email")
       val phonenumColumn = cfg.getString("echo.captain.mongo.user.columns.phonenum")
+      val passwordColumn = cfg.getString("echo.captain.mongo.user.columns.password")
       val securityQuestion1Column = cfg.getString("echo.captain.mongo.user.columns.security_question1")
       val securityQuestion2Column = cfg.getString("echo.captain.mongo.user.columns.security_question2")
       val securityQuestion3Column = cfg.getString("echo.captain.mongo.user.columns.security_question3")
@@ -48,6 +50,7 @@ trait UpdateUserInfoImpl extends AbstractCaptainService with LazyLogging{
       if (username.isDefined) updateOps.append(set(usernameColumn,username.get))
       if (email.isDefined) updateOps.append(set(emailColumn,email.get))
       if (phonenum.isDefined) updateOps.append(set(phonenumColumn,phonenum.get))
+      if (password.isDefined) updateOps.append(set(passwordColumn,password.get))
       if (securityQuestion1.isDefined) 
         updateOps.append(set(securityQuestion1Column,Document(JsonFormat.toJsonString(securityQuestion1.get))))
       if (securityQuestion2.isDefined)
@@ -74,24 +77,13 @@ trait UpdateUserInfoImpl extends AbstractCaptainService with LazyLogging{
     val fut = async{
       var res = UpdateUserInfoResponse()
       val userIdColumn = cfg.getString("echo.captain.mongo.user.columns.user_id")
-      val usernameColumn = cfg.getString("echo.captain.mongo.user.columns.username")
-      val emailColumn = cfg.getString("echo.captain.mongo.user.columns.email")
-      val phonenumColumn = cfg.getString("echo.captain.mongo.user.columns.phonenum")
-      val securityQuestion1Column = cfg.getString("echo.captain.mongo.user.columns.security_question1")
-      val securityQuestion2Column = cfg.getString("echo.captain.mongo.user.columns.security_question2")
-      val securityQuestion3Column = cfg.getString("echo.captain.mongo.user.columns.security_question3")
-      val allowUpdateColumns = Seq(usernameColumn, 
-                                   emailColumn, 
-                                   phonenumColumn,
-                                   securityQuestion1Column,
-                                   securityQuestion2Column,
-                                   securityQuestion3Column)
 
       // check request
       val token = req.token
       val username: Option[String] = if(req.username.isEmpty) None else Some(req.username)
       val email: Option[String] = if(req.email.isEmpty) None else Some(req.email)
       val phonenum: Option[String] = if(req.phonenum.isEmpty) None else Some(req.phonenum)
+      val password: Option[String] = if(req.password.isEmpty) None else Some(req.password)
       val securityQuestion1: Option[SecurityQuestionPair] = req.securityQuestion1
       val securityQuestion2: Option[SecurityQuestionPair] = req.securityQuestion2
       val securityQuestion3: Option[SecurityQuestionPair] = req.securityQuestion3
@@ -111,6 +103,7 @@ trait UpdateUserInfoImpl extends AbstractCaptainService with LazyLogging{
                             username, 
                             email, 
                             phonenum, 
+                            password,
                             securityQuestion1, 
                             securityQuestion2,
                             securityQuestion3))

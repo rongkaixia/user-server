@@ -41,13 +41,13 @@ trait AuthImpl extends AbstractCaptainService with LazyLogging{
       val token = req.token
       if (token.isEmpty){
         val header = ResponseHeader(ResultCode.SUCCESS, "ok")
-        res = res.withHeader(header)
+        res = res.withHeader(header).withIsExpired(true).withExpiresIn(0)
       }else{
         logger.debug(s"checkAuth for token ${token}")
         val resultMap = await(queryAuth(token))
         if (resultMap.isEmpty) {
-          val header = ResponseHeader(ResultCode.SESSION_TOKEN_EXPIRED, "session token has expired")
-          res = res.withHeader(header)
+          val header = ResponseHeader(ResultCode.SUCCESS, "ok")
+          res = res.withHeader(header).withIsExpired(true).withExpiresIn(0)
         } else {
           val userId = resultMap(userIdColumn).asString.getValue
           val username = resultMap(usernameColumn).asString.getValue

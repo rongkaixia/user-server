@@ -13,6 +13,7 @@ final case class UpdateUserInfoRequest(
     username: String = "",
     email: String = "",
     phonenum: String = "",
+    password: String = "",
     securityQuestion1: scala.Option[com.echo.protocol.captain.SecurityQuestionPair] = None,
     securityQuestion2: scala.Option[com.echo.protocol.captain.SecurityQuestionPair] = None,
     securityQuestion3: scala.Option[com.echo.protocol.captain.SecurityQuestionPair] = None
@@ -25,6 +26,7 @@ final case class UpdateUserInfoRequest(
       if (username != "") { __size += com.google.protobuf.CodedOutputStream.computeStringSize(2, username) }
       if (email != "") { __size += com.google.protobuf.CodedOutputStream.computeStringSize(3, email) }
       if (phonenum != "") { __size += com.google.protobuf.CodedOutputStream.computeStringSize(4, phonenum) }
+      if (password != "") { __size += com.google.protobuf.CodedOutputStream.computeStringSize(5, password) }
       if (securityQuestion1.isDefined) { __size += 1 + com.google.protobuf.CodedOutputStream.computeUInt32SizeNoTag(securityQuestion1.get.serializedSize) + securityQuestion1.get.serializedSize }
       if (securityQuestion2.isDefined) { __size += 1 + com.google.protobuf.CodedOutputStream.computeUInt32SizeNoTag(securityQuestion2.get.serializedSize) + securityQuestion2.get.serializedSize }
       if (securityQuestion3.isDefined) { __size += 1 + com.google.protobuf.CodedOutputStream.computeUInt32SizeNoTag(securityQuestion3.get.serializedSize) + securityQuestion3.get.serializedSize }
@@ -63,18 +65,24 @@ final case class UpdateUserInfoRequest(
           _output__.writeString(4, __v)
         }
       };
-      securityQuestion1.foreach { __v =>
-        _output__.writeTag(5, 2)
-        _output__.writeUInt32NoTag(__v.serializedSize)
-        __v.writeTo(_output__)
+      {
+        val __v = password
+        if (__v != "") {
+          _output__.writeString(5, __v)
+        }
       };
-      securityQuestion2.foreach { __v =>
+      securityQuestion1.foreach { __v =>
         _output__.writeTag(6, 2)
         _output__.writeUInt32NoTag(__v.serializedSize)
         __v.writeTo(_output__)
       };
-      securityQuestion3.foreach { __v =>
+      securityQuestion2.foreach { __v =>
         _output__.writeTag(7, 2)
+        _output__.writeUInt32NoTag(__v.serializedSize)
+        __v.writeTo(_output__)
+      };
+      securityQuestion3.foreach { __v =>
+        _output__.writeTag(8, 2)
         _output__.writeUInt32NoTag(__v.serializedSize)
         __v.writeTo(_output__)
       };
@@ -84,6 +92,7 @@ final case class UpdateUserInfoRequest(
       var __username = this.username
       var __email = this.email
       var __phonenum = this.phonenum
+      var __password = this.password
       var __securityQuestion1 = this.securityQuestion1
       var __securityQuestion2 = this.securityQuestion2
       var __securityQuestion3 = this.securityQuestion3
@@ -101,10 +110,12 @@ final case class UpdateUserInfoRequest(
           case 34 =>
             __phonenum = _input__.readString()
           case 42 =>
-            __securityQuestion1 = Some(com.trueaccord.scalapb.LiteParser.readMessage(_input__, __securityQuestion1.getOrElse(com.echo.protocol.captain.SecurityQuestionPair.defaultInstance)))
+            __password = _input__.readString()
           case 50 =>
-            __securityQuestion2 = Some(com.trueaccord.scalapb.LiteParser.readMessage(_input__, __securityQuestion2.getOrElse(com.echo.protocol.captain.SecurityQuestionPair.defaultInstance)))
+            __securityQuestion1 = Some(com.trueaccord.scalapb.LiteParser.readMessage(_input__, __securityQuestion1.getOrElse(com.echo.protocol.captain.SecurityQuestionPair.defaultInstance)))
           case 58 =>
+            __securityQuestion2 = Some(com.trueaccord.scalapb.LiteParser.readMessage(_input__, __securityQuestion2.getOrElse(com.echo.protocol.captain.SecurityQuestionPair.defaultInstance)))
+          case 66 =>
             __securityQuestion3 = Some(com.trueaccord.scalapb.LiteParser.readMessage(_input__, __securityQuestion3.getOrElse(com.echo.protocol.captain.SecurityQuestionPair.defaultInstance)))
           case tag => _input__.skipField(tag)
         }
@@ -114,6 +125,7 @@ final case class UpdateUserInfoRequest(
           username = __username,
           email = __email,
           phonenum = __phonenum,
+          password = __password,
           securityQuestion1 = __securityQuestion1,
           securityQuestion2 = __securityQuestion2,
           securityQuestion3 = __securityQuestion3
@@ -123,6 +135,7 @@ final case class UpdateUserInfoRequest(
     def withUsername(__v: String): UpdateUserInfoRequest = copy(username = __v)
     def withEmail(__v: String): UpdateUserInfoRequest = copy(email = __v)
     def withPhonenum(__v: String): UpdateUserInfoRequest = copy(phonenum = __v)
+    def withPassword(__v: String): UpdateUserInfoRequest = copy(password = __v)
     def getSecurityQuestion1: com.echo.protocol.captain.SecurityQuestionPair = securityQuestion1.getOrElse(com.echo.protocol.captain.SecurityQuestionPair.defaultInstance)
     def clearSecurityQuestion1: UpdateUserInfoRequest = copy(securityQuestion1 = None)
     def withSecurityQuestion1(__v: com.echo.protocol.captain.SecurityQuestionPair): UpdateUserInfoRequest = copy(securityQuestion1 = Some(__v))
@@ -150,9 +163,13 @@ final case class UpdateUserInfoRequest(
           val __t = phonenum
           if (__t != "") __t else null
         }
-        case 5 => securityQuestion1.getOrElse(null)
-        case 6 => securityQuestion2.getOrElse(null)
-        case 7 => securityQuestion3.getOrElse(null)
+        case 5 => {
+          val __t = password
+          if (__t != "") __t else null
+        }
+        case 6 => securityQuestion1.getOrElse(null)
+        case 7 => securityQuestion2.getOrElse(null)
+        case 8 => securityQuestion3.getOrElse(null)
       }
     }
     override def toString: String = com.trueaccord.scalapb.TextFormat.printToUnicodeString(this)
@@ -169,9 +186,10 @@ object UpdateUserInfoRequest extends com.trueaccord.scalapb.GeneratedMessageComp
       __fieldsMap.getOrElse(__fields.get(1), "").asInstanceOf[String],
       __fieldsMap.getOrElse(__fields.get(2), "").asInstanceOf[String],
       __fieldsMap.getOrElse(__fields.get(3), "").asInstanceOf[String],
-      __fieldsMap.get(__fields.get(4)).asInstanceOf[scala.Option[com.echo.protocol.captain.SecurityQuestionPair]],
+      __fieldsMap.getOrElse(__fields.get(4), "").asInstanceOf[String],
       __fieldsMap.get(__fields.get(5)).asInstanceOf[scala.Option[com.echo.protocol.captain.SecurityQuestionPair]],
-      __fieldsMap.get(__fields.get(6)).asInstanceOf[scala.Option[com.echo.protocol.captain.SecurityQuestionPair]]
+      __fieldsMap.get(__fields.get(6)).asInstanceOf[scala.Option[com.echo.protocol.captain.SecurityQuestionPair]],
+      __fieldsMap.get(__fields.get(7)).asInstanceOf[scala.Option[com.echo.protocol.captain.SecurityQuestionPair]]
     )
   }
   def descriptor: com.google.protobuf.Descriptors.Descriptor = CaptainProto.descriptor.getMessageTypes.get(8)
@@ -179,9 +197,9 @@ object UpdateUserInfoRequest extends com.trueaccord.scalapb.GeneratedMessageComp
     require(__field.getContainingType() == descriptor, "FieldDescriptor does not match message type.")
     var __out: com.trueaccord.scalapb.GeneratedMessageCompanion[_] = null
     __field.getNumber match {
-      case 5 => __out = com.echo.protocol.captain.SecurityQuestionPair
       case 6 => __out = com.echo.protocol.captain.SecurityQuestionPair
       case 7 => __out = com.echo.protocol.captain.SecurityQuestionPair
+      case 8 => __out = com.echo.protocol.captain.SecurityQuestionPair
     }
   __out
   }
@@ -193,6 +211,7 @@ object UpdateUserInfoRequest extends com.trueaccord.scalapb.GeneratedMessageComp
     def username: com.trueaccord.lenses.Lens[UpperPB, String] = field(_.username)((c_, f_) => c_.copy(username = f_))
     def email: com.trueaccord.lenses.Lens[UpperPB, String] = field(_.email)((c_, f_) => c_.copy(email = f_))
     def phonenum: com.trueaccord.lenses.Lens[UpperPB, String] = field(_.phonenum)((c_, f_) => c_.copy(phonenum = f_))
+    def password: com.trueaccord.lenses.Lens[UpperPB, String] = field(_.password)((c_, f_) => c_.copy(password = f_))
     def securityQuestion1: com.trueaccord.lenses.Lens[UpperPB, com.echo.protocol.captain.SecurityQuestionPair] = field(_.getSecurityQuestion1)((c_, f_) => c_.copy(securityQuestion1 = Some(f_)))
     def optionalSecurityQuestion1: com.trueaccord.lenses.Lens[UpperPB, scala.Option[com.echo.protocol.captain.SecurityQuestionPair]] = field(_.securityQuestion1)((c_, f_) => c_.copy(securityQuestion1 = f_))
     def securityQuestion2: com.trueaccord.lenses.Lens[UpperPB, com.echo.protocol.captain.SecurityQuestionPair] = field(_.getSecurityQuestion2)((c_, f_) => c_.copy(securityQuestion2 = Some(f_)))
@@ -204,7 +223,8 @@ object UpdateUserInfoRequest extends com.trueaccord.scalapb.GeneratedMessageComp
   final val USERNAME_FIELD_NUMBER = 2
   final val EMAIL_FIELD_NUMBER = 3
   final val PHONENUM_FIELD_NUMBER = 4
-  final val SECURITY_QUESTION1_FIELD_NUMBER = 5
-  final val SECURITY_QUESTION2_FIELD_NUMBER = 6
-  final val SECURITY_QUESTION3_FIELD_NUMBER = 7
+  final val PASSWORD_FIELD_NUMBER = 5
+  final val SECURITY_QUESTION1_FIELD_NUMBER = 6
+  final val SECURITY_QUESTION2_FIELD_NUMBER = 7
+  final val SECURITY_QUESTION3_FIELD_NUMBER = 8
 }

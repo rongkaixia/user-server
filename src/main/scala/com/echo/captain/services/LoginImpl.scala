@@ -31,6 +31,7 @@ trait LoginImpl extends AbstractCaptainService with LazyLogging{
       val dbName = cfg.getString("echo.captain.mongo.user.db")
       val collectionName = cfg.getString("echo.captain.mongo.user.collection")
       val phonenumColumn = cfg.getString("echo.captain.mongo.user.columns.phonenum")
+      val passwordColumn = cfg.getString("echo.captain.mongo.user.columns.password")
       val userIdColumn = cfg.getString("echo.captain.mongo.user.columns.user_id")
       val usernameColumn = cfg.getString("echo.captain.mongo.user.columns.username")
       val database: MongoDatabase = mongo.getDatabase(dbName)
@@ -43,7 +44,9 @@ trait LoginImpl extends AbstractCaptainService with LazyLogging{
         (false, null, null)
       }else {
         val resultMap = result.head.toMap
-        if (resultMap(phonenumColumn).asString.getValue != password) {
+        logger.debug(s"user enter password: ${password}")
+        logger.debug(s"resultMap: ${resultMap}, real_password: ${resultMap(passwordColumn).asString.getValue}")
+        if (resultMap(passwordColumn).asString.getValue != password) {
           (false, null, null)
         }else {
           (true, resultMap(userIdColumn).asString.getValue, resultMap(usernameColumn).asString.getValue)
