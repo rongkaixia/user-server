@@ -8,16 +8,16 @@ package com.echo.protocol.gold
 
 
 @SerialVersionUID(0L)
-final case class QueryOrderResponse(
+final case class QueryOrderWithUserResponse(
     header: scala.Option[com.echo.protocol.common.ResponseHeader] = None,
-    orderInfo: scala.Option[com.echo.protocol.gold.OrderInfo] = None
-    ) extends com.trueaccord.scalapb.GeneratedMessage with com.trueaccord.scalapb.Message[QueryOrderResponse] with com.trueaccord.lenses.Updatable[QueryOrderResponse] {
+    orderInfo: scala.collection.Seq[com.echo.protocol.gold.OrderInfo] = Nil
+    ) extends com.trueaccord.scalapb.GeneratedMessage with com.trueaccord.scalapb.Message[QueryOrderWithUserResponse] with com.trueaccord.lenses.Updatable[QueryOrderWithUserResponse] {
     @transient
     private[this] var __serializedSizeCachedValue: Int = 0
     private[this] def __computeSerializedValue(): Int = {
       var __size = 0
       if (header.isDefined) { __size += 1 + com.google.protobuf.CodedOutputStream.computeUInt32SizeNoTag(header.get.serializedSize) + header.get.serializedSize }
-      if (orderInfo.isDefined) { __size += 1 + com.google.protobuf.CodedOutputStream.computeUInt32SizeNoTag(orderInfo.get.serializedSize) + orderInfo.get.serializedSize }
+      orderInfo.foreach(orderInfo => __size += 1 + com.google.protobuf.CodedOutputStream.computeUInt32SizeNoTag(orderInfo.serializedSize) + orderInfo.serializedSize)
       __size
     }
     final override def serializedSize: Int = {
@@ -40,9 +40,9 @@ final case class QueryOrderResponse(
         __v.writeTo(_output__)
       };
     }
-    def mergeFrom(`_input__`: com.google.protobuf.CodedInputStream): com.echo.protocol.gold.QueryOrderResponse = {
+    def mergeFrom(`_input__`: com.google.protobuf.CodedInputStream): com.echo.protocol.gold.QueryOrderWithUserResponse = {
       var __header = this.header
-      var __orderInfo = this.orderInfo
+      val __orderInfo = (scala.collection.immutable.Vector.newBuilder[com.echo.protocol.gold.OrderInfo] ++= this.orderInfo)
       var _done__ = false
       while (!_done__) {
         val _tag__ = _input__.readTag()
@@ -51,42 +51,43 @@ final case class QueryOrderResponse(
           case 10 =>
             __header = Some(com.trueaccord.scalapb.LiteParser.readMessage(_input__, __header.getOrElse(com.echo.protocol.common.ResponseHeader.defaultInstance)))
           case 18 =>
-            __orderInfo = Some(com.trueaccord.scalapb.LiteParser.readMessage(_input__, __orderInfo.getOrElse(com.echo.protocol.gold.OrderInfo.defaultInstance)))
+            __orderInfo += com.trueaccord.scalapb.LiteParser.readMessage(_input__, com.echo.protocol.gold.OrderInfo.defaultInstance)
           case tag => _input__.skipField(tag)
         }
       }
-      com.echo.protocol.gold.QueryOrderResponse(
+      com.echo.protocol.gold.QueryOrderWithUserResponse(
           header = __header,
-          orderInfo = __orderInfo
+          orderInfo = __orderInfo.result()
       )
     }
     def getHeader: com.echo.protocol.common.ResponseHeader = header.getOrElse(com.echo.protocol.common.ResponseHeader.defaultInstance)
-    def clearHeader: QueryOrderResponse = copy(header = None)
-    def withHeader(__v: com.echo.protocol.common.ResponseHeader): QueryOrderResponse = copy(header = Some(__v))
-    def getOrderInfo: com.echo.protocol.gold.OrderInfo = orderInfo.getOrElse(com.echo.protocol.gold.OrderInfo.defaultInstance)
-    def clearOrderInfo: QueryOrderResponse = copy(orderInfo = None)
-    def withOrderInfo(__v: com.echo.protocol.gold.OrderInfo): QueryOrderResponse = copy(orderInfo = Some(__v))
+    def clearHeader: QueryOrderWithUserResponse = copy(header = None)
+    def withHeader(__v: com.echo.protocol.common.ResponseHeader): QueryOrderWithUserResponse = copy(header = Some(__v))
+    def clearOrderInfo = copy(orderInfo = scala.collection.Seq.empty)
+    def addOrderInfo(__vs: com.echo.protocol.gold.OrderInfo*): QueryOrderWithUserResponse = addAllOrderInfo(__vs)
+    def addAllOrderInfo(__vs: TraversableOnce[com.echo.protocol.gold.OrderInfo]): QueryOrderWithUserResponse = copy(orderInfo = orderInfo ++ __vs)
+    def withOrderInfo(__v: scala.collection.Seq[com.echo.protocol.gold.OrderInfo]): QueryOrderWithUserResponse = copy(orderInfo = __v)
     def getField(__field: com.google.protobuf.Descriptors.FieldDescriptor): scala.Any = {
       __field.getNumber match {
         case 1 => header.getOrElse(null)
-        case 2 => orderInfo.getOrElse(null)
+        case 2 => orderInfo
       }
     }
     override def toString: String = com.trueaccord.scalapb.TextFormat.printToUnicodeString(this)
-    def companion = com.echo.protocol.gold.QueryOrderResponse
+    def companion = com.echo.protocol.gold.QueryOrderWithUserResponse
 }
 
-object QueryOrderResponse extends com.trueaccord.scalapb.GeneratedMessageCompanion[com.echo.protocol.gold.QueryOrderResponse] {
-  implicit def messageCompanion: com.trueaccord.scalapb.GeneratedMessageCompanion[com.echo.protocol.gold.QueryOrderResponse] = this
-  def fromFieldsMap(__fieldsMap: scala.collection.immutable.Map[com.google.protobuf.Descriptors.FieldDescriptor, scala.Any]): com.echo.protocol.gold.QueryOrderResponse = {
+object QueryOrderWithUserResponse extends com.trueaccord.scalapb.GeneratedMessageCompanion[com.echo.protocol.gold.QueryOrderWithUserResponse] {
+  implicit def messageCompanion: com.trueaccord.scalapb.GeneratedMessageCompanion[com.echo.protocol.gold.QueryOrderWithUserResponse] = this
+  def fromFieldsMap(__fieldsMap: scala.collection.immutable.Map[com.google.protobuf.Descriptors.FieldDescriptor, scala.Any]): com.echo.protocol.gold.QueryOrderWithUserResponse = {
     require(__fieldsMap.keys.forall(_.getContainingType() == descriptor), "FieldDescriptor does not match message type.")
     val __fields = descriptor.getFields
-    com.echo.protocol.gold.QueryOrderResponse(
+    com.echo.protocol.gold.QueryOrderWithUserResponse(
       __fieldsMap.get(__fields.get(0)).asInstanceOf[scala.Option[com.echo.protocol.common.ResponseHeader]],
-      __fieldsMap.get(__fields.get(1)).asInstanceOf[scala.Option[com.echo.protocol.gold.OrderInfo]]
+      __fieldsMap.getOrElse(__fields.get(1), Nil).asInstanceOf[scala.collection.Seq[com.echo.protocol.gold.OrderInfo]]
     )
   }
-  def descriptor: com.google.protobuf.Descriptors.Descriptor = GoldProto.descriptor.getMessageTypes.get(10)
+  def descriptor: com.google.protobuf.Descriptors.Descriptor = GoldProto.descriptor.getMessageTypes.get(11)
   def messageCompanionForField(__field: com.google.protobuf.Descriptors.FieldDescriptor): com.trueaccord.scalapb.GeneratedMessageCompanion[_] = {
     require(__field.getContainingType() == descriptor, "FieldDescriptor does not match message type.")
     var __out: com.trueaccord.scalapb.GeneratedMessageCompanion[_] = null
@@ -97,13 +98,12 @@ object QueryOrderResponse extends com.trueaccord.scalapb.GeneratedMessageCompani
   __out
   }
   def enumCompanionForField(__field: com.google.protobuf.Descriptors.FieldDescriptor): com.trueaccord.scalapb.GeneratedEnumCompanion[_] = throw new MatchError(__field)
-  lazy val defaultInstance = com.echo.protocol.gold.QueryOrderResponse(
+  lazy val defaultInstance = com.echo.protocol.gold.QueryOrderWithUserResponse(
   )
-  implicit class QueryOrderResponseLens[UpperPB](_l: com.trueaccord.lenses.Lens[UpperPB, com.echo.protocol.gold.QueryOrderResponse]) extends com.trueaccord.lenses.ObjectLens[UpperPB, com.echo.protocol.gold.QueryOrderResponse](_l) {
+  implicit class QueryOrderWithUserResponseLens[UpperPB](_l: com.trueaccord.lenses.Lens[UpperPB, com.echo.protocol.gold.QueryOrderWithUserResponse]) extends com.trueaccord.lenses.ObjectLens[UpperPB, com.echo.protocol.gold.QueryOrderWithUserResponse](_l) {
     def header: com.trueaccord.lenses.Lens[UpperPB, com.echo.protocol.common.ResponseHeader] = field(_.getHeader)((c_, f_) => c_.copy(header = Some(f_)))
     def optionalHeader: com.trueaccord.lenses.Lens[UpperPB, scala.Option[com.echo.protocol.common.ResponseHeader]] = field(_.header)((c_, f_) => c_.copy(header = f_))
-    def orderInfo: com.trueaccord.lenses.Lens[UpperPB, com.echo.protocol.gold.OrderInfo] = field(_.getOrderInfo)((c_, f_) => c_.copy(orderInfo = Some(f_)))
-    def optionalOrderInfo: com.trueaccord.lenses.Lens[UpperPB, scala.Option[com.echo.protocol.gold.OrderInfo]] = field(_.orderInfo)((c_, f_) => c_.copy(orderInfo = f_))
+    def orderInfo: com.trueaccord.lenses.Lens[UpperPB, scala.collection.Seq[com.echo.protocol.gold.OrderInfo]] = field(_.orderInfo)((c_, f_) => c_.copy(orderInfo = f_))
   }
   final val HEADER_FIELD_NUMBER = 1
   final val ORDER_INFO_FIELD_NUMBER = 2

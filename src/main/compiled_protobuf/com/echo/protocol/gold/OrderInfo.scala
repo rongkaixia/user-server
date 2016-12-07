@@ -7,12 +7,8 @@ package com.echo.protocol.gold
 
 
 
-/** @param title
-  *  商品名字
-  * @param productId
-  *  商品ID
-  * @param num
-  *  商品数量
+/** @param products
+  *   商品内容
   * @param payMethod
   *  支付模式
   * @param deliverMethod
@@ -27,27 +23,30 @@ package com.echo.protocol.gold
   *  邮编
   * @param comment
   *  备注
-  * @param price
-  *  repeated string coupon_id = 13;
-  *   商品原始单价
-  * @param realPrice
-  *   商品实际单价，促销等情况
+  * @param couponId
+  *   优惠券
   * @param discount
   *   折扣，值的是优惠多少钱，如-100.11，而不是多少折
   * @param payAmt
-  *   应支付价格 = real_price * num
+  *   应支付价格 = sum(products.total)
   * @param realPayAmt
-  *   实际支付价格 = real_price * num + discount
+  *   实际支付价格 = sum(products.total) + discount
   * @param state
   *   订单状态
+  * @param createAt
+  *   创建时间
+  * @param updateAt
+  *   最后更新时间
+  * @param expireAt
+  *   超时关闭时间
+  * @param payAt
+  *   支付时间
   */
 @SerialVersionUID(0L)
 final case class OrderInfo(
     orderId: String = "",
     userId: String = "",
-    title: String = "",
-    productId: String = "",
-    num: Int = 0,
+    products: scala.collection.Seq[com.echo.protocol.gold.ProductInfo] = Nil,
     payMethod: com.echo.protocol.gold.PayMethod = com.echo.protocol.gold.PayMethod.PAY_METHOD_EMPTY,
     deliverMethod: com.echo.protocol.gold.DeliverMethod = com.echo.protocol.gold.DeliverMethod.DELIVER_METHOD_EMPTY,
     recipientsName: String = "",
@@ -55,12 +54,20 @@ final case class OrderInfo(
     recipientsAddress: String = "",
     recipientsPostcode: String = "",
     comment: String = "",
-    price: Double = 0.0,
-    realPrice: Double = 0.0,
+    couponId: scala.collection.Seq[String] = Nil,
     discount: Double = 0.0,
     payAmt: Double = 0.0,
     realPayAmt: Double = 0.0,
-    state: com.echo.protocol.gold.OrderState = com.echo.protocol.gold.OrderState.ORDER_STATE_EMPTY
+    state: com.echo.protocol.gold.OrderState = com.echo.protocol.gold.OrderState.ORDER_STATE_EMPTY,
+    createAt: Long = 0L,
+    updateAt: Long = 0L,
+    expireAt: Long = 0L,
+    payAt: Long = 0L,
+    deliverAt: Long = 0L,
+    deliverConfirmAt: Long = 0L,
+    refundAt: Long = 0L,
+    refundConfirmAt: Long = 0L,
+    cancelAt: Long = 0L
     ) extends com.trueaccord.scalapb.GeneratedMessage with com.trueaccord.scalapb.Message[OrderInfo] with com.trueaccord.lenses.Updatable[OrderInfo] {
     @transient
     private[this] var __serializedSizeCachedValue: Int = 0
@@ -68,9 +75,7 @@ final case class OrderInfo(
       var __size = 0
       if (orderId != "") { __size += com.google.protobuf.CodedOutputStream.computeStringSize(1, orderId) }
       if (userId != "") { __size += com.google.protobuf.CodedOutputStream.computeStringSize(2, userId) }
-      if (title != "") { __size += com.google.protobuf.CodedOutputStream.computeStringSize(3, title) }
-      if (productId != "") { __size += com.google.protobuf.CodedOutputStream.computeStringSize(4, productId) }
-      if (num != 0) { __size += com.google.protobuf.CodedOutputStream.computeInt32Size(5, num) }
+      products.foreach(products => __size += 1 + com.google.protobuf.CodedOutputStream.computeUInt32SizeNoTag(products.serializedSize) + products.serializedSize)
       if (payMethod != com.echo.protocol.gold.PayMethod.PAY_METHOD_EMPTY) { __size += com.google.protobuf.CodedOutputStream.computeEnumSize(6, payMethod.value) }
       if (deliverMethod != com.echo.protocol.gold.DeliverMethod.DELIVER_METHOD_EMPTY) { __size += com.google.protobuf.CodedOutputStream.computeEnumSize(7, deliverMethod.value) }
       if (recipientsName != "") { __size += com.google.protobuf.CodedOutputStream.computeStringSize(8, recipientsName) }
@@ -78,12 +83,20 @@ final case class OrderInfo(
       if (recipientsAddress != "") { __size += com.google.protobuf.CodedOutputStream.computeStringSize(10, recipientsAddress) }
       if (recipientsPostcode != "") { __size += com.google.protobuf.CodedOutputStream.computeStringSize(11, recipientsPostcode) }
       if (comment != "") { __size += com.google.protobuf.CodedOutputStream.computeStringSize(12, comment) }
-      if (price != 0.0) { __size += com.google.protobuf.CodedOutputStream.computeDoubleSize(20, price) }
-      if (realPrice != 0.0) { __size += com.google.protobuf.CodedOutputStream.computeDoubleSize(21, realPrice) }
+      couponId.foreach(couponId => __size += com.google.protobuf.CodedOutputStream.computeStringSize(13, couponId))
       if (discount != 0.0) { __size += com.google.protobuf.CodedOutputStream.computeDoubleSize(22, discount) }
       if (payAmt != 0.0) { __size += com.google.protobuf.CodedOutputStream.computeDoubleSize(23, payAmt) }
       if (realPayAmt != 0.0) { __size += com.google.protobuf.CodedOutputStream.computeDoubleSize(24, realPayAmt) }
       if (state != com.echo.protocol.gold.OrderState.ORDER_STATE_EMPTY) { __size += com.google.protobuf.CodedOutputStream.computeEnumSize(30, state.value) }
+      if (createAt != 0L) { __size += com.google.protobuf.CodedOutputStream.computeInt64Size(40, createAt) }
+      if (updateAt != 0L) { __size += com.google.protobuf.CodedOutputStream.computeInt64Size(41, updateAt) }
+      if (expireAt != 0L) { __size += com.google.protobuf.CodedOutputStream.computeInt64Size(42, expireAt) }
+      if (payAt != 0L) { __size += com.google.protobuf.CodedOutputStream.computeInt64Size(43, payAt) }
+      if (deliverAt != 0L) { __size += com.google.protobuf.CodedOutputStream.computeInt64Size(44, deliverAt) }
+      if (deliverConfirmAt != 0L) { __size += com.google.protobuf.CodedOutputStream.computeInt64Size(45, deliverConfirmAt) }
+      if (refundAt != 0L) { __size += com.google.protobuf.CodedOutputStream.computeInt64Size(46, refundAt) }
+      if (refundConfirmAt != 0L) { __size += com.google.protobuf.CodedOutputStream.computeInt64Size(47, refundConfirmAt) }
+      if (cancelAt != 0L) { __size += com.google.protobuf.CodedOutputStream.computeInt64Size(48, cancelAt) }
       __size
     }
     final override def serializedSize: Int = {
@@ -107,23 +120,10 @@ final case class OrderInfo(
           _output__.writeString(2, __v)
         }
       };
-      {
-        val __v = title
-        if (__v != "") {
-          _output__.writeString(3, __v)
-        }
-      };
-      {
-        val __v = productId
-        if (__v != "") {
-          _output__.writeString(4, __v)
-        }
-      };
-      {
-        val __v = num
-        if (__v != 0) {
-          _output__.writeInt32(5, __v)
-        }
+      products.foreach { __v =>
+        _output__.writeTag(3, 2)
+        _output__.writeUInt32NoTag(__v.serializedSize)
+        __v.writeTo(_output__)
       };
       {
         val __v = payMethod
@@ -167,17 +167,8 @@ final case class OrderInfo(
           _output__.writeString(12, __v)
         }
       };
-      {
-        val __v = price
-        if (__v != 0.0) {
-          _output__.writeDouble(20, __v)
-        }
-      };
-      {
-        val __v = realPrice
-        if (__v != 0.0) {
-          _output__.writeDouble(21, __v)
-        }
+      couponId.foreach { __v =>
+        _output__.writeString(13, __v)
       };
       {
         val __v = discount
@@ -203,13 +194,65 @@ final case class OrderInfo(
           _output__.writeEnum(30, __v.value)
         }
       };
+      {
+        val __v = createAt
+        if (__v != 0L) {
+          _output__.writeInt64(40, __v)
+        }
+      };
+      {
+        val __v = updateAt
+        if (__v != 0L) {
+          _output__.writeInt64(41, __v)
+        }
+      };
+      {
+        val __v = expireAt
+        if (__v != 0L) {
+          _output__.writeInt64(42, __v)
+        }
+      };
+      {
+        val __v = payAt
+        if (__v != 0L) {
+          _output__.writeInt64(43, __v)
+        }
+      };
+      {
+        val __v = deliverAt
+        if (__v != 0L) {
+          _output__.writeInt64(44, __v)
+        }
+      };
+      {
+        val __v = deliverConfirmAt
+        if (__v != 0L) {
+          _output__.writeInt64(45, __v)
+        }
+      };
+      {
+        val __v = refundAt
+        if (__v != 0L) {
+          _output__.writeInt64(46, __v)
+        }
+      };
+      {
+        val __v = refundConfirmAt
+        if (__v != 0L) {
+          _output__.writeInt64(47, __v)
+        }
+      };
+      {
+        val __v = cancelAt
+        if (__v != 0L) {
+          _output__.writeInt64(48, __v)
+        }
+      };
     }
     def mergeFrom(`_input__`: com.google.protobuf.CodedInputStream): com.echo.protocol.gold.OrderInfo = {
       var __orderId = this.orderId
       var __userId = this.userId
-      var __title = this.title
-      var __productId = this.productId
-      var __num = this.num
+      val __products = (scala.collection.immutable.Vector.newBuilder[com.echo.protocol.gold.ProductInfo] ++= this.products)
       var __payMethod = this.payMethod
       var __deliverMethod = this.deliverMethod
       var __recipientsName = this.recipientsName
@@ -217,12 +260,20 @@ final case class OrderInfo(
       var __recipientsAddress = this.recipientsAddress
       var __recipientsPostcode = this.recipientsPostcode
       var __comment = this.comment
-      var __price = this.price
-      var __realPrice = this.realPrice
+      val __couponId = (scala.collection.immutable.Vector.newBuilder[String] ++= this.couponId)
       var __discount = this.discount
       var __payAmt = this.payAmt
       var __realPayAmt = this.realPayAmt
       var __state = this.state
+      var __createAt = this.createAt
+      var __updateAt = this.updateAt
+      var __expireAt = this.expireAt
+      var __payAt = this.payAt
+      var __deliverAt = this.deliverAt
+      var __deliverConfirmAt = this.deliverConfirmAt
+      var __refundAt = this.refundAt
+      var __refundConfirmAt = this.refundConfirmAt
+      var __cancelAt = this.cancelAt
       var _done__ = false
       while (!_done__) {
         val _tag__ = _input__.readTag()
@@ -233,11 +284,7 @@ final case class OrderInfo(
           case 18 =>
             __userId = _input__.readString()
           case 26 =>
-            __title = _input__.readString()
-          case 34 =>
-            __productId = _input__.readString()
-          case 40 =>
-            __num = _input__.readInt32()
+            __products += com.trueaccord.scalapb.LiteParser.readMessage(_input__, com.echo.protocol.gold.ProductInfo.defaultInstance)
           case 48 =>
             __payMethod = com.echo.protocol.gold.PayMethod.fromValue(_input__.readEnum())
           case 56 =>
@@ -252,10 +299,8 @@ final case class OrderInfo(
             __recipientsPostcode = _input__.readString()
           case 98 =>
             __comment = _input__.readString()
-          case 161 =>
-            __price = _input__.readDouble()
-          case 169 =>
-            __realPrice = _input__.readDouble()
+          case 106 =>
+            __couponId += _input__.readString()
           case 177 =>
             __discount = _input__.readDouble()
           case 185 =>
@@ -264,15 +309,31 @@ final case class OrderInfo(
             __realPayAmt = _input__.readDouble()
           case 240 =>
             __state = com.echo.protocol.gold.OrderState.fromValue(_input__.readEnum())
+          case 320 =>
+            __createAt = _input__.readInt64()
+          case 328 =>
+            __updateAt = _input__.readInt64()
+          case 336 =>
+            __expireAt = _input__.readInt64()
+          case 344 =>
+            __payAt = _input__.readInt64()
+          case 352 =>
+            __deliverAt = _input__.readInt64()
+          case 360 =>
+            __deliverConfirmAt = _input__.readInt64()
+          case 368 =>
+            __refundAt = _input__.readInt64()
+          case 376 =>
+            __refundConfirmAt = _input__.readInt64()
+          case 384 =>
+            __cancelAt = _input__.readInt64()
           case tag => _input__.skipField(tag)
         }
       }
       com.echo.protocol.gold.OrderInfo(
           orderId = __orderId,
           userId = __userId,
-          title = __title,
-          productId = __productId,
-          num = __num,
+          products = __products.result(),
           payMethod = __payMethod,
           deliverMethod = __deliverMethod,
           recipientsName = __recipientsName,
@@ -280,19 +341,28 @@ final case class OrderInfo(
           recipientsAddress = __recipientsAddress,
           recipientsPostcode = __recipientsPostcode,
           comment = __comment,
-          price = __price,
-          realPrice = __realPrice,
+          couponId = __couponId.result(),
           discount = __discount,
           payAmt = __payAmt,
           realPayAmt = __realPayAmt,
-          state = __state
+          state = __state,
+          createAt = __createAt,
+          updateAt = __updateAt,
+          expireAt = __expireAt,
+          payAt = __payAt,
+          deliverAt = __deliverAt,
+          deliverConfirmAt = __deliverConfirmAt,
+          refundAt = __refundAt,
+          refundConfirmAt = __refundConfirmAt,
+          cancelAt = __cancelAt
       )
     }
     def withOrderId(__v: String): OrderInfo = copy(orderId = __v)
     def withUserId(__v: String): OrderInfo = copy(userId = __v)
-    def withTitle(__v: String): OrderInfo = copy(title = __v)
-    def withProductId(__v: String): OrderInfo = copy(productId = __v)
-    def withNum(__v: Int): OrderInfo = copy(num = __v)
+    def clearProducts = copy(products = scala.collection.Seq.empty)
+    def addProducts(__vs: com.echo.protocol.gold.ProductInfo*): OrderInfo = addAllProducts(__vs)
+    def addAllProducts(__vs: TraversableOnce[com.echo.protocol.gold.ProductInfo]): OrderInfo = copy(products = products ++ __vs)
+    def withProducts(__v: scala.collection.Seq[com.echo.protocol.gold.ProductInfo]): OrderInfo = copy(products = __v)
     def withPayMethod(__v: com.echo.protocol.gold.PayMethod): OrderInfo = copy(payMethod = __v)
     def withDeliverMethod(__v: com.echo.protocol.gold.DeliverMethod): OrderInfo = copy(deliverMethod = __v)
     def withRecipientsName(__v: String): OrderInfo = copy(recipientsName = __v)
@@ -300,12 +370,23 @@ final case class OrderInfo(
     def withRecipientsAddress(__v: String): OrderInfo = copy(recipientsAddress = __v)
     def withRecipientsPostcode(__v: String): OrderInfo = copy(recipientsPostcode = __v)
     def withComment(__v: String): OrderInfo = copy(comment = __v)
-    def withPrice(__v: Double): OrderInfo = copy(price = __v)
-    def withRealPrice(__v: Double): OrderInfo = copy(realPrice = __v)
+    def clearCouponId = copy(couponId = scala.collection.Seq.empty)
+    def addCouponId(__vs: String*): OrderInfo = addAllCouponId(__vs)
+    def addAllCouponId(__vs: TraversableOnce[String]): OrderInfo = copy(couponId = couponId ++ __vs)
+    def withCouponId(__v: scala.collection.Seq[String]): OrderInfo = copy(couponId = __v)
     def withDiscount(__v: Double): OrderInfo = copy(discount = __v)
     def withPayAmt(__v: Double): OrderInfo = copy(payAmt = __v)
     def withRealPayAmt(__v: Double): OrderInfo = copy(realPayAmt = __v)
     def withState(__v: com.echo.protocol.gold.OrderState): OrderInfo = copy(state = __v)
+    def withCreateAt(__v: Long): OrderInfo = copy(createAt = __v)
+    def withUpdateAt(__v: Long): OrderInfo = copy(updateAt = __v)
+    def withExpireAt(__v: Long): OrderInfo = copy(expireAt = __v)
+    def withPayAt(__v: Long): OrderInfo = copy(payAt = __v)
+    def withDeliverAt(__v: Long): OrderInfo = copy(deliverAt = __v)
+    def withDeliverConfirmAt(__v: Long): OrderInfo = copy(deliverConfirmAt = __v)
+    def withRefundAt(__v: Long): OrderInfo = copy(refundAt = __v)
+    def withRefundConfirmAt(__v: Long): OrderInfo = copy(refundConfirmAt = __v)
+    def withCancelAt(__v: Long): OrderInfo = copy(cancelAt = __v)
     def getField(__field: com.google.protobuf.Descriptors.FieldDescriptor): scala.Any = {
       __field.getNumber match {
         case 1 => {
@@ -316,18 +397,7 @@ final case class OrderInfo(
           val __t = userId
           if (__t != "") __t else null
         }
-        case 3 => {
-          val __t = title
-          if (__t != "") __t else null
-        }
-        case 4 => {
-          val __t = productId
-          if (__t != "") __t else null
-        }
-        case 5 => {
-          val __t = num
-          if (__t != 0) __t else null
-        }
+        case 3 => products
         case 6 => {
           val __t = payMethod.valueDescriptor
           if (__t.getNumber() != 0) __t else null
@@ -356,14 +426,7 @@ final case class OrderInfo(
           val __t = comment
           if (__t != "") __t else null
         }
-        case 20 => {
-          val __t = price
-          if (__t != 0.0) __t else null
-        }
-        case 21 => {
-          val __t = realPrice
-          if (__t != 0.0) __t else null
-        }
+        case 13 => couponId
         case 22 => {
           val __t = discount
           if (__t != 0.0) __t else null
@@ -380,6 +443,42 @@ final case class OrderInfo(
           val __t = state.valueDescriptor
           if (__t.getNumber() != 0) __t else null
         }
+        case 40 => {
+          val __t = createAt
+          if (__t != 0L) __t else null
+        }
+        case 41 => {
+          val __t = updateAt
+          if (__t != 0L) __t else null
+        }
+        case 42 => {
+          val __t = expireAt
+          if (__t != 0L) __t else null
+        }
+        case 43 => {
+          val __t = payAt
+          if (__t != 0L) __t else null
+        }
+        case 44 => {
+          val __t = deliverAt
+          if (__t != 0L) __t else null
+        }
+        case 45 => {
+          val __t = deliverConfirmAt
+          if (__t != 0L) __t else null
+        }
+        case 46 => {
+          val __t = refundAt
+          if (__t != 0L) __t else null
+        }
+        case 47 => {
+          val __t = refundConfirmAt
+          if (__t != 0L) __t else null
+        }
+        case 48 => {
+          val __t = cancelAt
+          if (__t != 0L) __t else null
+        }
       }
     }
     override def toString: String = com.trueaccord.scalapb.TextFormat.printToUnicodeString(this)
@@ -394,26 +493,39 @@ object OrderInfo extends com.trueaccord.scalapb.GeneratedMessageCompanion[com.ec
     com.echo.protocol.gold.OrderInfo(
       __fieldsMap.getOrElse(__fields.get(0), "").asInstanceOf[String],
       __fieldsMap.getOrElse(__fields.get(1), "").asInstanceOf[String],
-      __fieldsMap.getOrElse(__fields.get(2), "").asInstanceOf[String],
-      __fieldsMap.getOrElse(__fields.get(3), "").asInstanceOf[String],
-      __fieldsMap.getOrElse(__fields.get(4), 0).asInstanceOf[Int],
-      com.echo.protocol.gold.PayMethod.fromValue(__fieldsMap.getOrElse(__fields.get(5), com.echo.protocol.gold.PayMethod.PAY_METHOD_EMPTY.valueDescriptor).asInstanceOf[com.google.protobuf.Descriptors.EnumValueDescriptor].getNumber),
-      com.echo.protocol.gold.DeliverMethod.fromValue(__fieldsMap.getOrElse(__fields.get(6), com.echo.protocol.gold.DeliverMethod.DELIVER_METHOD_EMPTY.valueDescriptor).asInstanceOf[com.google.protobuf.Descriptors.EnumValueDescriptor].getNumber),
+      __fieldsMap.getOrElse(__fields.get(2), Nil).asInstanceOf[scala.collection.Seq[com.echo.protocol.gold.ProductInfo]],
+      com.echo.protocol.gold.PayMethod.fromValue(__fieldsMap.getOrElse(__fields.get(3), com.echo.protocol.gold.PayMethod.PAY_METHOD_EMPTY.valueDescriptor).asInstanceOf[com.google.protobuf.Descriptors.EnumValueDescriptor].getNumber),
+      com.echo.protocol.gold.DeliverMethod.fromValue(__fieldsMap.getOrElse(__fields.get(4), com.echo.protocol.gold.DeliverMethod.DELIVER_METHOD_EMPTY.valueDescriptor).asInstanceOf[com.google.protobuf.Descriptors.EnumValueDescriptor].getNumber),
+      __fieldsMap.getOrElse(__fields.get(5), "").asInstanceOf[String],
+      __fieldsMap.getOrElse(__fields.get(6), "").asInstanceOf[String],
       __fieldsMap.getOrElse(__fields.get(7), "").asInstanceOf[String],
       __fieldsMap.getOrElse(__fields.get(8), "").asInstanceOf[String],
       __fieldsMap.getOrElse(__fields.get(9), "").asInstanceOf[String],
-      __fieldsMap.getOrElse(__fields.get(10), "").asInstanceOf[String],
-      __fieldsMap.getOrElse(__fields.get(11), "").asInstanceOf[String],
+      __fieldsMap.getOrElse(__fields.get(10), Nil).asInstanceOf[scala.collection.Seq[String]],
+      __fieldsMap.getOrElse(__fields.get(11), 0.0).asInstanceOf[Double],
       __fieldsMap.getOrElse(__fields.get(12), 0.0).asInstanceOf[Double],
       __fieldsMap.getOrElse(__fields.get(13), 0.0).asInstanceOf[Double],
-      __fieldsMap.getOrElse(__fields.get(14), 0.0).asInstanceOf[Double],
-      __fieldsMap.getOrElse(__fields.get(15), 0.0).asInstanceOf[Double],
-      __fieldsMap.getOrElse(__fields.get(16), 0.0).asInstanceOf[Double],
-      com.echo.protocol.gold.OrderState.fromValue(__fieldsMap.getOrElse(__fields.get(17), com.echo.protocol.gold.OrderState.ORDER_STATE_EMPTY.valueDescriptor).asInstanceOf[com.google.protobuf.Descriptors.EnumValueDescriptor].getNumber)
+      com.echo.protocol.gold.OrderState.fromValue(__fieldsMap.getOrElse(__fields.get(14), com.echo.protocol.gold.OrderState.ORDER_STATE_EMPTY.valueDescriptor).asInstanceOf[com.google.protobuf.Descriptors.EnumValueDescriptor].getNumber),
+      __fieldsMap.getOrElse(__fields.get(15), 0L).asInstanceOf[Long],
+      __fieldsMap.getOrElse(__fields.get(16), 0L).asInstanceOf[Long],
+      __fieldsMap.getOrElse(__fields.get(17), 0L).asInstanceOf[Long],
+      __fieldsMap.getOrElse(__fields.get(18), 0L).asInstanceOf[Long],
+      __fieldsMap.getOrElse(__fields.get(19), 0L).asInstanceOf[Long],
+      __fieldsMap.getOrElse(__fields.get(20), 0L).asInstanceOf[Long],
+      __fieldsMap.getOrElse(__fields.get(21), 0L).asInstanceOf[Long],
+      __fieldsMap.getOrElse(__fields.get(22), 0L).asInstanceOf[Long],
+      __fieldsMap.getOrElse(__fields.get(23), 0L).asInstanceOf[Long]
     )
   }
-  def descriptor: com.google.protobuf.Descriptors.Descriptor = GoldProto.descriptor.getMessageTypes.get(14)
-  def messageCompanionForField(__field: com.google.protobuf.Descriptors.FieldDescriptor): com.trueaccord.scalapb.GeneratedMessageCompanion[_] = throw new MatchError(__field)
+  def descriptor: com.google.protobuf.Descriptors.Descriptor = GoldProto.descriptor.getMessageTypes.get(17)
+  def messageCompanionForField(__field: com.google.protobuf.Descriptors.FieldDescriptor): com.trueaccord.scalapb.GeneratedMessageCompanion[_] = {
+    require(__field.getContainingType() == descriptor, "FieldDescriptor does not match message type.")
+    var __out: com.trueaccord.scalapb.GeneratedMessageCompanion[_] = null
+    __field.getNumber match {
+      case 3 => __out = com.echo.protocol.gold.ProductInfo
+    }
+  __out
+  }
   def enumCompanionForField(__field: com.google.protobuf.Descriptors.FieldDescriptor): com.trueaccord.scalapb.GeneratedEnumCompanion[_] = {
     require(__field.getContainingType() == descriptor, "FieldDescriptor does not match message type.")
     __field.getNumber match {
@@ -427,9 +539,7 @@ object OrderInfo extends com.trueaccord.scalapb.GeneratedMessageCompanion[com.ec
   implicit class OrderInfoLens[UpperPB](_l: com.trueaccord.lenses.Lens[UpperPB, com.echo.protocol.gold.OrderInfo]) extends com.trueaccord.lenses.ObjectLens[UpperPB, com.echo.protocol.gold.OrderInfo](_l) {
     def orderId: com.trueaccord.lenses.Lens[UpperPB, String] = field(_.orderId)((c_, f_) => c_.copy(orderId = f_))
     def userId: com.trueaccord.lenses.Lens[UpperPB, String] = field(_.userId)((c_, f_) => c_.copy(userId = f_))
-    def title: com.trueaccord.lenses.Lens[UpperPB, String] = field(_.title)((c_, f_) => c_.copy(title = f_))
-    def productId: com.trueaccord.lenses.Lens[UpperPB, String] = field(_.productId)((c_, f_) => c_.copy(productId = f_))
-    def num: com.trueaccord.lenses.Lens[UpperPB, Int] = field(_.num)((c_, f_) => c_.copy(num = f_))
+    def products: com.trueaccord.lenses.Lens[UpperPB, scala.collection.Seq[com.echo.protocol.gold.ProductInfo]] = field(_.products)((c_, f_) => c_.copy(products = f_))
     def payMethod: com.trueaccord.lenses.Lens[UpperPB, com.echo.protocol.gold.PayMethod] = field(_.payMethod)((c_, f_) => c_.copy(payMethod = f_))
     def deliverMethod: com.trueaccord.lenses.Lens[UpperPB, com.echo.protocol.gold.DeliverMethod] = field(_.deliverMethod)((c_, f_) => c_.copy(deliverMethod = f_))
     def recipientsName: com.trueaccord.lenses.Lens[UpperPB, String] = field(_.recipientsName)((c_, f_) => c_.copy(recipientsName = f_))
@@ -437,18 +547,24 @@ object OrderInfo extends com.trueaccord.scalapb.GeneratedMessageCompanion[com.ec
     def recipientsAddress: com.trueaccord.lenses.Lens[UpperPB, String] = field(_.recipientsAddress)((c_, f_) => c_.copy(recipientsAddress = f_))
     def recipientsPostcode: com.trueaccord.lenses.Lens[UpperPB, String] = field(_.recipientsPostcode)((c_, f_) => c_.copy(recipientsPostcode = f_))
     def comment: com.trueaccord.lenses.Lens[UpperPB, String] = field(_.comment)((c_, f_) => c_.copy(comment = f_))
-    def price: com.trueaccord.lenses.Lens[UpperPB, Double] = field(_.price)((c_, f_) => c_.copy(price = f_))
-    def realPrice: com.trueaccord.lenses.Lens[UpperPB, Double] = field(_.realPrice)((c_, f_) => c_.copy(realPrice = f_))
+    def couponId: com.trueaccord.lenses.Lens[UpperPB, scala.collection.Seq[String]] = field(_.couponId)((c_, f_) => c_.copy(couponId = f_))
     def discount: com.trueaccord.lenses.Lens[UpperPB, Double] = field(_.discount)((c_, f_) => c_.copy(discount = f_))
     def payAmt: com.trueaccord.lenses.Lens[UpperPB, Double] = field(_.payAmt)((c_, f_) => c_.copy(payAmt = f_))
     def realPayAmt: com.trueaccord.lenses.Lens[UpperPB, Double] = field(_.realPayAmt)((c_, f_) => c_.copy(realPayAmt = f_))
     def state: com.trueaccord.lenses.Lens[UpperPB, com.echo.protocol.gold.OrderState] = field(_.state)((c_, f_) => c_.copy(state = f_))
+    def createAt: com.trueaccord.lenses.Lens[UpperPB, Long] = field(_.createAt)((c_, f_) => c_.copy(createAt = f_))
+    def updateAt: com.trueaccord.lenses.Lens[UpperPB, Long] = field(_.updateAt)((c_, f_) => c_.copy(updateAt = f_))
+    def expireAt: com.trueaccord.lenses.Lens[UpperPB, Long] = field(_.expireAt)((c_, f_) => c_.copy(expireAt = f_))
+    def payAt: com.trueaccord.lenses.Lens[UpperPB, Long] = field(_.payAt)((c_, f_) => c_.copy(payAt = f_))
+    def deliverAt: com.trueaccord.lenses.Lens[UpperPB, Long] = field(_.deliverAt)((c_, f_) => c_.copy(deliverAt = f_))
+    def deliverConfirmAt: com.trueaccord.lenses.Lens[UpperPB, Long] = field(_.deliverConfirmAt)((c_, f_) => c_.copy(deliverConfirmAt = f_))
+    def refundAt: com.trueaccord.lenses.Lens[UpperPB, Long] = field(_.refundAt)((c_, f_) => c_.copy(refundAt = f_))
+    def refundConfirmAt: com.trueaccord.lenses.Lens[UpperPB, Long] = field(_.refundConfirmAt)((c_, f_) => c_.copy(refundConfirmAt = f_))
+    def cancelAt: com.trueaccord.lenses.Lens[UpperPB, Long] = field(_.cancelAt)((c_, f_) => c_.copy(cancelAt = f_))
   }
   final val ORDER_ID_FIELD_NUMBER = 1
   final val USER_ID_FIELD_NUMBER = 2
-  final val TITLE_FIELD_NUMBER = 3
-  final val PRODUCT_ID_FIELD_NUMBER = 4
-  final val NUM_FIELD_NUMBER = 5
+  final val PRODUCTS_FIELD_NUMBER = 3
   final val PAY_METHOD_FIELD_NUMBER = 6
   final val DELIVER_METHOD_FIELD_NUMBER = 7
   final val RECIPIENTS_NAME_FIELD_NUMBER = 8
@@ -456,10 +572,18 @@ object OrderInfo extends com.trueaccord.scalapb.GeneratedMessageCompanion[com.ec
   final val RECIPIENTS_ADDRESS_FIELD_NUMBER = 10
   final val RECIPIENTS_POSTCODE_FIELD_NUMBER = 11
   final val COMMENT_FIELD_NUMBER = 12
-  final val PRICE_FIELD_NUMBER = 20
-  final val REAL_PRICE_FIELD_NUMBER = 21
+  final val COUPON_ID_FIELD_NUMBER = 13
   final val DISCOUNT_FIELD_NUMBER = 22
   final val PAY_AMT_FIELD_NUMBER = 23
   final val REAL_PAY_AMT_FIELD_NUMBER = 24
   final val STATE_FIELD_NUMBER = 30
+  final val CREATE_AT_FIELD_NUMBER = 40
+  final val UPDATE_AT_FIELD_NUMBER = 41
+  final val EXPIRE_AT_FIELD_NUMBER = 42
+  final val PAY_AT_FIELD_NUMBER = 43
+  final val DELIVER_AT_FIELD_NUMBER = 44
+  final val DELIVER_CONFIRM_AT_FIELD_NUMBER = 45
+  final val REFUND_AT_FIELD_NUMBER = 46
+  final val REFUND_CONFIRM_AT_FIELD_NUMBER = 47
+  final val CANCEL_AT_FIELD_NUMBER = 48
 }

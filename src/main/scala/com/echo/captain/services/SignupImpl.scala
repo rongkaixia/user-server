@@ -22,14 +22,13 @@ import com.echo.captain.utils.Jwt
 
 trait SignupImpl extends AbstractCaptainService with LazyLogging{
 
-  private def saveToMongo(userInfo: UserInfo): Future[Unit] = {
+  private def saveToMongo(doc: Document): Future[Unit] = {
     async{
       val dbName = cfg.getString("echo.captain.mongo.user.db")
       val collectionName = cfg.getString("echo.captain.mongo.user.collection")
       logger.debug(s"mongo database = ${dbName}, collection = ${collectionName}")
       val database: MongoDatabase = mongo.getDatabase(dbName)
       val collection = database.getCollection(collectionName)
-      val doc = Document(JsonFormat.toJsonString(userInfo))
       logger.debug(s"Document=${doc}")
       await(collection.insertOne(doc).toFuture)
     }
@@ -47,6 +46,7 @@ trait SignupImpl extends AbstractCaptainService with LazyLogging{
     val fut = async{
       val tokenExpiresIn = cfg.getInt("echo.captain.token_expires_in")
       val jwtSecretKey = cfg.getString("echo.captain.jwt_secret_key")
+      val passwordColumn = cfg.getString("echo.captain.mongo.user.columns.password")
       var res = SignupResponse()
 
       // check request
@@ -73,7 +73,8 @@ trait SignupImpl extends AbstractCaptainService with LazyLogging{
 
           // write to db
           logger.info("save user info to db...")
-          await(saveToMongo(userInfo))
+          val doc = Document(JsonFormat.toJsonString(userInfo)) + (passwordColumn -> password)
+          await(saveToMongo(doc))
 
           logger.info(s"generate Json Web Token with ${userId}...")
           val token = Jwt.generateToken(userId.toString, jwtSecretKey)

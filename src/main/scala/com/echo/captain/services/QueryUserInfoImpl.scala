@@ -27,12 +27,13 @@ trait QueryUserInfoImpl extends AbstractCaptainService with LazyLogging{
       val dbName = cfg.getString("echo.captain.mongo.user.db")
       val collectionName = cfg.getString("echo.captain.mongo.user.collection")
       val userIdColumn = cfg.getString("echo.captain.mongo.user.columns.user_id")
+      val passwordColumn = cfg.getString("echo.captain.mongo.user.columns.password")
       logger.debug(s"mongo database = ${dbName}, collection = ${collectionName}")
       val database: MongoDatabase = mongo.getDatabase(dbName)
       val collection = database.getCollection(collectionName)
 
       val filterOp = equal(userIdColumn, userId)
-      val projectionOp = exclude("_id")
+      val projectionOp = exclude("_id", passwordColumn)
       val result = await(collection.find(filterOp).projection(projectionOp).first().toFuture)
       if (result.size != 1) {
         logger.debug(s"queryMongo error: user not exist for userId[${userId}]")

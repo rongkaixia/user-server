@@ -7,13 +7,7 @@ package com.echo.protocol.gold
 
 
 
-/** @param title
-  *  商品名字
-  * @param productId
-  *  商品ID
-  * @param num
-  *  商品数量
-  * @param payMethod
+/** @param payMethod
   *  支付模式
   * @param deliverMethod
   *  送货模式
@@ -27,29 +21,28 @@ package com.echo.protocol.gold
   *  邮编
   * @param comment
   *  备注
+  * @param couponId
+  *   优惠券
   */
 @SerialVersionUID(0L)
 final case class OrderRequest(
     userId: String = "",
-    title: String = "",
-    productId: String = "",
-    num: Int = 0,
+    products: scala.collection.Seq[com.echo.protocol.gold.ProductInfo] = Nil,
     payMethod: com.echo.protocol.gold.PayMethod = com.echo.protocol.gold.PayMethod.PAY_METHOD_EMPTY,
     deliverMethod: com.echo.protocol.gold.DeliverMethod = com.echo.protocol.gold.DeliverMethod.DELIVER_METHOD_EMPTY,
     recipientsName: String = "",
     recipientsPhone: String = "",
     recipientsAddress: String = "",
     recipientsPostcode: String = "",
-    comment: String = ""
+    comment: String = "",
+    couponId: scala.collection.Seq[String] = Nil
     ) extends com.trueaccord.scalapb.GeneratedMessage with com.trueaccord.scalapb.Message[OrderRequest] with com.trueaccord.lenses.Updatable[OrderRequest] {
     @transient
     private[this] var __serializedSizeCachedValue: Int = 0
     private[this] def __computeSerializedValue(): Int = {
       var __size = 0
       if (userId != "") { __size += com.google.protobuf.CodedOutputStream.computeStringSize(1, userId) }
-      if (title != "") { __size += com.google.protobuf.CodedOutputStream.computeStringSize(2, title) }
-      if (productId != "") { __size += com.google.protobuf.CodedOutputStream.computeStringSize(3, productId) }
-      if (num != 0) { __size += com.google.protobuf.CodedOutputStream.computeInt32Size(4, num) }
+      products.foreach(products => __size += 1 + com.google.protobuf.CodedOutputStream.computeUInt32SizeNoTag(products.serializedSize) + products.serializedSize)
       if (payMethod != com.echo.protocol.gold.PayMethod.PAY_METHOD_EMPTY) { __size += com.google.protobuf.CodedOutputStream.computeEnumSize(5, payMethod.value) }
       if (deliverMethod != com.echo.protocol.gold.DeliverMethod.DELIVER_METHOD_EMPTY) { __size += com.google.protobuf.CodedOutputStream.computeEnumSize(6, deliverMethod.value) }
       if (recipientsName != "") { __size += com.google.protobuf.CodedOutputStream.computeStringSize(7, recipientsName) }
@@ -57,6 +50,7 @@ final case class OrderRequest(
       if (recipientsAddress != "") { __size += com.google.protobuf.CodedOutputStream.computeStringSize(9, recipientsAddress) }
       if (recipientsPostcode != "") { __size += com.google.protobuf.CodedOutputStream.computeStringSize(10, recipientsPostcode) }
       if (comment != "") { __size += com.google.protobuf.CodedOutputStream.computeStringSize(11, comment) }
+      couponId.foreach(couponId => __size += com.google.protobuf.CodedOutputStream.computeStringSize(12, couponId))
       __size
     }
     final override def serializedSize: Int = {
@@ -74,23 +68,10 @@ final case class OrderRequest(
           _output__.writeString(1, __v)
         }
       };
-      {
-        val __v = title
-        if (__v != "") {
-          _output__.writeString(2, __v)
-        }
-      };
-      {
-        val __v = productId
-        if (__v != "") {
-          _output__.writeString(3, __v)
-        }
-      };
-      {
-        val __v = num
-        if (__v != 0) {
-          _output__.writeInt32(4, __v)
-        }
+      products.foreach { __v =>
+        _output__.writeTag(2, 2)
+        _output__.writeUInt32NoTag(__v.serializedSize)
+        __v.writeTo(_output__)
       };
       {
         val __v = payMethod
@@ -134,12 +115,13 @@ final case class OrderRequest(
           _output__.writeString(11, __v)
         }
       };
+      couponId.foreach { __v =>
+        _output__.writeString(12, __v)
+      };
     }
     def mergeFrom(`_input__`: com.google.protobuf.CodedInputStream): com.echo.protocol.gold.OrderRequest = {
       var __userId = this.userId
-      var __title = this.title
-      var __productId = this.productId
-      var __num = this.num
+      val __products = (scala.collection.immutable.Vector.newBuilder[com.echo.protocol.gold.ProductInfo] ++= this.products)
       var __payMethod = this.payMethod
       var __deliverMethod = this.deliverMethod
       var __recipientsName = this.recipientsName
@@ -147,6 +129,7 @@ final case class OrderRequest(
       var __recipientsAddress = this.recipientsAddress
       var __recipientsPostcode = this.recipientsPostcode
       var __comment = this.comment
+      val __couponId = (scala.collection.immutable.Vector.newBuilder[String] ++= this.couponId)
       var _done__ = false
       while (!_done__) {
         val _tag__ = _input__.readTag()
@@ -155,11 +138,7 @@ final case class OrderRequest(
           case 10 =>
             __userId = _input__.readString()
           case 18 =>
-            __title = _input__.readString()
-          case 26 =>
-            __productId = _input__.readString()
-          case 32 =>
-            __num = _input__.readInt32()
+            __products += com.trueaccord.scalapb.LiteParser.readMessage(_input__, com.echo.protocol.gold.ProductInfo.defaultInstance)
           case 40 =>
             __payMethod = com.echo.protocol.gold.PayMethod.fromValue(_input__.readEnum())
           case 48 =>
@@ -174,27 +153,29 @@ final case class OrderRequest(
             __recipientsPostcode = _input__.readString()
           case 90 =>
             __comment = _input__.readString()
+          case 98 =>
+            __couponId += _input__.readString()
           case tag => _input__.skipField(tag)
         }
       }
       com.echo.protocol.gold.OrderRequest(
           userId = __userId,
-          title = __title,
-          productId = __productId,
-          num = __num,
+          products = __products.result(),
           payMethod = __payMethod,
           deliverMethod = __deliverMethod,
           recipientsName = __recipientsName,
           recipientsPhone = __recipientsPhone,
           recipientsAddress = __recipientsAddress,
           recipientsPostcode = __recipientsPostcode,
-          comment = __comment
+          comment = __comment,
+          couponId = __couponId.result()
       )
     }
     def withUserId(__v: String): OrderRequest = copy(userId = __v)
-    def withTitle(__v: String): OrderRequest = copy(title = __v)
-    def withProductId(__v: String): OrderRequest = copy(productId = __v)
-    def withNum(__v: Int): OrderRequest = copy(num = __v)
+    def clearProducts = copy(products = scala.collection.Seq.empty)
+    def addProducts(__vs: com.echo.protocol.gold.ProductInfo*): OrderRequest = addAllProducts(__vs)
+    def addAllProducts(__vs: TraversableOnce[com.echo.protocol.gold.ProductInfo]): OrderRequest = copy(products = products ++ __vs)
+    def withProducts(__v: scala.collection.Seq[com.echo.protocol.gold.ProductInfo]): OrderRequest = copy(products = __v)
     def withPayMethod(__v: com.echo.protocol.gold.PayMethod): OrderRequest = copy(payMethod = __v)
     def withDeliverMethod(__v: com.echo.protocol.gold.DeliverMethod): OrderRequest = copy(deliverMethod = __v)
     def withRecipientsName(__v: String): OrderRequest = copy(recipientsName = __v)
@@ -202,24 +183,17 @@ final case class OrderRequest(
     def withRecipientsAddress(__v: String): OrderRequest = copy(recipientsAddress = __v)
     def withRecipientsPostcode(__v: String): OrderRequest = copy(recipientsPostcode = __v)
     def withComment(__v: String): OrderRequest = copy(comment = __v)
+    def clearCouponId = copy(couponId = scala.collection.Seq.empty)
+    def addCouponId(__vs: String*): OrderRequest = addAllCouponId(__vs)
+    def addAllCouponId(__vs: TraversableOnce[String]): OrderRequest = copy(couponId = couponId ++ __vs)
+    def withCouponId(__v: scala.collection.Seq[String]): OrderRequest = copy(couponId = __v)
     def getField(__field: com.google.protobuf.Descriptors.FieldDescriptor): scala.Any = {
       __field.getNumber match {
         case 1 => {
           val __t = userId
           if (__t != "") __t else null
         }
-        case 2 => {
-          val __t = title
-          if (__t != "") __t else null
-        }
-        case 3 => {
-          val __t = productId
-          if (__t != "") __t else null
-        }
-        case 4 => {
-          val __t = num
-          if (__t != 0) __t else null
-        }
+        case 2 => products
         case 5 => {
           val __t = payMethod.valueDescriptor
           if (__t.getNumber() != 0) __t else null
@@ -248,6 +222,7 @@ final case class OrderRequest(
           val __t = comment
           if (__t != "") __t else null
         }
+        case 12 => couponId
       }
     }
     override def toString: String = com.trueaccord.scalapb.TextFormat.printToUnicodeString(this)
@@ -261,20 +236,26 @@ object OrderRequest extends com.trueaccord.scalapb.GeneratedMessageCompanion[com
     val __fields = descriptor.getFields
     com.echo.protocol.gold.OrderRequest(
       __fieldsMap.getOrElse(__fields.get(0), "").asInstanceOf[String],
-      __fieldsMap.getOrElse(__fields.get(1), "").asInstanceOf[String],
-      __fieldsMap.getOrElse(__fields.get(2), "").asInstanceOf[String],
-      __fieldsMap.getOrElse(__fields.get(3), 0).asInstanceOf[Int],
-      com.echo.protocol.gold.PayMethod.fromValue(__fieldsMap.getOrElse(__fields.get(4), com.echo.protocol.gold.PayMethod.PAY_METHOD_EMPTY.valueDescriptor).asInstanceOf[com.google.protobuf.Descriptors.EnumValueDescriptor].getNumber),
-      com.echo.protocol.gold.DeliverMethod.fromValue(__fieldsMap.getOrElse(__fields.get(5), com.echo.protocol.gold.DeliverMethod.DELIVER_METHOD_EMPTY.valueDescriptor).asInstanceOf[com.google.protobuf.Descriptors.EnumValueDescriptor].getNumber),
+      __fieldsMap.getOrElse(__fields.get(1), Nil).asInstanceOf[scala.collection.Seq[com.echo.protocol.gold.ProductInfo]],
+      com.echo.protocol.gold.PayMethod.fromValue(__fieldsMap.getOrElse(__fields.get(2), com.echo.protocol.gold.PayMethod.PAY_METHOD_EMPTY.valueDescriptor).asInstanceOf[com.google.protobuf.Descriptors.EnumValueDescriptor].getNumber),
+      com.echo.protocol.gold.DeliverMethod.fromValue(__fieldsMap.getOrElse(__fields.get(3), com.echo.protocol.gold.DeliverMethod.DELIVER_METHOD_EMPTY.valueDescriptor).asInstanceOf[com.google.protobuf.Descriptors.EnumValueDescriptor].getNumber),
+      __fieldsMap.getOrElse(__fields.get(4), "").asInstanceOf[String],
+      __fieldsMap.getOrElse(__fields.get(5), "").asInstanceOf[String],
       __fieldsMap.getOrElse(__fields.get(6), "").asInstanceOf[String],
       __fieldsMap.getOrElse(__fields.get(7), "").asInstanceOf[String],
       __fieldsMap.getOrElse(__fields.get(8), "").asInstanceOf[String],
-      __fieldsMap.getOrElse(__fields.get(9), "").asInstanceOf[String],
-      __fieldsMap.getOrElse(__fields.get(10), "").asInstanceOf[String]
+      __fieldsMap.getOrElse(__fields.get(9), Nil).asInstanceOf[scala.collection.Seq[String]]
     )
   }
-  def descriptor: com.google.protobuf.Descriptors.Descriptor = GoldProto.descriptor.getMessageTypes.get(0)
-  def messageCompanionForField(__field: com.google.protobuf.Descriptors.FieldDescriptor): com.trueaccord.scalapb.GeneratedMessageCompanion[_] = throw new MatchError(__field)
+  def descriptor: com.google.protobuf.Descriptors.Descriptor = GoldProto.descriptor.getMessageTypes.get(1)
+  def messageCompanionForField(__field: com.google.protobuf.Descriptors.FieldDescriptor): com.trueaccord.scalapb.GeneratedMessageCompanion[_] = {
+    require(__field.getContainingType() == descriptor, "FieldDescriptor does not match message type.")
+    var __out: com.trueaccord.scalapb.GeneratedMessageCompanion[_] = null
+    __field.getNumber match {
+      case 2 => __out = com.echo.protocol.gold.ProductInfo
+    }
+  __out
+  }
   def enumCompanionForField(__field: com.google.protobuf.Descriptors.FieldDescriptor): com.trueaccord.scalapb.GeneratedEnumCompanion[_] = {
     require(__field.getContainingType() == descriptor, "FieldDescriptor does not match message type.")
     __field.getNumber match {
@@ -286,9 +267,7 @@ object OrderRequest extends com.trueaccord.scalapb.GeneratedMessageCompanion[com
   )
   implicit class OrderRequestLens[UpperPB](_l: com.trueaccord.lenses.Lens[UpperPB, com.echo.protocol.gold.OrderRequest]) extends com.trueaccord.lenses.ObjectLens[UpperPB, com.echo.protocol.gold.OrderRequest](_l) {
     def userId: com.trueaccord.lenses.Lens[UpperPB, String] = field(_.userId)((c_, f_) => c_.copy(userId = f_))
-    def title: com.trueaccord.lenses.Lens[UpperPB, String] = field(_.title)((c_, f_) => c_.copy(title = f_))
-    def productId: com.trueaccord.lenses.Lens[UpperPB, String] = field(_.productId)((c_, f_) => c_.copy(productId = f_))
-    def num: com.trueaccord.lenses.Lens[UpperPB, Int] = field(_.num)((c_, f_) => c_.copy(num = f_))
+    def products: com.trueaccord.lenses.Lens[UpperPB, scala.collection.Seq[com.echo.protocol.gold.ProductInfo]] = field(_.products)((c_, f_) => c_.copy(products = f_))
     def payMethod: com.trueaccord.lenses.Lens[UpperPB, com.echo.protocol.gold.PayMethod] = field(_.payMethod)((c_, f_) => c_.copy(payMethod = f_))
     def deliverMethod: com.trueaccord.lenses.Lens[UpperPB, com.echo.protocol.gold.DeliverMethod] = field(_.deliverMethod)((c_, f_) => c_.copy(deliverMethod = f_))
     def recipientsName: com.trueaccord.lenses.Lens[UpperPB, String] = field(_.recipientsName)((c_, f_) => c_.copy(recipientsName = f_))
@@ -296,11 +275,10 @@ object OrderRequest extends com.trueaccord.scalapb.GeneratedMessageCompanion[com
     def recipientsAddress: com.trueaccord.lenses.Lens[UpperPB, String] = field(_.recipientsAddress)((c_, f_) => c_.copy(recipientsAddress = f_))
     def recipientsPostcode: com.trueaccord.lenses.Lens[UpperPB, String] = field(_.recipientsPostcode)((c_, f_) => c_.copy(recipientsPostcode = f_))
     def comment: com.trueaccord.lenses.Lens[UpperPB, String] = field(_.comment)((c_, f_) => c_.copy(comment = f_))
+    def couponId: com.trueaccord.lenses.Lens[UpperPB, scala.collection.Seq[String]] = field(_.couponId)((c_, f_) => c_.copy(couponId = f_))
   }
   final val USER_ID_FIELD_NUMBER = 1
-  final val TITLE_FIELD_NUMBER = 2
-  final val PRODUCT_ID_FIELD_NUMBER = 3
-  final val NUM_FIELD_NUMBER = 4
+  final val PRODUCTS_FIELD_NUMBER = 2
   final val PAY_METHOD_FIELD_NUMBER = 5
   final val DELIVER_METHOD_FIELD_NUMBER = 6
   final val RECIPIENTS_NAME_FIELD_NUMBER = 7
@@ -308,4 +286,5 @@ object OrderRequest extends com.trueaccord.scalapb.GeneratedMessageCompanion[com
   final val RECIPIENTS_ADDRESS_FIELD_NUMBER = 9
   final val RECIPIENTS_POSTCODE_FIELD_NUMBER = 10
   final val COMMENT_FIELD_NUMBER = 11
+  final val COUPON_ID_FIELD_NUMBER = 12
 }

@@ -8,6 +8,13 @@ object OrderServiceGrpc {
       new com.trueaccord.scalapb.grpc.Marshaller(com.echo.protocol.gold.QueryOrderRequest),
       new com.trueaccord.scalapb.grpc.Marshaller(com.echo.protocol.gold.QueryOrderResponse))
   
+  val METHOD_QUERY_ORDER_WITH_USER: _root_.io.grpc.MethodDescriptor[com.echo.protocol.gold.QueryOrderWithUserRequest, com.echo.protocol.gold.QueryOrderWithUserResponse] =
+    _root_.io.grpc.MethodDescriptor.create(
+      _root_.io.grpc.MethodDescriptor.MethodType.UNARY,
+      _root_.io.grpc.MethodDescriptor.generateFullMethodName("com.echo.protocol.gold.OrderService", "QueryOrderWithUser"),
+      new com.trueaccord.scalapb.grpc.Marshaller(com.echo.protocol.gold.QueryOrderWithUserRequest),
+      new com.trueaccord.scalapb.grpc.Marshaller(com.echo.protocol.gold.QueryOrderWithUserResponse))
+  
   val METHOD_ORDER: _root_.io.grpc.MethodDescriptor[com.echo.protocol.gold.OrderRequest, com.echo.protocol.gold.OrderResponse] =
     _root_.io.grpc.MethodDescriptor.create(
       _root_.io.grpc.MethodDescriptor.MethodType.UNARY,
@@ -39,6 +46,7 @@ object OrderServiceGrpc {
   trait OrderService extends _root_.com.trueaccord.scalapb.grpc.AbstractService {
     override def serviceCompanion = OrderService
     def queryOrder(request: com.echo.protocol.gold.QueryOrderRequest): scala.concurrent.Future[com.echo.protocol.gold.QueryOrderResponse]
+    def queryOrderWithUser(request: com.echo.protocol.gold.QueryOrderWithUserRequest): scala.concurrent.Future[com.echo.protocol.gold.QueryOrderWithUserResponse]
     def order(request: com.echo.protocol.gold.OrderRequest): scala.concurrent.Future[com.echo.protocol.gold.OrderResponse]
     def notify(request: com.echo.protocol.gold.NotifyRequest): scala.concurrent.Future[com.echo.protocol.gold.NotifyResponse]
     def deliver(request: com.echo.protocol.gold.DeliverRequest): scala.concurrent.Future[com.echo.protocol.gold.DeliverResponse]
@@ -53,6 +61,7 @@ object OrderServiceGrpc {
   trait OrderServiceBlockingClient {
     def serviceCompanion = OrderService
     def queryOrder(request: com.echo.protocol.gold.QueryOrderRequest): com.echo.protocol.gold.QueryOrderResponse
+    def queryOrderWithUser(request: com.echo.protocol.gold.QueryOrderWithUserRequest): com.echo.protocol.gold.QueryOrderWithUserResponse
     def order(request: com.echo.protocol.gold.OrderRequest): com.echo.protocol.gold.OrderResponse
     def notify(request: com.echo.protocol.gold.NotifyRequest): com.echo.protocol.gold.NotifyResponse
     def deliver(request: com.echo.protocol.gold.DeliverRequest): com.echo.protocol.gold.DeliverResponse
@@ -62,6 +71,10 @@ object OrderServiceGrpc {
   class OrderServiceBlockingStub(channel: _root_.io.grpc.Channel, options: _root_.io.grpc.CallOptions = _root_.io.grpc.CallOptions.DEFAULT) extends _root_.io.grpc.stub.AbstractStub[OrderServiceBlockingStub](channel, options) with OrderServiceBlockingClient {
     override def queryOrder(request: com.echo.protocol.gold.QueryOrderRequest): com.echo.protocol.gold.QueryOrderResponse = {
       _root_.io.grpc.stub.ClientCalls.blockingUnaryCall(channel.newCall(METHOD_QUERY_ORDER, options), request)
+    }
+    
+    override def queryOrderWithUser(request: com.echo.protocol.gold.QueryOrderWithUserRequest): com.echo.protocol.gold.QueryOrderWithUserResponse = {
+      _root_.io.grpc.stub.ClientCalls.blockingUnaryCall(channel.newCall(METHOD_QUERY_ORDER_WITH_USER, options), request)
     }
     
     override def order(request: com.echo.protocol.gold.OrderRequest): com.echo.protocol.gold.OrderResponse = {
@@ -86,6 +99,10 @@ object OrderServiceGrpc {
   class OrderServiceStub(channel: _root_.io.grpc.Channel, options: _root_.io.grpc.CallOptions = _root_.io.grpc.CallOptions.DEFAULT) extends _root_.io.grpc.stub.AbstractStub[OrderServiceStub](channel, options) with OrderService {
     override def queryOrder(request: com.echo.protocol.gold.QueryOrderRequest): scala.concurrent.Future[com.echo.protocol.gold.QueryOrderResponse] = {
       com.trueaccord.scalapb.grpc.Grpc.guavaFuture2ScalaFuture(_root_.io.grpc.stub.ClientCalls.futureUnaryCall(channel.newCall(METHOD_QUERY_ORDER, options), request))
+    }
+    
+    override def queryOrderWithUser(request: com.echo.protocol.gold.QueryOrderWithUserRequest): scala.concurrent.Future[com.echo.protocol.gold.QueryOrderWithUserResponse] = {
+      com.trueaccord.scalapb.grpc.Grpc.guavaFuture2ScalaFuture(_root_.io.grpc.stub.ClientCalls.futureUnaryCall(channel.newCall(METHOD_QUERY_ORDER_WITH_USER, options), request))
     }
     
     override def order(request: com.echo.protocol.gold.OrderRequest): scala.concurrent.Future[com.echo.protocol.gold.OrderResponse] = {
@@ -114,6 +131,13 @@ object OrderServiceGrpc {
       _root_.io.grpc.stub.ServerCalls.asyncUnaryCall(new _root_.io.grpc.stub.ServerCalls.UnaryMethod[com.echo.protocol.gold.QueryOrderRequest, com.echo.protocol.gold.QueryOrderResponse] {
         override def invoke(request: com.echo.protocol.gold.QueryOrderRequest, observer: _root_.io.grpc.stub.StreamObserver[com.echo.protocol.gold.QueryOrderResponse]): Unit =
           serviceImpl.queryOrder(request).onComplete(com.trueaccord.scalapb.grpc.Grpc.completeObserver(observer))(
+            executionContext)
+      }))
+    .addMethod(
+      METHOD_QUERY_ORDER_WITH_USER,
+      _root_.io.grpc.stub.ServerCalls.asyncUnaryCall(new _root_.io.grpc.stub.ServerCalls.UnaryMethod[com.echo.protocol.gold.QueryOrderWithUserRequest, com.echo.protocol.gold.QueryOrderWithUserResponse] {
+        override def invoke(request: com.echo.protocol.gold.QueryOrderWithUserRequest, observer: _root_.io.grpc.stub.StreamObserver[com.echo.protocol.gold.QueryOrderWithUserResponse]): Unit =
+          serviceImpl.queryOrderWithUser(request).onComplete(com.trueaccord.scalapb.grpc.Grpc.completeObserver(observer))(
             executionContext)
       }))
     .addMethod(
