@@ -75,7 +75,7 @@ object LogoutRequest extends com.trueaccord.scalapb.GeneratedMessageCompanion[co
       __fieldsMap.getOrElse(__fields.get(0), "").asInstanceOf[String]
     )
   }
-  def descriptor: com.google.protobuf.Descriptors.Descriptor = CaptainProto.descriptor.getMessageTypes.get(6)
+  def descriptor: com.google.protobuf.Descriptors.Descriptor = CaptainProto.descriptor.getMessageTypes.get(7)
   def messageCompanionForField(__field: com.google.protobuf.Descriptors.FieldDescriptor): com.trueaccord.scalapb.GeneratedMessageCompanion[_] = throw new MatchError(__field)
   def enumCompanionForField(__field: com.google.protobuf.Descriptors.FieldDescriptor): com.trueaccord.scalapb.GeneratedEnumCompanion[_] = throw new MatchError(__field)
   lazy val defaultInstance = com.echo.protocol.captain.LogoutRequest(

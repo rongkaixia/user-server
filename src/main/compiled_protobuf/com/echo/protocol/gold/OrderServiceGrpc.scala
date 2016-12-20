@@ -43,6 +43,27 @@ object OrderServiceGrpc {
       new com.trueaccord.scalapb.grpc.Marshaller(com.echo.protocol.gold.DeliverConfirmRequest),
       new com.trueaccord.scalapb.grpc.Marshaller(com.echo.protocol.gold.DeliverConfirmResponse))
   
+  val METHOD_CANCEL: _root_.io.grpc.MethodDescriptor[com.echo.protocol.gold.CancelRequest, com.echo.protocol.gold.CancelResponse] =
+    _root_.io.grpc.MethodDescriptor.create(
+      _root_.io.grpc.MethodDescriptor.MethodType.UNARY,
+      _root_.io.grpc.MethodDescriptor.generateFullMethodName("com.echo.protocol.gold.OrderService", "Cancel"),
+      new com.trueaccord.scalapb.grpc.Marshaller(com.echo.protocol.gold.CancelRequest),
+      new com.trueaccord.scalapb.grpc.Marshaller(com.echo.protocol.gold.CancelResponse))
+  
+  val METHOD_REFUND: _root_.io.grpc.MethodDescriptor[com.echo.protocol.gold.RefundRequest, com.echo.protocol.gold.RefundResponse] =
+    _root_.io.grpc.MethodDescriptor.create(
+      _root_.io.grpc.MethodDescriptor.MethodType.UNARY,
+      _root_.io.grpc.MethodDescriptor.generateFullMethodName("com.echo.protocol.gold.OrderService", "Refund"),
+      new com.trueaccord.scalapb.grpc.Marshaller(com.echo.protocol.gold.RefundRequest),
+      new com.trueaccord.scalapb.grpc.Marshaller(com.echo.protocol.gold.RefundResponse))
+  
+  val METHOD_REFUND_CONFIRM: _root_.io.grpc.MethodDescriptor[com.echo.protocol.gold.RefundConfirmRequest, com.echo.protocol.gold.RefundConfirmResponse] =
+    _root_.io.grpc.MethodDescriptor.create(
+      _root_.io.grpc.MethodDescriptor.MethodType.UNARY,
+      _root_.io.grpc.MethodDescriptor.generateFullMethodName("com.echo.protocol.gold.OrderService", "RefundConfirm"),
+      new com.trueaccord.scalapb.grpc.Marshaller(com.echo.protocol.gold.RefundConfirmRequest),
+      new com.trueaccord.scalapb.grpc.Marshaller(com.echo.protocol.gold.RefundConfirmResponse))
+  
   trait OrderService extends _root_.com.trueaccord.scalapb.grpc.AbstractService {
     override def serviceCompanion = OrderService
     def queryOrder(request: com.echo.protocol.gold.QueryOrderRequest): scala.concurrent.Future[com.echo.protocol.gold.QueryOrderResponse]
@@ -51,6 +72,9 @@ object OrderServiceGrpc {
     def notify(request: com.echo.protocol.gold.NotifyRequest): scala.concurrent.Future[com.echo.protocol.gold.NotifyResponse]
     def deliver(request: com.echo.protocol.gold.DeliverRequest): scala.concurrent.Future[com.echo.protocol.gold.DeliverResponse]
     def deliverConfirm(request: com.echo.protocol.gold.DeliverConfirmRequest): scala.concurrent.Future[com.echo.protocol.gold.DeliverConfirmResponse]
+    def cancel(request: com.echo.protocol.gold.CancelRequest): scala.concurrent.Future[com.echo.protocol.gold.CancelResponse]
+    def refund(request: com.echo.protocol.gold.RefundRequest): scala.concurrent.Future[com.echo.protocol.gold.RefundResponse]
+    def refundConfirm(request: com.echo.protocol.gold.RefundConfirmRequest): scala.concurrent.Future[com.echo.protocol.gold.RefundConfirmResponse]
   }
   
   object OrderService extends _root_.com.trueaccord.scalapb.grpc.ServiceCompanion[OrderService] {
@@ -66,6 +90,9 @@ object OrderServiceGrpc {
     def notify(request: com.echo.protocol.gold.NotifyRequest): com.echo.protocol.gold.NotifyResponse
     def deliver(request: com.echo.protocol.gold.DeliverRequest): com.echo.protocol.gold.DeliverResponse
     def deliverConfirm(request: com.echo.protocol.gold.DeliverConfirmRequest): com.echo.protocol.gold.DeliverConfirmResponse
+    def cancel(request: com.echo.protocol.gold.CancelRequest): com.echo.protocol.gold.CancelResponse
+    def refund(request: com.echo.protocol.gold.RefundRequest): com.echo.protocol.gold.RefundResponse
+    def refundConfirm(request: com.echo.protocol.gold.RefundConfirmRequest): com.echo.protocol.gold.RefundConfirmResponse
   }
   
   class OrderServiceBlockingStub(channel: _root_.io.grpc.Channel, options: _root_.io.grpc.CallOptions = _root_.io.grpc.CallOptions.DEFAULT) extends _root_.io.grpc.stub.AbstractStub[OrderServiceBlockingStub](channel, options) with OrderServiceBlockingClient {
@@ -91,6 +118,18 @@ object OrderServiceGrpc {
     
     override def deliverConfirm(request: com.echo.protocol.gold.DeliverConfirmRequest): com.echo.protocol.gold.DeliverConfirmResponse = {
       _root_.io.grpc.stub.ClientCalls.blockingUnaryCall(channel.newCall(METHOD_DELIVER_CONFIRM, options), request)
+    }
+    
+    override def cancel(request: com.echo.protocol.gold.CancelRequest): com.echo.protocol.gold.CancelResponse = {
+      _root_.io.grpc.stub.ClientCalls.blockingUnaryCall(channel.newCall(METHOD_CANCEL, options), request)
+    }
+    
+    override def refund(request: com.echo.protocol.gold.RefundRequest): com.echo.protocol.gold.RefundResponse = {
+      _root_.io.grpc.stub.ClientCalls.blockingUnaryCall(channel.newCall(METHOD_REFUND, options), request)
+    }
+    
+    override def refundConfirm(request: com.echo.protocol.gold.RefundConfirmRequest): com.echo.protocol.gold.RefundConfirmResponse = {
+      _root_.io.grpc.stub.ClientCalls.blockingUnaryCall(channel.newCall(METHOD_REFUND_CONFIRM, options), request)
     }
     
     override def build(channel: _root_.io.grpc.Channel, options: _root_.io.grpc.CallOptions): OrderServiceBlockingStub = new OrderServiceBlockingStub(channel, options)
@@ -119,6 +158,18 @@ object OrderServiceGrpc {
     
     override def deliverConfirm(request: com.echo.protocol.gold.DeliverConfirmRequest): scala.concurrent.Future[com.echo.protocol.gold.DeliverConfirmResponse] = {
       com.trueaccord.scalapb.grpc.Grpc.guavaFuture2ScalaFuture(_root_.io.grpc.stub.ClientCalls.futureUnaryCall(channel.newCall(METHOD_DELIVER_CONFIRM, options), request))
+    }
+    
+    override def cancel(request: com.echo.protocol.gold.CancelRequest): scala.concurrent.Future[com.echo.protocol.gold.CancelResponse] = {
+      com.trueaccord.scalapb.grpc.Grpc.guavaFuture2ScalaFuture(_root_.io.grpc.stub.ClientCalls.futureUnaryCall(channel.newCall(METHOD_CANCEL, options), request))
+    }
+    
+    override def refund(request: com.echo.protocol.gold.RefundRequest): scala.concurrent.Future[com.echo.protocol.gold.RefundResponse] = {
+      com.trueaccord.scalapb.grpc.Grpc.guavaFuture2ScalaFuture(_root_.io.grpc.stub.ClientCalls.futureUnaryCall(channel.newCall(METHOD_REFUND, options), request))
+    }
+    
+    override def refundConfirm(request: com.echo.protocol.gold.RefundConfirmRequest): scala.concurrent.Future[com.echo.protocol.gold.RefundConfirmResponse] = {
+      com.trueaccord.scalapb.grpc.Grpc.guavaFuture2ScalaFuture(_root_.io.grpc.stub.ClientCalls.futureUnaryCall(channel.newCall(METHOD_REFUND_CONFIRM, options), request))
     }
     
     override def build(channel: _root_.io.grpc.Channel, options: _root_.io.grpc.CallOptions): OrderServiceStub = new OrderServiceStub(channel, options)
@@ -166,6 +217,27 @@ object OrderServiceGrpc {
       _root_.io.grpc.stub.ServerCalls.asyncUnaryCall(new _root_.io.grpc.stub.ServerCalls.UnaryMethod[com.echo.protocol.gold.DeliverConfirmRequest, com.echo.protocol.gold.DeliverConfirmResponse] {
         override def invoke(request: com.echo.protocol.gold.DeliverConfirmRequest, observer: _root_.io.grpc.stub.StreamObserver[com.echo.protocol.gold.DeliverConfirmResponse]): Unit =
           serviceImpl.deliverConfirm(request).onComplete(com.trueaccord.scalapb.grpc.Grpc.completeObserver(observer))(
+            executionContext)
+      }))
+    .addMethod(
+      METHOD_CANCEL,
+      _root_.io.grpc.stub.ServerCalls.asyncUnaryCall(new _root_.io.grpc.stub.ServerCalls.UnaryMethod[com.echo.protocol.gold.CancelRequest, com.echo.protocol.gold.CancelResponse] {
+        override def invoke(request: com.echo.protocol.gold.CancelRequest, observer: _root_.io.grpc.stub.StreamObserver[com.echo.protocol.gold.CancelResponse]): Unit =
+          serviceImpl.cancel(request).onComplete(com.trueaccord.scalapb.grpc.Grpc.completeObserver(observer))(
+            executionContext)
+      }))
+    .addMethod(
+      METHOD_REFUND,
+      _root_.io.grpc.stub.ServerCalls.asyncUnaryCall(new _root_.io.grpc.stub.ServerCalls.UnaryMethod[com.echo.protocol.gold.RefundRequest, com.echo.protocol.gold.RefundResponse] {
+        override def invoke(request: com.echo.protocol.gold.RefundRequest, observer: _root_.io.grpc.stub.StreamObserver[com.echo.protocol.gold.RefundResponse]): Unit =
+          serviceImpl.refund(request).onComplete(com.trueaccord.scalapb.grpc.Grpc.completeObserver(observer))(
+            executionContext)
+      }))
+    .addMethod(
+      METHOD_REFUND_CONFIRM,
+      _root_.io.grpc.stub.ServerCalls.asyncUnaryCall(new _root_.io.grpc.stub.ServerCalls.UnaryMethod[com.echo.protocol.gold.RefundConfirmRequest, com.echo.protocol.gold.RefundConfirmResponse] {
+        override def invoke(request: com.echo.protocol.gold.RefundConfirmRequest, observer: _root_.io.grpc.stub.StreamObserver[com.echo.protocol.gold.RefundConfirmResponse]): Unit =
+          serviceImpl.refundConfirm(request).onComplete(com.trueaccord.scalapb.grpc.Grpc.completeObserver(observer))(
             executionContext)
       }))
     .build()

@@ -16,7 +16,8 @@ final case class UserInfo(
     securityQuestion1: scala.Option[com.echo.protocol.captain.SecurityQuestionPair] = None,
     securityQuestion2: scala.Option[com.echo.protocol.captain.SecurityQuestionPair] = None,
     securityQuestion3: scala.Option[com.echo.protocol.captain.SecurityQuestionPair] = None,
-    addresses: scala.collection.Seq[com.echo.protocol.captain.UserAddress] = Nil
+    addresses: scala.collection.Seq[com.echo.protocol.captain.UserAddress] = Nil,
+    cart: scala.collection.Seq[com.echo.protocol.captain.CartItem] = Nil
     ) extends com.trueaccord.scalapb.GeneratedMessage with com.trueaccord.scalapb.Message[UserInfo] with com.trueaccord.lenses.Updatable[UserInfo] {
     @transient
     private[this] var __serializedSizeCachedValue: Int = 0
@@ -30,6 +31,7 @@ final case class UserInfo(
       if (securityQuestion2.isDefined) { __size += 1 + com.google.protobuf.CodedOutputStream.computeUInt32SizeNoTag(securityQuestion2.get.serializedSize) + securityQuestion2.get.serializedSize }
       if (securityQuestion3.isDefined) { __size += 1 + com.google.protobuf.CodedOutputStream.computeUInt32SizeNoTag(securityQuestion3.get.serializedSize) + securityQuestion3.get.serializedSize }
       addresses.foreach(addresses => __size += 1 + com.google.protobuf.CodedOutputStream.computeUInt32SizeNoTag(addresses.serializedSize) + addresses.serializedSize)
+      cart.foreach(cart => __size += 1 + com.google.protobuf.CodedOutputStream.computeUInt32SizeNoTag(cart.serializedSize) + cart.serializedSize)
       __size
     }
     final override def serializedSize: Int = {
@@ -85,6 +87,11 @@ final case class UserInfo(
         _output__.writeUInt32NoTag(__v.serializedSize)
         __v.writeTo(_output__)
       };
+      cart.foreach { __v =>
+        _output__.writeTag(9, 2)
+        _output__.writeUInt32NoTag(__v.serializedSize)
+        __v.writeTo(_output__)
+      };
     }
     def mergeFrom(`_input__`: com.google.protobuf.CodedInputStream): com.echo.protocol.captain.UserInfo = {
       var __userId = this.userId
@@ -95,6 +102,7 @@ final case class UserInfo(
       var __securityQuestion2 = this.securityQuestion2
       var __securityQuestion3 = this.securityQuestion3
       val __addresses = (scala.collection.immutable.Vector.newBuilder[com.echo.protocol.captain.UserAddress] ++= this.addresses)
+      val __cart = (scala.collection.immutable.Vector.newBuilder[com.echo.protocol.captain.CartItem] ++= this.cart)
       var _done__ = false
       while (!_done__) {
         val _tag__ = _input__.readTag()
@@ -116,6 +124,8 @@ final case class UserInfo(
             __securityQuestion3 = Some(com.trueaccord.scalapb.LiteParser.readMessage(_input__, __securityQuestion3.getOrElse(com.echo.protocol.captain.SecurityQuestionPair.defaultInstance)))
           case 66 =>
             __addresses += com.trueaccord.scalapb.LiteParser.readMessage(_input__, com.echo.protocol.captain.UserAddress.defaultInstance)
+          case 74 =>
+            __cart += com.trueaccord.scalapb.LiteParser.readMessage(_input__, com.echo.protocol.captain.CartItem.defaultInstance)
           case tag => _input__.skipField(tag)
         }
       }
@@ -127,7 +137,8 @@ final case class UserInfo(
           securityQuestion1 = __securityQuestion1,
           securityQuestion2 = __securityQuestion2,
           securityQuestion3 = __securityQuestion3,
-          addresses = __addresses.result()
+          addresses = __addresses.result(),
+          cart = __cart.result()
       )
     }
     def withUserId(__v: String): UserInfo = copy(userId = __v)
@@ -147,6 +158,10 @@ final case class UserInfo(
     def addAddresses(__vs: com.echo.protocol.captain.UserAddress*): UserInfo = addAllAddresses(__vs)
     def addAllAddresses(__vs: TraversableOnce[com.echo.protocol.captain.UserAddress]): UserInfo = copy(addresses = addresses ++ __vs)
     def withAddresses(__v: scala.collection.Seq[com.echo.protocol.captain.UserAddress]): UserInfo = copy(addresses = __v)
+    def clearCart = copy(cart = scala.collection.Seq.empty)
+    def addCart(__vs: com.echo.protocol.captain.CartItem*): UserInfo = addAllCart(__vs)
+    def addAllCart(__vs: TraversableOnce[com.echo.protocol.captain.CartItem]): UserInfo = copy(cart = cart ++ __vs)
+    def withCart(__v: scala.collection.Seq[com.echo.protocol.captain.CartItem]): UserInfo = copy(cart = __v)
     def getField(__field: com.google.protobuf.Descriptors.FieldDescriptor): scala.Any = {
       __field.getNumber match {
         case 1 => {
@@ -169,6 +184,7 @@ final case class UserInfo(
         case 6 => securityQuestion2.getOrElse(null)
         case 7 => securityQuestion3.getOrElse(null)
         case 8 => addresses
+        case 9 => cart
       }
     }
     override def toString: String = com.trueaccord.scalapb.TextFormat.printToUnicodeString(this)
@@ -188,10 +204,11 @@ object UserInfo extends com.trueaccord.scalapb.GeneratedMessageCompanion[com.ech
       __fieldsMap.get(__fields.get(4)).asInstanceOf[scala.Option[com.echo.protocol.captain.SecurityQuestionPair]],
       __fieldsMap.get(__fields.get(5)).asInstanceOf[scala.Option[com.echo.protocol.captain.SecurityQuestionPair]],
       __fieldsMap.get(__fields.get(6)).asInstanceOf[scala.Option[com.echo.protocol.captain.SecurityQuestionPair]],
-      __fieldsMap.getOrElse(__fields.get(7), Nil).asInstanceOf[scala.collection.Seq[com.echo.protocol.captain.UserAddress]]
+      __fieldsMap.getOrElse(__fields.get(7), Nil).asInstanceOf[scala.collection.Seq[com.echo.protocol.captain.UserAddress]],
+      __fieldsMap.getOrElse(__fields.get(8), Nil).asInstanceOf[scala.collection.Seq[com.echo.protocol.captain.CartItem]]
     )
   }
-  def descriptor: com.google.protobuf.Descriptors.Descriptor = CaptainProto.descriptor.getMessageTypes.get(2)
+  def descriptor: com.google.protobuf.Descriptors.Descriptor = CaptainProto.descriptor.getMessageTypes.get(3)
   def messageCompanionForField(__field: com.google.protobuf.Descriptors.FieldDescriptor): com.trueaccord.scalapb.GeneratedMessageCompanion[_] = {
     require(__field.getContainingType() == descriptor, "FieldDescriptor does not match message type.")
     var __out: com.trueaccord.scalapb.GeneratedMessageCompanion[_] = null
@@ -200,6 +217,7 @@ object UserInfo extends com.trueaccord.scalapb.GeneratedMessageCompanion[com.ech
       case 6 => __out = com.echo.protocol.captain.SecurityQuestionPair
       case 7 => __out = com.echo.protocol.captain.SecurityQuestionPair
       case 8 => __out = com.echo.protocol.captain.UserAddress
+      case 9 => __out = com.echo.protocol.captain.CartItem
     }
   __out
   }
@@ -218,6 +236,7 @@ object UserInfo extends com.trueaccord.scalapb.GeneratedMessageCompanion[com.ech
     def securityQuestion3: com.trueaccord.lenses.Lens[UpperPB, com.echo.protocol.captain.SecurityQuestionPair] = field(_.getSecurityQuestion3)((c_, f_) => c_.copy(securityQuestion3 = Some(f_)))
     def optionalSecurityQuestion3: com.trueaccord.lenses.Lens[UpperPB, scala.Option[com.echo.protocol.captain.SecurityQuestionPair]] = field(_.securityQuestion3)((c_, f_) => c_.copy(securityQuestion3 = f_))
     def addresses: com.trueaccord.lenses.Lens[UpperPB, scala.collection.Seq[com.echo.protocol.captain.UserAddress]] = field(_.addresses)((c_, f_) => c_.copy(addresses = f_))
+    def cart: com.trueaccord.lenses.Lens[UpperPB, scala.collection.Seq[com.echo.protocol.captain.CartItem]] = field(_.cart)((c_, f_) => c_.copy(cart = f_))
   }
   final val USER_ID_FIELD_NUMBER = 1
   final val USERNAME_FIELD_NUMBER = 2
@@ -227,4 +246,5 @@ object UserInfo extends com.trueaccord.scalapb.GeneratedMessageCompanion[com.ech
   final val SECURITY_QUESTION2_FIELD_NUMBER = 6
   final val SECURITY_QUESTION3_FIELD_NUMBER = 7
   final val ADDRESSES_FIELD_NUMBER = 8
+  final val CART_FIELD_NUMBER = 9
 }

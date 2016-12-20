@@ -86,7 +86,7 @@ object QueryUserInfoResponse extends com.trueaccord.scalapb.GeneratedMessageComp
       __fieldsMap.get(__fields.get(1)).asInstanceOf[scala.Option[com.echo.protocol.captain.UserInfo]]
     )
   }
-  def descriptor: com.google.protobuf.Descriptors.Descriptor = CaptainProto.descriptor.getMessageTypes.get(16)
+  def descriptor: com.google.protobuf.Descriptors.Descriptor = CaptainProto.descriptor.getMessageTypes.get(19)
   def messageCompanionForField(__field: com.google.protobuf.Descriptors.FieldDescriptor): com.trueaccord.scalapb.GeneratedMessageCompanion[_] = {
     require(__field.getContainingType() == descriptor, "FieldDescriptor does not match message type.")
     var __out: com.trueaccord.scalapb.GeneratedMessageCompanion[_] = null

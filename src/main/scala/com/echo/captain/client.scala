@@ -41,6 +41,16 @@ object HelloWorldClient {
                             securityQuestion2 = SecurityQuestionPair("question2", "answer2"),
                             securityQuestion3 = SecurityQuestionPair("question3", "answer3"))
       client.queryUserInfo(token)
+
+      // update user item
+      var cartItem = new CartItem(productId = "test_product", num = 1)
+      client.updateUserCart(token, cartItem)
+      client.queryUserInfo(token)
+      cartItem = new CartItem(productId = "test_product", num = 2)
+      client.updateUserCart(token, cartItem)
+      client.queryUserInfo(token)
+      client.deleteUserCart(token, cartItem)
+      client.queryUserInfo(token)
       client.logout(token)
     } finally {
       client.shutdown()
@@ -188,4 +198,34 @@ class HelloWorldClient private(
         logger.log(Level.WARNING, "RPC failed: {0}", e.getStatus)
     }
   }
+
+  def updateUserCart(token: String, item: CartItem): Unit = {
+    logger.info("Will try to send updateUserCart request...")
+    val request = UpdateUserCartRequest().withToken(token)
+                                         .withProductId(item.productId)
+                                         .withNum(item.num)
+    try {
+      val response = blockingStub.updateUserCart(request)
+      logger.info("UpdateUserCartResponse: " + response)
+    }
+    catch {
+      case e: StatusRuntimeException =>
+        logger.log(Level.WARNING, "RPC failed: {0}", e.getStatus)
+    }
+  }
+
+  def deleteUserCart(token: String, item: CartItem): Unit = {
+    logger.info("Will try to send deleteUserCart request...")
+    val request = DeleteUserCartRequest().withToken(token)
+                                         .withProductId(item.productId)
+    try {
+      val response = blockingStub.deleteUserCart(request)
+      logger.info("DeleteUserCartRequest: " + response)
+    }
+    catch {
+      case e: StatusRuntimeException =>
+        logger.log(Level.WARNING, "RPC failed: {0}", e.getStatus)
+    }
+  }
+
 }

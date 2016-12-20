@@ -28,6 +28,9 @@ trait QueryUserInfoImpl extends AbstractCaptainService with LazyLogging{
       val collectionName = cfg.getString("echo.captain.mongo.user.collection")
       val userIdColumn = cfg.getString("echo.captain.mongo.user.columns.user_id")
       val passwordColumn = cfg.getString("echo.captain.mongo.user.columns.password")
+      val cartColumn = cfg.getString("echo.captain.mongo.user.columns.cart")
+      val createAtColumn = cfg.getString("echo.captain.mongo.user.columns.cart_item_create_at")
+      val updateAtColumn = cfg.getString("echo.captain.mongo.user.columns.cart_item_update_at")
       logger.debug(s"mongo database = ${dbName}, collection = ${collectionName}")
       val database: MongoDatabase = mongo.getDatabase(dbName)
       val collection = database.getCollection(collectionName)
@@ -40,7 +43,21 @@ trait QueryUserInfoImpl extends AbstractCaptainService with LazyLogging{
         throw new CaptainServiceException.UserNotExist(userId)
       }
       logger.debug(s"userInfo: ${result.head}")
-      JsonFormat.fromJsonString[UserInfo](result.head.toJson)
+
+      // construct cart, since scalapb JsonFormat.fromJsonString[OrderInfo] 
+      // cannot parse MongoDB Extended JSON format
+      val cartDocArray = result.head.getOrElse(cartColumn, new bson.BsonArray())
+      val cart = cartDocArray.asArray.map(e => new Document(e.asDocument)).map(item => {
+        JsonFormat.fromJsonString[CartItem]((item - createAtColumn - updateAtColumn).toJson)
+        .withCreateAt(item.getOrElse(createAtColumn, new bson.BsonDateTime(0l)).asDateTime.getValue)
+        .withUpdateAt(item.getOrElse(updateAtColumn, new bson.BsonDateTime(0l)).asDateTime.getValue)
+      })
+
+      // construct UserInfo
+      val doc = result.head - cartColumn
+      JsonFormat.fromJsonString[UserInfo](doc.toJson)
+      .withCart(cart)
+
     }
   }
 

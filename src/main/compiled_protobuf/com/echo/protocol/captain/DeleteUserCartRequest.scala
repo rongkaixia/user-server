@@ -8,16 +8,16 @@ package com.echo.protocol.captain
 
 
 @SerialVersionUID(0L)
-final case class DeleteUserAddressRequest(
+final case class DeleteUserCartRequest(
     token: String = "",
-    addressId: String = ""
-    ) extends com.trueaccord.scalapb.GeneratedMessage with com.trueaccord.scalapb.Message[DeleteUserAddressRequest] with com.trueaccord.lenses.Updatable[DeleteUserAddressRequest] {
+    productId: String = ""
+    ) extends com.trueaccord.scalapb.GeneratedMessage with com.trueaccord.scalapb.Message[DeleteUserCartRequest] with com.trueaccord.lenses.Updatable[DeleteUserCartRequest] {
     @transient
     private[this] var __serializedSizeCachedValue: Int = 0
     private[this] def __computeSerializedValue(): Int = {
       var __size = 0
       if (token != "") { __size += com.google.protobuf.CodedOutputStream.computeStringSize(1, token) }
-      if (addressId != "") { __size += com.google.protobuf.CodedOutputStream.computeStringSize(2, addressId) }
+      if (productId != "") { __size += com.google.protobuf.CodedOutputStream.computeStringSize(2, productId) }
       __size
     }
     final override def serializedSize: Int = {
@@ -36,15 +36,15 @@ final case class DeleteUserAddressRequest(
         }
       };
       {
-        val __v = addressId
+        val __v = productId
         if (__v != "") {
           _output__.writeString(2, __v)
         }
       };
     }
-    def mergeFrom(`_input__`: com.google.protobuf.CodedInputStream): com.echo.protocol.captain.DeleteUserAddressRequest = {
+    def mergeFrom(`_input__`: com.google.protobuf.CodedInputStream): com.echo.protocol.captain.DeleteUserCartRequest = {
       var __token = this.token
-      var __addressId = this.addressId
+      var __productId = this.productId
       var _done__ = false
       while (!_done__) {
         val _tag__ = _input__.readTag()
@@ -53,17 +53,17 @@ final case class DeleteUserAddressRequest(
           case 10 =>
             __token = _input__.readString()
           case 18 =>
-            __addressId = _input__.readString()
+            __productId = _input__.readString()
           case tag => _input__.skipField(tag)
         }
       }
-      com.echo.protocol.captain.DeleteUserAddressRequest(
+      com.echo.protocol.captain.DeleteUserCartRequest(
           token = __token,
-          addressId = __addressId
+          productId = __productId
       )
     }
-    def withToken(__v: String): DeleteUserAddressRequest = copy(token = __v)
-    def withAddressId(__v: String): DeleteUserAddressRequest = copy(addressId = __v)
+    def withToken(__v: String): DeleteUserCartRequest = copy(token = __v)
+    def withProductId(__v: String): DeleteUserCartRequest = copy(productId = __v)
     def getField(__field: com.google.protobuf.Descriptors.FieldDescriptor): scala.Any = {
       __field.getNumber match {
         case 1 => {
@@ -71,34 +71,34 @@ final case class DeleteUserAddressRequest(
           if (__t != "") __t else null
         }
         case 2 => {
-          val __t = addressId
+          val __t = productId
           if (__t != "") __t else null
         }
       }
     }
     override def toString: String = com.trueaccord.scalapb.TextFormat.printToUnicodeString(this)
-    def companion = com.echo.protocol.captain.DeleteUserAddressRequest
+    def companion = com.echo.protocol.captain.DeleteUserCartRequest
 }
 
-object DeleteUserAddressRequest extends com.trueaccord.scalapb.GeneratedMessageCompanion[com.echo.protocol.captain.DeleteUserAddressRequest] {
-  implicit def messageCompanion: com.trueaccord.scalapb.GeneratedMessageCompanion[com.echo.protocol.captain.DeleteUserAddressRequest] = this
-  def fromFieldsMap(__fieldsMap: scala.collection.immutable.Map[com.google.protobuf.Descriptors.FieldDescriptor, scala.Any]): com.echo.protocol.captain.DeleteUserAddressRequest = {
+object DeleteUserCartRequest extends com.trueaccord.scalapb.GeneratedMessageCompanion[com.echo.protocol.captain.DeleteUserCartRequest] {
+  implicit def messageCompanion: com.trueaccord.scalapb.GeneratedMessageCompanion[com.echo.protocol.captain.DeleteUserCartRequest] = this
+  def fromFieldsMap(__fieldsMap: scala.collection.immutable.Map[com.google.protobuf.Descriptors.FieldDescriptor, scala.Any]): com.echo.protocol.captain.DeleteUserCartRequest = {
     require(__fieldsMap.keys.forall(_.getContainingType() == descriptor), "FieldDescriptor does not match message type.")
     val __fields = descriptor.getFields
-    com.echo.protocol.captain.DeleteUserAddressRequest(
+    com.echo.protocol.captain.DeleteUserCartRequest(
       __fieldsMap.getOrElse(__fields.get(0), "").asInstanceOf[String],
       __fieldsMap.getOrElse(__fields.get(1), "").asInstanceOf[String]
     )
   }
-  def descriptor: com.google.protobuf.Descriptors.Descriptor = CaptainProto.descriptor.getMessageTypes.get(12)
+  def descriptor: com.google.protobuf.Descriptors.Descriptor = CaptainProto.descriptor.getMessageTypes.get(14)
   def messageCompanionForField(__field: com.google.protobuf.Descriptors.FieldDescriptor): com.trueaccord.scalapb.GeneratedMessageCompanion[_] = throw new MatchError(__field)
   def enumCompanionForField(__field: com.google.protobuf.Descriptors.FieldDescriptor): com.trueaccord.scalapb.GeneratedEnumCompanion[_] = throw new MatchError(__field)
-  lazy val defaultInstance = com.echo.protocol.captain.DeleteUserAddressRequest(
+  lazy val defaultInstance = com.echo.protocol.captain.DeleteUserCartRequest(
   )
-  implicit class DeleteUserAddressRequestLens[UpperPB](_l: com.trueaccord.lenses.Lens[UpperPB, com.echo.protocol.captain.DeleteUserAddressRequest]) extends com.trueaccord.lenses.ObjectLens[UpperPB, com.echo.protocol.captain.DeleteUserAddressRequest](_l) {
+  implicit class DeleteUserCartRequestLens[UpperPB](_l: com.trueaccord.lenses.Lens[UpperPB, com.echo.protocol.captain.DeleteUserCartRequest]) extends com.trueaccord.lenses.ObjectLens[UpperPB, com.echo.protocol.captain.DeleteUserCartRequest](_l) {
     def token: com.trueaccord.lenses.Lens[UpperPB, String] = field(_.token)((c_, f_) => c_.copy(token = f_))
-    def addressId: com.trueaccord.lenses.Lens[UpperPB, String] = field(_.addressId)((c_, f_) => c_.copy(addressId = f_))
+    def productId: com.trueaccord.lenses.Lens[UpperPB, String] = field(_.productId)((c_, f_) => c_.copy(productId = f_))
   }
   final val TOKEN_FIELD_NUMBER = 1
-  final val ADDRESS_ID_FIELD_NUMBER = 2
+  final val PRODUCT_ID_FIELD_NUMBER = 2
 }

@@ -64,6 +64,20 @@ object CaptainServiceGrpc {
       new com.trueaccord.scalapb.grpc.Marshaller(com.echo.protocol.captain.DeleteUserAddressRequest),
       new com.trueaccord.scalapb.grpc.Marshaller(com.echo.protocol.captain.DeleteUserAddressResponse))
   
+  val METHOD_UPDATE_USER_CART: _root_.io.grpc.MethodDescriptor[com.echo.protocol.captain.UpdateUserCartRequest, com.echo.protocol.captain.UpdateUserCartResponse] =
+    _root_.io.grpc.MethodDescriptor.create(
+      _root_.io.grpc.MethodDescriptor.MethodType.UNARY,
+      _root_.io.grpc.MethodDescriptor.generateFullMethodName("com.echo.protocol.captain.CaptainService", "UpdateUserCart"),
+      new com.trueaccord.scalapb.grpc.Marshaller(com.echo.protocol.captain.UpdateUserCartRequest),
+      new com.trueaccord.scalapb.grpc.Marshaller(com.echo.protocol.captain.UpdateUserCartResponse))
+  
+  val METHOD_DELETE_USER_CART: _root_.io.grpc.MethodDescriptor[com.echo.protocol.captain.DeleteUserCartRequest, com.echo.protocol.captain.DeleteUserCartResponse] =
+    _root_.io.grpc.MethodDescriptor.create(
+      _root_.io.grpc.MethodDescriptor.MethodType.UNARY,
+      _root_.io.grpc.MethodDescriptor.generateFullMethodName("com.echo.protocol.captain.CaptainService", "DeleteUserCart"),
+      new com.trueaccord.scalapb.grpc.Marshaller(com.echo.protocol.captain.DeleteUserCartRequest),
+      new com.trueaccord.scalapb.grpc.Marshaller(com.echo.protocol.captain.DeleteUserCartResponse))
+  
   trait CaptainService extends _root_.com.trueaccord.scalapb.grpc.AbstractService {
     override def serviceCompanion = CaptainService
     def signup(request: com.echo.protocol.captain.SignupRequest): scala.concurrent.Future[com.echo.protocol.captain.SignupResponse]
@@ -75,6 +89,8 @@ object CaptainServiceGrpc {
     def addUserAddress(request: com.echo.protocol.captain.AddUserAddressRequest): scala.concurrent.Future[com.echo.protocol.captain.AddUserAddressResponse]
     def updateUserAddress(request: com.echo.protocol.captain.UpdateUserAddressRequest): scala.concurrent.Future[com.echo.protocol.captain.UpdateUserAddressResponse]
     def deleteUserAddress(request: com.echo.protocol.captain.DeleteUserAddressRequest): scala.concurrent.Future[com.echo.protocol.captain.DeleteUserAddressResponse]
+    def updateUserCart(request: com.echo.protocol.captain.UpdateUserCartRequest): scala.concurrent.Future[com.echo.protocol.captain.UpdateUserCartResponse]
+    def deleteUserCart(request: com.echo.protocol.captain.DeleteUserCartRequest): scala.concurrent.Future[com.echo.protocol.captain.DeleteUserCartResponse]
   }
   
   object CaptainService extends _root_.com.trueaccord.scalapb.grpc.ServiceCompanion[CaptainService] {
@@ -93,6 +109,8 @@ object CaptainServiceGrpc {
     def addUserAddress(request: com.echo.protocol.captain.AddUserAddressRequest): com.echo.protocol.captain.AddUserAddressResponse
     def updateUserAddress(request: com.echo.protocol.captain.UpdateUserAddressRequest): com.echo.protocol.captain.UpdateUserAddressResponse
     def deleteUserAddress(request: com.echo.protocol.captain.DeleteUserAddressRequest): com.echo.protocol.captain.DeleteUserAddressResponse
+    def updateUserCart(request: com.echo.protocol.captain.UpdateUserCartRequest): com.echo.protocol.captain.UpdateUserCartResponse
+    def deleteUserCart(request: com.echo.protocol.captain.DeleteUserCartRequest): com.echo.protocol.captain.DeleteUserCartResponse
   }
   
   class CaptainServiceBlockingStub(channel: _root_.io.grpc.Channel, options: _root_.io.grpc.CallOptions = _root_.io.grpc.CallOptions.DEFAULT) extends _root_.io.grpc.stub.AbstractStub[CaptainServiceBlockingStub](channel, options) with CaptainServiceBlockingClient {
@@ -130,6 +148,14 @@ object CaptainServiceGrpc {
     
     override def deleteUserAddress(request: com.echo.protocol.captain.DeleteUserAddressRequest): com.echo.protocol.captain.DeleteUserAddressResponse = {
       _root_.io.grpc.stub.ClientCalls.blockingUnaryCall(channel.newCall(METHOD_DELETE_USER_ADDRESS, options), request)
+    }
+    
+    override def updateUserCart(request: com.echo.protocol.captain.UpdateUserCartRequest): com.echo.protocol.captain.UpdateUserCartResponse = {
+      _root_.io.grpc.stub.ClientCalls.blockingUnaryCall(channel.newCall(METHOD_UPDATE_USER_CART, options), request)
+    }
+    
+    override def deleteUserCart(request: com.echo.protocol.captain.DeleteUserCartRequest): com.echo.protocol.captain.DeleteUserCartResponse = {
+      _root_.io.grpc.stub.ClientCalls.blockingUnaryCall(channel.newCall(METHOD_DELETE_USER_CART, options), request)
     }
     
     override def build(channel: _root_.io.grpc.Channel, options: _root_.io.grpc.CallOptions): CaptainServiceBlockingStub = new CaptainServiceBlockingStub(channel, options)
@@ -170,6 +196,14 @@ object CaptainServiceGrpc {
     
     override def deleteUserAddress(request: com.echo.protocol.captain.DeleteUserAddressRequest): scala.concurrent.Future[com.echo.protocol.captain.DeleteUserAddressResponse] = {
       com.trueaccord.scalapb.grpc.Grpc.guavaFuture2ScalaFuture(_root_.io.grpc.stub.ClientCalls.futureUnaryCall(channel.newCall(METHOD_DELETE_USER_ADDRESS, options), request))
+    }
+    
+    override def updateUserCart(request: com.echo.protocol.captain.UpdateUserCartRequest): scala.concurrent.Future[com.echo.protocol.captain.UpdateUserCartResponse] = {
+      com.trueaccord.scalapb.grpc.Grpc.guavaFuture2ScalaFuture(_root_.io.grpc.stub.ClientCalls.futureUnaryCall(channel.newCall(METHOD_UPDATE_USER_CART, options), request))
+    }
+    
+    override def deleteUserCart(request: com.echo.protocol.captain.DeleteUserCartRequest): scala.concurrent.Future[com.echo.protocol.captain.DeleteUserCartResponse] = {
+      com.trueaccord.scalapb.grpc.Grpc.guavaFuture2ScalaFuture(_root_.io.grpc.stub.ClientCalls.futureUnaryCall(channel.newCall(METHOD_DELETE_USER_CART, options), request))
     }
     
     override def build(channel: _root_.io.grpc.Channel, options: _root_.io.grpc.CallOptions): CaptainServiceStub = new CaptainServiceStub(channel, options)
@@ -238,6 +272,20 @@ object CaptainServiceGrpc {
       _root_.io.grpc.stub.ServerCalls.asyncUnaryCall(new _root_.io.grpc.stub.ServerCalls.UnaryMethod[com.echo.protocol.captain.DeleteUserAddressRequest, com.echo.protocol.captain.DeleteUserAddressResponse] {
         override def invoke(request: com.echo.protocol.captain.DeleteUserAddressRequest, observer: _root_.io.grpc.stub.StreamObserver[com.echo.protocol.captain.DeleteUserAddressResponse]): Unit =
           serviceImpl.deleteUserAddress(request).onComplete(com.trueaccord.scalapb.grpc.Grpc.completeObserver(observer))(
+            executionContext)
+      }))
+    .addMethod(
+      METHOD_UPDATE_USER_CART,
+      _root_.io.grpc.stub.ServerCalls.asyncUnaryCall(new _root_.io.grpc.stub.ServerCalls.UnaryMethod[com.echo.protocol.captain.UpdateUserCartRequest, com.echo.protocol.captain.UpdateUserCartResponse] {
+        override def invoke(request: com.echo.protocol.captain.UpdateUserCartRequest, observer: _root_.io.grpc.stub.StreamObserver[com.echo.protocol.captain.UpdateUserCartResponse]): Unit =
+          serviceImpl.updateUserCart(request).onComplete(com.trueaccord.scalapb.grpc.Grpc.completeObserver(observer))(
+            executionContext)
+      }))
+    .addMethod(
+      METHOD_DELETE_USER_CART,
+      _root_.io.grpc.stub.ServerCalls.asyncUnaryCall(new _root_.io.grpc.stub.ServerCalls.UnaryMethod[com.echo.protocol.captain.DeleteUserCartRequest, com.echo.protocol.captain.DeleteUserCartResponse] {
+        override def invoke(request: com.echo.protocol.captain.DeleteUserCartRequest, observer: _root_.io.grpc.stub.StreamObserver[com.echo.protocol.captain.DeleteUserCartResponse]): Unit =
+          serviceImpl.deleteUserCart(request).onComplete(com.trueaccord.scalapb.grpc.Grpc.completeObserver(observer))(
             executionContext)
       }))
     .build()

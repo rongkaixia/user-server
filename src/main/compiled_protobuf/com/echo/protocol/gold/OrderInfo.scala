@@ -46,7 +46,7 @@ package com.echo.protocol.gold
 final case class OrderInfo(
     orderId: String = "",
     userId: String = "",
-    products: scala.collection.Seq[com.echo.protocol.gold.ProductInfo] = Nil,
+    products: scala.collection.Seq[com.echo.protocol.product.ProductInfo] = Nil,
     payMethod: com.echo.protocol.gold.PayMethod = com.echo.protocol.gold.PayMethod.PAY_METHOD_EMPTY,
     deliverMethod: com.echo.protocol.gold.DeliverMethod = com.echo.protocol.gold.DeliverMethod.DELIVER_METHOD_EMPTY,
     recipientsName: String = "",
@@ -252,7 +252,7 @@ final case class OrderInfo(
     def mergeFrom(`_input__`: com.google.protobuf.CodedInputStream): com.echo.protocol.gold.OrderInfo = {
       var __orderId = this.orderId
       var __userId = this.userId
-      val __products = (scala.collection.immutable.Vector.newBuilder[com.echo.protocol.gold.ProductInfo] ++= this.products)
+      val __products = (scala.collection.immutable.Vector.newBuilder[com.echo.protocol.product.ProductInfo] ++= this.products)
       var __payMethod = this.payMethod
       var __deliverMethod = this.deliverMethod
       var __recipientsName = this.recipientsName
@@ -284,7 +284,7 @@ final case class OrderInfo(
           case 18 =>
             __userId = _input__.readString()
           case 26 =>
-            __products += com.trueaccord.scalapb.LiteParser.readMessage(_input__, com.echo.protocol.gold.ProductInfo.defaultInstance)
+            __products += com.trueaccord.scalapb.LiteParser.readMessage(_input__, com.echo.protocol.product.ProductInfo.defaultInstance)
           case 48 =>
             __payMethod = com.echo.protocol.gold.PayMethod.fromValue(_input__.readEnum())
           case 56 =>
@@ -360,9 +360,9 @@ final case class OrderInfo(
     def withOrderId(__v: String): OrderInfo = copy(orderId = __v)
     def withUserId(__v: String): OrderInfo = copy(userId = __v)
     def clearProducts = copy(products = scala.collection.Seq.empty)
-    def addProducts(__vs: com.echo.protocol.gold.ProductInfo*): OrderInfo = addAllProducts(__vs)
-    def addAllProducts(__vs: TraversableOnce[com.echo.protocol.gold.ProductInfo]): OrderInfo = copy(products = products ++ __vs)
-    def withProducts(__v: scala.collection.Seq[com.echo.protocol.gold.ProductInfo]): OrderInfo = copy(products = __v)
+    def addProducts(__vs: com.echo.protocol.product.ProductInfo*): OrderInfo = addAllProducts(__vs)
+    def addAllProducts(__vs: TraversableOnce[com.echo.protocol.product.ProductInfo]): OrderInfo = copy(products = products ++ __vs)
+    def withProducts(__v: scala.collection.Seq[com.echo.protocol.product.ProductInfo]): OrderInfo = copy(products = __v)
     def withPayMethod(__v: com.echo.protocol.gold.PayMethod): OrderInfo = copy(payMethod = __v)
     def withDeliverMethod(__v: com.echo.protocol.gold.DeliverMethod): OrderInfo = copy(deliverMethod = __v)
     def withRecipientsName(__v: String): OrderInfo = copy(recipientsName = __v)
@@ -493,7 +493,7 @@ object OrderInfo extends com.trueaccord.scalapb.GeneratedMessageCompanion[com.ec
     com.echo.protocol.gold.OrderInfo(
       __fieldsMap.getOrElse(__fields.get(0), "").asInstanceOf[String],
       __fieldsMap.getOrElse(__fields.get(1), "").asInstanceOf[String],
-      __fieldsMap.getOrElse(__fields.get(2), Nil).asInstanceOf[scala.collection.Seq[com.echo.protocol.gold.ProductInfo]],
+      __fieldsMap.getOrElse(__fields.get(2), Nil).asInstanceOf[scala.collection.Seq[com.echo.protocol.product.ProductInfo]],
       com.echo.protocol.gold.PayMethod.fromValue(__fieldsMap.getOrElse(__fields.get(3), com.echo.protocol.gold.PayMethod.PAY_METHOD_EMPTY.valueDescriptor).asInstanceOf[com.google.protobuf.Descriptors.EnumValueDescriptor].getNumber),
       com.echo.protocol.gold.DeliverMethod.fromValue(__fieldsMap.getOrElse(__fields.get(4), com.echo.protocol.gold.DeliverMethod.DELIVER_METHOD_EMPTY.valueDescriptor).asInstanceOf[com.google.protobuf.Descriptors.EnumValueDescriptor].getNumber),
       __fieldsMap.getOrElse(__fields.get(5), "").asInstanceOf[String],
@@ -517,12 +517,12 @@ object OrderInfo extends com.trueaccord.scalapb.GeneratedMessageCompanion[com.ec
       __fieldsMap.getOrElse(__fields.get(23), 0L).asInstanceOf[Long]
     )
   }
-  def descriptor: com.google.protobuf.Descriptors.Descriptor = GoldProto.descriptor.getMessageTypes.get(17)
+  def descriptor: com.google.protobuf.Descriptors.Descriptor = GoldProto.descriptor.getMessageTypes.get(20)
   def messageCompanionForField(__field: com.google.protobuf.Descriptors.FieldDescriptor): com.trueaccord.scalapb.GeneratedMessageCompanion[_] = {
     require(__field.getContainingType() == descriptor, "FieldDescriptor does not match message type.")
     var __out: com.trueaccord.scalapb.GeneratedMessageCompanion[_] = null
     __field.getNumber match {
-      case 3 => __out = com.echo.protocol.gold.ProductInfo
+      case 3 => __out = com.echo.protocol.product.ProductInfo
     }
   __out
   }
@@ -539,7 +539,7 @@ object OrderInfo extends com.trueaccord.scalapb.GeneratedMessageCompanion[com.ec
   implicit class OrderInfoLens[UpperPB](_l: com.trueaccord.lenses.Lens[UpperPB, com.echo.protocol.gold.OrderInfo]) extends com.trueaccord.lenses.ObjectLens[UpperPB, com.echo.protocol.gold.OrderInfo](_l) {
     def orderId: com.trueaccord.lenses.Lens[UpperPB, String] = field(_.orderId)((c_, f_) => c_.copy(orderId = f_))
     def userId: com.trueaccord.lenses.Lens[UpperPB, String] = field(_.userId)((c_, f_) => c_.copy(userId = f_))
-    def products: com.trueaccord.lenses.Lens[UpperPB, scala.collection.Seq[com.echo.protocol.gold.ProductInfo]] = field(_.products)((c_, f_) => c_.copy(products = f_))
+    def products: com.trueaccord.lenses.Lens[UpperPB, scala.collection.Seq[com.echo.protocol.product.ProductInfo]] = field(_.products)((c_, f_) => c_.copy(products = f_))
     def payMethod: com.trueaccord.lenses.Lens[UpperPB, com.echo.protocol.gold.PayMethod] = field(_.payMethod)((c_, f_) => c_.copy(payMethod = f_))
     def deliverMethod: com.trueaccord.lenses.Lens[UpperPB, com.echo.protocol.gold.DeliverMethod] = field(_.deliverMethod)((c_, f_) => c_.copy(deliverMethod = f_))
     def recipientsName: com.trueaccord.lenses.Lens[UpperPB, String] = field(_.recipientsName)((c_, f_) => c_.copy(recipientsName = f_))

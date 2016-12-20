@@ -8,9 +8,9 @@ package com.echo.protocol.captain
 
 
 @SerialVersionUID(0L)
-final case class UpdateUserAddressResponse(
+final case class UpdateUserCartResponse(
     header: scala.Option[com.echo.protocol.common.ResponseHeader] = None
-    ) extends com.trueaccord.scalapb.GeneratedMessage with com.trueaccord.scalapb.Message[UpdateUserAddressResponse] with com.trueaccord.lenses.Updatable[UpdateUserAddressResponse] {
+    ) extends com.trueaccord.scalapb.GeneratedMessage with com.trueaccord.scalapb.Message[UpdateUserCartResponse] with com.trueaccord.lenses.Updatable[UpdateUserCartResponse] {
     @transient
     private[this] var __serializedSizeCachedValue: Int = 0
     private[this] def __computeSerializedValue(): Int = {
@@ -33,7 +33,7 @@ final case class UpdateUserAddressResponse(
         __v.writeTo(_output__)
       };
     }
-    def mergeFrom(`_input__`: com.google.protobuf.CodedInputStream): com.echo.protocol.captain.UpdateUserAddressResponse = {
+    def mergeFrom(`_input__`: com.google.protobuf.CodedInputStream): com.echo.protocol.captain.UpdateUserCartResponse = {
       var __header = this.header
       var _done__ = false
       while (!_done__) {
@@ -45,32 +45,32 @@ final case class UpdateUserAddressResponse(
           case tag => _input__.skipField(tag)
         }
       }
-      com.echo.protocol.captain.UpdateUserAddressResponse(
+      com.echo.protocol.captain.UpdateUserCartResponse(
           header = __header
       )
     }
     def getHeader: com.echo.protocol.common.ResponseHeader = header.getOrElse(com.echo.protocol.common.ResponseHeader.defaultInstance)
-    def clearHeader: UpdateUserAddressResponse = copy(header = None)
-    def withHeader(__v: com.echo.protocol.common.ResponseHeader): UpdateUserAddressResponse = copy(header = Some(__v))
+    def clearHeader: UpdateUserCartResponse = copy(header = None)
+    def withHeader(__v: com.echo.protocol.common.ResponseHeader): UpdateUserCartResponse = copy(header = Some(__v))
     def getField(__field: com.google.protobuf.Descriptors.FieldDescriptor): scala.Any = {
       __field.getNumber match {
         case 1 => header.getOrElse(null)
       }
     }
     override def toString: String = com.trueaccord.scalapb.TextFormat.printToUnicodeString(this)
-    def companion = com.echo.protocol.captain.UpdateUserAddressResponse
+    def companion = com.echo.protocol.captain.UpdateUserCartResponse
 }
 
-object UpdateUserAddressResponse extends com.trueaccord.scalapb.GeneratedMessageCompanion[com.echo.protocol.captain.UpdateUserAddressResponse] {
-  implicit def messageCompanion: com.trueaccord.scalapb.GeneratedMessageCompanion[com.echo.protocol.captain.UpdateUserAddressResponse] = this
-  def fromFieldsMap(__fieldsMap: scala.collection.immutable.Map[com.google.protobuf.Descriptors.FieldDescriptor, scala.Any]): com.echo.protocol.captain.UpdateUserAddressResponse = {
+object UpdateUserCartResponse extends com.trueaccord.scalapb.GeneratedMessageCompanion[com.echo.protocol.captain.UpdateUserCartResponse] {
+  implicit def messageCompanion: com.trueaccord.scalapb.GeneratedMessageCompanion[com.echo.protocol.captain.UpdateUserCartResponse] = this
+  def fromFieldsMap(__fieldsMap: scala.collection.immutable.Map[com.google.protobuf.Descriptors.FieldDescriptor, scala.Any]): com.echo.protocol.captain.UpdateUserCartResponse = {
     require(__fieldsMap.keys.forall(_.getContainingType() == descriptor), "FieldDescriptor does not match message type.")
     val __fields = descriptor.getFields
-    com.echo.protocol.captain.UpdateUserAddressResponse(
+    com.echo.protocol.captain.UpdateUserCartResponse(
       __fieldsMap.get(__fields.get(0)).asInstanceOf[scala.Option[com.echo.protocol.common.ResponseHeader]]
     )
   }
-  def descriptor: com.google.protobuf.Descriptors.Descriptor = CaptainProto.descriptor.getMessageTypes.get(22)
+  def descriptor: com.google.protobuf.Descriptors.Descriptor = CaptainProto.descriptor.getMessageTypes.get(24)
   def messageCompanionForField(__field: com.google.protobuf.Descriptors.FieldDescriptor): com.trueaccord.scalapb.GeneratedMessageCompanion[_] = {
     require(__field.getContainingType() == descriptor, "FieldDescriptor does not match message type.")
     var __out: com.trueaccord.scalapb.GeneratedMessageCompanion[_] = null
@@ -80,9 +80,9 @@ object UpdateUserAddressResponse extends com.trueaccord.scalapb.GeneratedMessage
   __out
   }
   def enumCompanionForField(__field: com.google.protobuf.Descriptors.FieldDescriptor): com.trueaccord.scalapb.GeneratedEnumCompanion[_] = throw new MatchError(__field)
-  lazy val defaultInstance = com.echo.protocol.captain.UpdateUserAddressResponse(
+  lazy val defaultInstance = com.echo.protocol.captain.UpdateUserCartResponse(
   )
-  implicit class UpdateUserAddressResponseLens[UpperPB](_l: com.trueaccord.lenses.Lens[UpperPB, com.echo.protocol.captain.UpdateUserAddressResponse]) extends com.trueaccord.lenses.ObjectLens[UpperPB, com.echo.protocol.captain.UpdateUserAddressResponse](_l) {
+  implicit class UpdateUserCartResponseLens[UpperPB](_l: com.trueaccord.lenses.Lens[UpperPB, com.echo.protocol.captain.UpdateUserCartResponse]) extends com.trueaccord.lenses.ObjectLens[UpperPB, com.echo.protocol.captain.UpdateUserCartResponse](_l) {
     def header: com.trueaccord.lenses.Lens[UpperPB, com.echo.protocol.common.ResponseHeader] = field(_.getHeader)((c_, f_) => c_.copy(header = Some(f_)))
     def optionalHeader: com.trueaccord.lenses.Lens[UpperPB, scala.Option[com.echo.protocol.common.ResponseHeader]] = field(_.header)((c_, f_) => c_.copy(header = f_))
   }

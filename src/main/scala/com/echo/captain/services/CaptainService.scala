@@ -130,7 +130,9 @@ class CaptainService()
   with DeleteUserAddressImpl
   with UpdateUserAddressImpl
   with QueryUserInfoImpl
-  with UpdateUserInfoImpl{
+  with UpdateUserInfoImpl
+  with UpdateUserCartImpl
+  with DeleteUserCartImpl{
 
   // execution context
   val ec = ExecutionContext.Implicits.global

@@ -3,7 +3,7 @@
 //
 // Protofile syntax: PROTO3
 
-package com.echo.protocol.gold
+package com.echo.protocol.product
 
 
 
@@ -87,7 +87,7 @@ final case class ProductInfo(
         }
       };
     }
-    def mergeFrom(`_input__`: com.google.protobuf.CodedInputStream): com.echo.protocol.gold.ProductInfo = {
+    def mergeFrom(`_input__`: com.google.protobuf.CodedInputStream): com.echo.protocol.product.ProductInfo = {
       var __productId = this.productId
       var __num = this.num
       var __price = this.price
@@ -114,7 +114,7 @@ final case class ProductInfo(
           case tag => _input__.skipField(tag)
         }
       }
-      com.echo.protocol.gold.ProductInfo(
+      com.echo.protocol.product.ProductInfo(
           productId = __productId,
           num = __num,
           price = __price,
@@ -158,15 +158,15 @@ final case class ProductInfo(
       }
     }
     override def toString: String = com.trueaccord.scalapb.TextFormat.printToUnicodeString(this)
-    def companion = com.echo.protocol.gold.ProductInfo
+    def companion = com.echo.protocol.product.ProductInfo
 }
 
-object ProductInfo extends com.trueaccord.scalapb.GeneratedMessageCompanion[com.echo.protocol.gold.ProductInfo] {
-  implicit def messageCompanion: com.trueaccord.scalapb.GeneratedMessageCompanion[com.echo.protocol.gold.ProductInfo] = this
-  def fromFieldsMap(__fieldsMap: scala.collection.immutable.Map[com.google.protobuf.Descriptors.FieldDescriptor, scala.Any]): com.echo.protocol.gold.ProductInfo = {
+object ProductInfo extends com.trueaccord.scalapb.GeneratedMessageCompanion[com.echo.protocol.product.ProductInfo] {
+  implicit def messageCompanion: com.trueaccord.scalapb.GeneratedMessageCompanion[com.echo.protocol.product.ProductInfo] = this
+  def fromFieldsMap(__fieldsMap: scala.collection.immutable.Map[com.google.protobuf.Descriptors.FieldDescriptor, scala.Any]): com.echo.protocol.product.ProductInfo = {
     require(__fieldsMap.keys.forall(_.getContainingType() == descriptor), "FieldDescriptor does not match message type.")
     val __fields = descriptor.getFields
-    com.echo.protocol.gold.ProductInfo(
+    com.echo.protocol.product.ProductInfo(
       __fieldsMap.getOrElse(__fields.get(0), "").asInstanceOf[String],
       __fieldsMap.getOrElse(__fields.get(1), 0).asInstanceOf[Int],
       __fieldsMap.getOrElse(__fields.get(2), 0.0).asInstanceOf[Double],
@@ -175,12 +175,12 @@ object ProductInfo extends com.trueaccord.scalapb.GeneratedMessageCompanion[com.
       __fieldsMap.getOrElse(__fields.get(5), 0.0).asInstanceOf[Double]
     )
   }
-  def descriptor: com.google.protobuf.Descriptors.Descriptor = GoldProto.descriptor.getMessageTypes.get(0)
+  def descriptor: com.google.protobuf.Descriptors.Descriptor = ProductProto.descriptor.getMessageTypes.get(0)
   def messageCompanionForField(__field: com.google.protobuf.Descriptors.FieldDescriptor): com.trueaccord.scalapb.GeneratedMessageCompanion[_] = throw new MatchError(__field)
   def enumCompanionForField(__field: com.google.protobuf.Descriptors.FieldDescriptor): com.trueaccord.scalapb.GeneratedEnumCompanion[_] = throw new MatchError(__field)
-  lazy val defaultInstance = com.echo.protocol.gold.ProductInfo(
+  lazy val defaultInstance = com.echo.protocol.product.ProductInfo(
   )
-  implicit class ProductInfoLens[UpperPB](_l: com.trueaccord.lenses.Lens[UpperPB, com.echo.protocol.gold.ProductInfo]) extends com.trueaccord.lenses.ObjectLens[UpperPB, com.echo.protocol.gold.ProductInfo](_l) {
+  implicit class ProductInfoLens[UpperPB](_l: com.trueaccord.lenses.Lens[UpperPB, com.echo.protocol.product.ProductInfo]) extends com.trueaccord.lenses.ObjectLens[UpperPB, com.echo.protocol.product.ProductInfo](_l) {
     def productId: com.trueaccord.lenses.Lens[UpperPB, String] = field(_.productId)((c_, f_) => c_.copy(productId = f_))
     def num: com.trueaccord.lenses.Lens[UpperPB, Int] = field(_.num)((c_, f_) => c_.copy(num = f_))
     def price: com.trueaccord.lenses.Lens[UpperPB, Double] = field(_.price)((c_, f_) => c_.copy(price = f_))

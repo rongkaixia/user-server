@@ -97,7 +97,7 @@ object LoginRequest extends com.trueaccord.scalapb.GeneratedMessageCompanion[com
 __fieldsMap.get(__fields.get(1)).asInstanceOf[scala.Option[String]].map(com.echo.protocol.captain.LoginRequest.Name.Email(_)) getOrElse com.echo.protocol.captain.LoginRequest.Name.Empty
     )
   }
-  def descriptor: com.google.protobuf.Descriptors.Descriptor = CaptainProto.descriptor.getMessageTypes.get(4)
+  def descriptor: com.google.protobuf.Descriptors.Descriptor = CaptainProto.descriptor.getMessageTypes.get(5)
   def messageCompanionForField(__field: com.google.protobuf.Descriptors.FieldDescriptor): com.trueaccord.scalapb.GeneratedMessageCompanion[_] = throw new MatchError(__field)
   def enumCompanionForField(__field: com.google.protobuf.Descriptors.FieldDescriptor): com.trueaccord.scalapb.GeneratedEnumCompanion[_] = throw new MatchError(__field)
   lazy val defaultInstance = com.echo.protocol.captain.LoginRequest(
