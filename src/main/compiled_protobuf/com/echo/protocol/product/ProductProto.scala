@@ -11,10 +11,9 @@ object ProductProto {
   lazy val descriptor: com.google.protobuf.Descriptors.FileDescriptor = {
     val proto = com.google.protobuf.DescriptorProtos.FileDescriptorProto.parseFrom(
       com.trueaccord.scalapb.Encoding.fromBase64(scala.collection.Seq(
-  """Cg1wcm9kdWN0LnByb3RvEhljb20uZWNoby5wcm90b2NvbC5wcm9kdWN0Ggxjb21tb24ucHJvdG8ipQEKC1Byb2R1Y3RJbmZvE
-  h0KCnByb2R1Y3RfaWQYAiABKAlSCXByb2R1Y3RJZBIQCgNudW0YAyABKAVSA251bRIUCgVwcmljZRgEIAEoAVIFcHJpY2USHQoKc
-  mVhbF9wcmljZRgFIAEoAVIJcmVhbFByaWNlEhoKCGRpc2NvdW50GAYgASgBUghkaXNjb3VudBIUCgV0b3RhbBgHIAEoAVIFdG90Y
-  WxiBnByb3RvMw=="""
+  """Cg1wcm9kdWN0LnByb3RvEhljb20uZWNoby5wcm90b2NvbC5wcm9kdWN0Ggxjb21tb24ucHJvdG8imgEKCEl0ZW1JbmZvEhUKB
+  nNrdV9pZBgCIAEoCVIFc2t1SWQSEAoDbnVtGAMgASgFUgNudW0SFAoFcHJpY2UYBCABKAFSBXByaWNlEh0KCnJlYWxfcHJpY2UYB
+  SABKAFSCXJlYWxQcmljZRIaCghkaXNjb3VudBgGIAEoAVIIZGlzY291bnQSFAoFdG90YWwYByABKAFSBXRvdGFsYgZwcm90bzM="""
       ).mkString))
     com.google.protobuf.Descriptors.FileDescriptor.buildFrom(proto, Array(
   com.echo.protocol.common.CommonProto.descriptor

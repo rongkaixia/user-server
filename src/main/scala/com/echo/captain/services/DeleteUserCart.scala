@@ -37,16 +37,16 @@ trait DeleteUserCartImpl extends AbstractCaptainService with LazyLogging{
       val collectionName = cfg.getString("echo.captain.mongo.user.collection")
       val userIdColumn = cfg.getString("echo.captain.mongo.user.columns.user_id")
       val cartColumn = cfg.getString("echo.captain.mongo.user.columns.cart")
-      val productIdColumn = cfg.getString("echo.captain.mongo.user.columns.product_id")
+      val skuIdColumn = cfg.getString("echo.captain.mongo.user.columns.sku_id")
 
       // check request
       val token = req.token
-      val productId = req.productId
+      val skuId = req.skuId
       if (token.isEmpty){
         val header = ResponseHeader(ResultCode.INVALID_SESSION_TOKEN, "INVALID_SESSION_TOKEN")
         res = res.withHeader(header)
-      }else if(productId.isEmpty){
-        val header = ResponseHeader(ResultCode.INVALID_REQUEST_ARGUMENT, "productId MUST NOT be empty")
+      }else if(skuId.isEmpty){
+        val header = ResponseHeader(ResultCode.INVALID_REQUEST_ARGUMENT, "skuId MUST NOT be empty")
         res = res.withHeader(header)
       }else{
         // check auth
@@ -62,7 +62,7 @@ trait DeleteUserCartImpl extends AbstractCaptainService with LazyLogging{
           val database: MongoDatabase = mongo.getDatabase(dbName)
           val collection = database.getCollection(collectionName)
           val filterOp = equal(userIdColumn, userId)
-          val updateOp = pull(cartColumn, equal(productIdColumn, productId))
+          val updateOp = pull(cartColumn, equal(skuIdColumn, skuId))
           await(collection.updateOne(filterOp, updateOp).toFuture)
 
           val header = ResponseHeader(ResultCode.SUCCESS, "ok")

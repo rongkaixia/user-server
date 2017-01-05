@@ -10,14 +10,14 @@ package com.echo.protocol.captain
 @SerialVersionUID(0L)
 final case class DeleteUserCartRequest(
     token: String = "",
-    productId: String = ""
+    skuId: String = ""
     ) extends com.trueaccord.scalapb.GeneratedMessage with com.trueaccord.scalapb.Message[DeleteUserCartRequest] with com.trueaccord.lenses.Updatable[DeleteUserCartRequest] {
     @transient
     private[this] var __serializedSizeCachedValue: Int = 0
     private[this] def __computeSerializedValue(): Int = {
       var __size = 0
       if (token != "") { __size += com.google.protobuf.CodedOutputStream.computeStringSize(1, token) }
-      if (productId != "") { __size += com.google.protobuf.CodedOutputStream.computeStringSize(2, productId) }
+      if (skuId != "") { __size += com.google.protobuf.CodedOutputStream.computeStringSize(2, skuId) }
       __size
     }
     final override def serializedSize: Int = {
@@ -36,7 +36,7 @@ final case class DeleteUserCartRequest(
         }
       };
       {
-        val __v = productId
+        val __v = skuId
         if (__v != "") {
           _output__.writeString(2, __v)
         }
@@ -44,7 +44,7 @@ final case class DeleteUserCartRequest(
     }
     def mergeFrom(`_input__`: com.google.protobuf.CodedInputStream): com.echo.protocol.captain.DeleteUserCartRequest = {
       var __token = this.token
-      var __productId = this.productId
+      var __skuId = this.skuId
       var _done__ = false
       while (!_done__) {
         val _tag__ = _input__.readTag()
@@ -53,17 +53,17 @@ final case class DeleteUserCartRequest(
           case 10 =>
             __token = _input__.readString()
           case 18 =>
-            __productId = _input__.readString()
+            __skuId = _input__.readString()
           case tag => _input__.skipField(tag)
         }
       }
       com.echo.protocol.captain.DeleteUserCartRequest(
           token = __token,
-          productId = __productId
+          skuId = __skuId
       )
     }
     def withToken(__v: String): DeleteUserCartRequest = copy(token = __v)
-    def withProductId(__v: String): DeleteUserCartRequest = copy(productId = __v)
+    def withSkuId(__v: String): DeleteUserCartRequest = copy(skuId = __v)
     def getField(__field: com.google.protobuf.Descriptors.FieldDescriptor): scala.Any = {
       __field.getNumber match {
         case 1 => {
@@ -71,7 +71,7 @@ final case class DeleteUserCartRequest(
           if (__t != "") __t else null
         }
         case 2 => {
-          val __t = productId
+          val __t = skuId
           if (__t != "") __t else null
         }
       }
@@ -97,8 +97,8 @@ object DeleteUserCartRequest extends com.trueaccord.scalapb.GeneratedMessageComp
   )
   implicit class DeleteUserCartRequestLens[UpperPB](_l: com.trueaccord.lenses.Lens[UpperPB, com.echo.protocol.captain.DeleteUserCartRequest]) extends com.trueaccord.lenses.ObjectLens[UpperPB, com.echo.protocol.captain.DeleteUserCartRequest](_l) {
     def token: com.trueaccord.lenses.Lens[UpperPB, String] = field(_.token)((c_, f_) => c_.copy(token = f_))
-    def productId: com.trueaccord.lenses.Lens[UpperPB, String] = field(_.productId)((c_, f_) => c_.copy(productId = f_))
+    def skuId: com.trueaccord.lenses.Lens[UpperPB, String] = field(_.skuId)((c_, f_) => c_.copy(skuId = f_))
   }
   final val TOKEN_FIELD_NUMBER = 1
-  final val PRODUCT_ID_FIELD_NUMBER = 2
+  final val SKU_ID_FIELD_NUMBER = 2
 }

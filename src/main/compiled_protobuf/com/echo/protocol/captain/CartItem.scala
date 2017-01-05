@@ -9,7 +9,7 @@ package com.echo.protocol.captain
 
 /** 购物车条目
   *
-  * @param productId
+  * @param skuId
   *  商品ID
   * @param num
   *  商品数量
@@ -20,7 +20,7 @@ package com.echo.protocol.captain
   */
 @SerialVersionUID(0L)
 final case class CartItem(
-    productId: String = "",
+    skuId: String = "",
     num: Int = 0,
     createAt: Long = 0L,
     updateAt: Long = 0L
@@ -29,7 +29,7 @@ final case class CartItem(
     private[this] var __serializedSizeCachedValue: Int = 0
     private[this] def __computeSerializedValue(): Int = {
       var __size = 0
-      if (productId != "") { __size += com.google.protobuf.CodedOutputStream.computeStringSize(1, productId) }
+      if (skuId != "") { __size += com.google.protobuf.CodedOutputStream.computeStringSize(1, skuId) }
       if (num != 0) { __size += com.google.protobuf.CodedOutputStream.computeInt32Size(2, num) }
       if (createAt != 0L) { __size += com.google.protobuf.CodedOutputStream.computeInt64Size(10, createAt) }
       if (updateAt != 0L) { __size += com.google.protobuf.CodedOutputStream.computeInt64Size(11, updateAt) }
@@ -45,7 +45,7 @@ final case class CartItem(
     }
     def writeTo(`_output__`: com.google.protobuf.CodedOutputStream): Unit = {
       {
-        val __v = productId
+        val __v = skuId
         if (__v != "") {
           _output__.writeString(1, __v)
         }
@@ -70,7 +70,7 @@ final case class CartItem(
       };
     }
     def mergeFrom(`_input__`: com.google.protobuf.CodedInputStream): com.echo.protocol.captain.CartItem = {
-      var __productId = this.productId
+      var __skuId = this.skuId
       var __num = this.num
       var __createAt = this.createAt
       var __updateAt = this.updateAt
@@ -80,7 +80,7 @@ final case class CartItem(
         _tag__ match {
           case 0 => _done__ = true
           case 10 =>
-            __productId = _input__.readString()
+            __skuId = _input__.readString()
           case 16 =>
             __num = _input__.readInt32()
           case 80 =>
@@ -91,20 +91,20 @@ final case class CartItem(
         }
       }
       com.echo.protocol.captain.CartItem(
-          productId = __productId,
+          skuId = __skuId,
           num = __num,
           createAt = __createAt,
           updateAt = __updateAt
       )
     }
-    def withProductId(__v: String): CartItem = copy(productId = __v)
+    def withSkuId(__v: String): CartItem = copy(skuId = __v)
     def withNum(__v: Int): CartItem = copy(num = __v)
     def withCreateAt(__v: Long): CartItem = copy(createAt = __v)
     def withUpdateAt(__v: Long): CartItem = copy(updateAt = __v)
     def getField(__field: com.google.protobuf.Descriptors.FieldDescriptor): scala.Any = {
       __field.getNumber match {
         case 1 => {
-          val __t = productId
+          val __t = skuId
           if (__t != "") __t else null
         }
         case 2 => {
@@ -143,12 +143,12 @@ object CartItem extends com.trueaccord.scalapb.GeneratedMessageCompanion[com.ech
   lazy val defaultInstance = com.echo.protocol.captain.CartItem(
   )
   implicit class CartItemLens[UpperPB](_l: com.trueaccord.lenses.Lens[UpperPB, com.echo.protocol.captain.CartItem]) extends com.trueaccord.lenses.ObjectLens[UpperPB, com.echo.protocol.captain.CartItem](_l) {
-    def productId: com.trueaccord.lenses.Lens[UpperPB, String] = field(_.productId)((c_, f_) => c_.copy(productId = f_))
+    def skuId: com.trueaccord.lenses.Lens[UpperPB, String] = field(_.skuId)((c_, f_) => c_.copy(skuId = f_))
     def num: com.trueaccord.lenses.Lens[UpperPB, Int] = field(_.num)((c_, f_) => c_.copy(num = f_))
     def createAt: com.trueaccord.lenses.Lens[UpperPB, Long] = field(_.createAt)((c_, f_) => c_.copy(createAt = f_))
     def updateAt: com.trueaccord.lenses.Lens[UpperPB, Long] = field(_.updateAt)((c_, f_) => c_.copy(updateAt = f_))
   }
-  final val PRODUCT_ID_FIELD_NUMBER = 1
+  final val SKU_ID_FIELD_NUMBER = 1
   final val NUM_FIELD_NUMBER = 2
   final val CREATE_AT_FIELD_NUMBER = 10
   final val UPDATE_AT_FIELD_NUMBER = 11

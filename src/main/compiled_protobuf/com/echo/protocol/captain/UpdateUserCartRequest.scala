@@ -12,7 +12,7 @@ package com.echo.protocol.captain
 @SerialVersionUID(0L)
 final case class UpdateUserCartRequest(
     token: String = "",
-    productId: String = "",
+    skuId: String = "",
     num: Int = 0
     ) extends com.trueaccord.scalapb.GeneratedMessage with com.trueaccord.scalapb.Message[UpdateUserCartRequest] with com.trueaccord.lenses.Updatable[UpdateUserCartRequest] {
     @transient
@@ -20,7 +20,7 @@ final case class UpdateUserCartRequest(
     private[this] def __computeSerializedValue(): Int = {
       var __size = 0
       if (token != "") { __size += com.google.protobuf.CodedOutputStream.computeStringSize(1, token) }
-      if (productId != "") { __size += com.google.protobuf.CodedOutputStream.computeStringSize(2, productId) }
+      if (skuId != "") { __size += com.google.protobuf.CodedOutputStream.computeStringSize(2, skuId) }
       if (num != 0) { __size += com.google.protobuf.CodedOutputStream.computeInt32Size(3, num) }
       __size
     }
@@ -40,7 +40,7 @@ final case class UpdateUserCartRequest(
         }
       };
       {
-        val __v = productId
+        val __v = skuId
         if (__v != "") {
           _output__.writeString(2, __v)
         }
@@ -54,7 +54,7 @@ final case class UpdateUserCartRequest(
     }
     def mergeFrom(`_input__`: com.google.protobuf.CodedInputStream): com.echo.protocol.captain.UpdateUserCartRequest = {
       var __token = this.token
-      var __productId = this.productId
+      var __skuId = this.skuId
       var __num = this.num
       var _done__ = false
       while (!_done__) {
@@ -64,7 +64,7 @@ final case class UpdateUserCartRequest(
           case 10 =>
             __token = _input__.readString()
           case 18 =>
-            __productId = _input__.readString()
+            __skuId = _input__.readString()
           case 24 =>
             __num = _input__.readInt32()
           case tag => _input__.skipField(tag)
@@ -72,12 +72,12 @@ final case class UpdateUserCartRequest(
       }
       com.echo.protocol.captain.UpdateUserCartRequest(
           token = __token,
-          productId = __productId,
+          skuId = __skuId,
           num = __num
       )
     }
     def withToken(__v: String): UpdateUserCartRequest = copy(token = __v)
-    def withProductId(__v: String): UpdateUserCartRequest = copy(productId = __v)
+    def withSkuId(__v: String): UpdateUserCartRequest = copy(skuId = __v)
     def withNum(__v: Int): UpdateUserCartRequest = copy(num = __v)
     def getField(__field: com.google.protobuf.Descriptors.FieldDescriptor): scala.Any = {
       __field.getNumber match {
@@ -86,7 +86,7 @@ final case class UpdateUserCartRequest(
           if (__t != "") __t else null
         }
         case 2 => {
-          val __t = productId
+          val __t = skuId
           if (__t != "") __t else null
         }
         case 3 => {
@@ -117,10 +117,10 @@ object UpdateUserCartRequest extends com.trueaccord.scalapb.GeneratedMessageComp
   )
   implicit class UpdateUserCartRequestLens[UpperPB](_l: com.trueaccord.lenses.Lens[UpperPB, com.echo.protocol.captain.UpdateUserCartRequest]) extends com.trueaccord.lenses.ObjectLens[UpperPB, com.echo.protocol.captain.UpdateUserCartRequest](_l) {
     def token: com.trueaccord.lenses.Lens[UpperPB, String] = field(_.token)((c_, f_) => c_.copy(token = f_))
-    def productId: com.trueaccord.lenses.Lens[UpperPB, String] = field(_.productId)((c_, f_) => c_.copy(productId = f_))
+    def skuId: com.trueaccord.lenses.Lens[UpperPB, String] = field(_.skuId)((c_, f_) => c_.copy(skuId = f_))
     def num: com.trueaccord.lenses.Lens[UpperPB, Int] = field(_.num)((c_, f_) => c_.copy(num = f_))
   }
   final val TOKEN_FIELD_NUMBER = 1
-  final val PRODUCT_ID_FIELD_NUMBER = 2
+  final val SKU_ID_FIELD_NUMBER = 2
   final val NUM_FIELD_NUMBER = 3
 }

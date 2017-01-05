@@ -28,7 +28,7 @@ trait UpdateUserCartImpl extends AbstractCaptainService with LazyLogging{
       val collectionName = cfg.getString("echo.captain.mongo.user.collection")
       val userIdColumn = cfg.getString("echo.captain.mongo.user.columns.user_id")
       val cartColumn = cfg.getString("echo.captain.mongo.user.columns.cart")
-      val productIdColumn = cfg.getString("echo.captain.mongo.user.columns.product_id")
+      val skuIdColumn = cfg.getString("echo.captain.mongo.user.columns.sku_id")
       val numColumn = cfg.getString("echo.captain.mongo.user.columns.cart_item_num")
       val createAtColumn = cfg.getString("echo.captain.mongo.user.columns.cart_item_create_at")
       val updateAtColumn = cfg.getString("echo.captain.mongo.user.columns.cart_item_update_at")
@@ -40,7 +40,7 @@ trait UpdateUserCartImpl extends AbstractCaptainService with LazyLogging{
 
       // update mongo
       var filterOp = and(equal(userIdColumn, userId), 
-                         elemMatch(cartColumn, equal(productIdColumn, item.productId)))
+                         elemMatch(cartColumn, equal(skuIdColumn, item.skuId)))
       var updateOp = and(set(s"${cartColumn}.$$.${numColumn}", item.num),
                          set(s"${cartColumn}.$$.${updateAtColumn}", new bson.BsonDateTime(currentTime)))
       val result = await(collection.updateOne(filterOp, updateOp).toFuture)
@@ -76,13 +76,13 @@ trait UpdateUserCartImpl extends AbstractCaptainService with LazyLogging{
 
       // check request
       val token = req.token
-      val productId = req.productId
+      val skuId = req.skuId
       val num = req.num
       if (token.isEmpty){
         val header = ResponseHeader(ResultCode.INVALID_SESSION_TOKEN, "INVALID_SESSION_TOKEN")
         res = res.withHeader(header)
-      }else if (productId.isEmpty) {
-        val header = ResponseHeader(ResultCode.INVALID_REQUEST_ARGUMENT, "productId MUST NOT be empty")
+      }else if (skuId.isEmpty) {
+        val header = ResponseHeader(ResultCode.INVALID_REQUEST_ARGUMENT, "skuId MUST NOT be empty")
         res = res.withHeader(header)
       }else if (num <= 0) {
         val header = ResponseHeader(ResultCode.INVALID_REQUEST_ARGUMENT, "num MUST NOT be greated than 0")
@@ -97,7 +97,7 @@ trait UpdateUserCartImpl extends AbstractCaptainService with LazyLogging{
         } else {
           // update cart
           val userId = resultMap(userIdColumn).asString.getValue
-          val cartItem = CartItem(productId = productId, num = num)
+          val cartItem = CartItem(skuId = skuId, num = num)
           await(saveToMongo(userId, cartItem))
           val header = ResponseHeader(ResultCode.SUCCESS, "ok")
           res = res.withHeader(header)

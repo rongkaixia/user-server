@@ -43,10 +43,10 @@ object HelloWorldClient {
       client.queryUserInfo(token)
 
       // update user item
-      var cartItem = new CartItem(productId = "test_product", num = 1)
+      var cartItem = new CartItem(skuId = "test_product", num = 1)
       client.updateUserCart(token, cartItem)
       client.queryUserInfo(token)
-      cartItem = new CartItem(productId = "test_product", num = 2)
+      cartItem = new CartItem(skuId = "test_product", num = 2)
       client.updateUserCart(token, cartItem)
       client.queryUserInfo(token)
       client.deleteUserCart(token, cartItem)
@@ -202,7 +202,7 @@ class HelloWorldClient private(
   def updateUserCart(token: String, item: CartItem): Unit = {
     logger.info("Will try to send updateUserCart request...")
     val request = UpdateUserCartRequest().withToken(token)
-                                         .withProductId(item.productId)
+                                         .withSkuId(item.skuId)
                                          .withNum(item.num)
     try {
       val response = blockingStub.updateUserCart(request)
@@ -217,7 +217,7 @@ class HelloWorldClient private(
   def deleteUserCart(token: String, item: CartItem): Unit = {
     logger.info("Will try to send deleteUserCart request...")
     val request = DeleteUserCartRequest().withToken(token)
-                                         .withProductId(item.productId)
+                                         .withSkuId(item.skuId)
     try {
       val response = blockingStub.deleteUserCart(request)
       logger.info("DeleteUserCartRequest: " + response)
